@@ -1,0 +1,43 @@
+#include "lib.h"
+
+double **gen_rand_undigraph_dbcost(int n, double min, double max, double edge_prob)
+{
+	double **matrix;
+	int i, j;
+    double size;
+
+    size = max - min;
+	matrix = gen_matrix_double(n, n);
+	if (!matrix)
+		return NULL;
+	for (i = 0; i < n; i++)
+		for (j = i + 1; j < n; j++)
+        {
+            if ((double)rand() / RAND_MAX <= edge_prob)
+    			matrix[i][j] = matrix[j][i] = ((double)rand() / RAND_MAX * size) + min;
+            else
+                matrix[i][j] = matrix[j][i] = DBL_MAX / 2;
+        }
+	return matrix;
+}
+
+int **gen_rand_undigraph_intcost(int n, int min, int max, double edge_prob)
+{
+    int **matrix;
+    int i, j;
+    unsigned int size;
+
+    size = max - min + 1;
+    matrix = gen_matrix_int(n, n);
+    if (!matrix)
+        return NULL;
+    for (i = 0; i < n; i++)
+        for (j = i + 1; j < n; j++)
+        {
+            if ((double)rand() / RAND_MAX <= edge_prob)
+                matrix[i][j] = matrix[j][i] = rand() % size + min;
+            else
+                matrix[i][j] = matrix[j][i] = INT_MAX / 2;
+        }
+    return matrix;
+}

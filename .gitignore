@@ -1,0 +1,10 @@
+# Build artifacts
+dist/
+*.o
+*.a
+
+# Test runner
+tests/test_runner
+
+# Temp files from test_io
+/tmp/test_glib_*.txt
