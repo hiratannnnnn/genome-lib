@@ -1,33 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   solve.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/09 20:39:45 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/09 20:56:15 by thirata          ###   ########.fr       */
+/*   Created: 2026/04/09 21:54:24 by thirata           #+#    #+#             */
+/*   Updated: 2026/04/09 22:15:28 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lib.h"
 
-int main(void)
+int solve(int *arr, int n)
 {
-	int n;
 
-	n = 5;
-	int *arr;
-
-	arr = (int *)xmalloc(sizeof(int) * 5);
-	if (!arr)
-		return (1);
-	identity_permutation(arr, n);
-	print_array_int(arr, n, 0);
-	block_interchange(arr, n, 0, 1, 3, 4);
-	print_array_int(arr, n, 0);
-	printf("%d\n", is_identity_permutation(arr, n));
-
-	free_array_int(arr, n);
-	return (0);
 }

@@ -1,0 +1,61 @@
+lgorithm 1 ApproximateSbpbi(π)
+Input: A permutation π of [n].
+Output: A sorting sequence of prefix block-interchanges for π.
+1 S ← empty sequence;
+2 while π 6= ι do
+3 if π1 6= 1 then
+4 j ← the position of π1 −1;
+5 if there exists a pair (πi,πk = πi + 1) such that i ≤j ≤k and the corresponding
+grey arc belongs to the leftmost cycle of G(π) then
+6 σ ←β(1,i,j,k); // Lemma 4 cases 1–3
+7 else
+8 i,k ← positions such that i ≤j ≤k and πk = πi −1;
+9 σ ←β(1,i,j,k); // Lemma 4 case 4
+10 else // Theorem 5
+11 i ← smallest index such that πi+1 6= πi + 1;
+12 j ← the position of πi + 1;
+13 σ ←β(1,i,i,j);
+14 π ←πσ;
+15 S.append(σ);
+16 return S
+
+ Lemma 4. For any π in Sn: if π1 6= 1, then there exists a prefix block-interchange β such
+that ∆c(π,πβ) = 2, ∆c1(π,πβ) ≥2, and ∆g(π,πβ) ≤−1.
+Proof. Lemma 3 guarantees the existence of a grey edge e′ that intersects the first grey edge;
+moreover, the endpoints of e′ ordered by position connect elements whose values are either
+in decreasing (case 1 below) or increasing (case 2 below) order. In both cases, if e′ belongs
+to the leftmost cycle, then there exists a prefix block-interchange that extracts two 1-cycles
+(we distinguish an additional third case where e′ and the first grey edge share the endpoints
+of a black edge):
+1 Here and in the rest of the text, “tight” means that equality is achieved by some but not all instances.
+A. Labarre XX:5
+1.
+0 π′1 π′2i−2 π′2i−1 π′2j−2 π′2j−1 π′2k−2 π′2k−1 0 π′1 π′2i−2π′2i−1 π′2j−2π′2j−1 π′2k−2 π′2k−1
+2.
+0 π′1 π′2i−2 π′2i−1 π′2j−2 π′2j−1 π′2k−2 π′2k−1 0 π′1 π′2i−2π′2i−1 π′2j−2π′2j−1 π′2k−2 π′2k−1
+3.
+0 π′1 π′2i−2 π′2i−1 π′2j−2 π′2j−1 0 π′1 π′2i−2π′2i−1 π′2j−2 π′2j−1
+Otherwise, all edges that intersect the first grey edge belong to cycles other than the
+leftmost cycle. One of those edges, which belongs to some cycle C, must be in the same
+configuration as in case 1 above: indeed, if C contains a grey edge that takes us from the
+interval covered by the first grey edge (1,y) to a vertex located after y, then C must also
+contain a grey edge that takes us back before y. Without loss of generality, we thus assume
+that e′ is such an edge, and therefore a prefix block-interchange that extracts two new 1-cycles
+can also be applied:
+4.
+0 π′1 π′2i−2 π′2i−1 π′2j−2 π′2j−1 π′2k−2 π′2k−1 0 π′1 π′2i−2π′2i−1 π′2j−2π′2j−1 π′2k−2 π′2k−1
+In all four cases, we have ∆c(π,πβ) = 2 and ∆c1(π,πβ) ≥2. The exact value of ∆g(π,πβ)
+will vary depending on the above configurations and is computed using Equation 2:
+1. the leftmost cycle in G(πβ) is nontrivial, so ∆c1(π,πβ) = 2, ∆f(π,πβ) = 0 and
+∆g(π,πβ) = −1;
+2. for exactly the same reasons as case 1, we obtain ∆g(π,πβ) = −1;
+3. we have two possible subcases:
+a. if the leftmost cycle in G(πβ) is nontrivial, then ∆c(π,πβ) = 2 and ∆f(π,πβ) = 0, so
+∆g(π,πβ) = −1;
+b. otherwise, ∆c1(π,πβ) = 3 and ∆f(π,πβ) = −1, which in turn implies ∆g(π,πβ) = −1.
+4. we have three possible subcases:
+a. ∆c1(π,πβ) = 2: the leftmost cycle in G(πβ) is nontrivial, so ∆f(π,πβ) = 0 and
+∆g(π,πβ) = −1;
+b. ∆c1(π,πβ) = 3: the leftmost cycle in G(πβ) may or may not be trivial, so ∆f(π,πβ) ≤
+0 and ∆g(π,πβ) ≤−1;
+c. ∆c1(π,πβ) = 4: the leftmost cycle in G(πβ) is trivial, so ∆f(π,πβ) = −1 and
