@@ -232,4 +232,21 @@ void		*xcalloc			(int n, size_t size_each);
 void		xfree				(void *ptr, size_t size);
 void		*xrealloc			(void *ptr, size_t old_size, size_t new_size);
 
+/* ========= Permutation Operations =========*/
+
+/*
+ * Permutation convention: 0-indexed, values in {0, ..., n-1}.
+ * perm[i] = j  means element j is at position i.
+ */
+
+// permutation.c
+void    identity_permutation        (int *perm, int n);
+void    copy_permutation            (int *src, int *dst, int n);
+int     is_identity_permutation     (int *perm, int n);
+void    inverse_permutation         (int *perm, int *inv, int n);
+void    compose_permutation         (int *p, int *q, int *res, int n);
+int     count_breakpoints           (int *perm, int n);
+void    block_interchange           (int *arr, int n, int i, int j, int k, int l);
+void    prefix_block_interchange    (int *arr, int n, int j, int k, int l);
+
 #endif

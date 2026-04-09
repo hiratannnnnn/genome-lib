@@ -13,7 +13,8 @@ TEST_SRCS = main.c \
             test_graph_gen.c \
             test_sort.c \
             test_memory.c \
-            test_io.c
+            test_io.c \
+            test_permutation.c
 
 LIB_OBJS  = $(LIB_SRCS:.c=.o)
 TEST_OBJS = $(TEST_SRCS:.c=.o)

@@ -25,6 +25,7 @@ void run_tests_graph_gen(void);
 void run_tests_sort(void);
 void run_tests_memory(void);
 void run_tests_io(void);
+void run_tests_permutation(void);
 
 int main(void)
 {
@@ -45,6 +46,7 @@ int main(void)
     run_tests_graph_gen();
     run_tests_sort();
     run_tests_io();
+    run_tests_permutation();
 
     proc_end = clock();
     double elapsed = (double)(proc_end - proc_start) / CLOCKS_PER_SEC;
