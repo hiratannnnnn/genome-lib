@@ -172,19 +172,19 @@ void run_tests_graph_conversion(void)
         add_undirected_edge(vs, 0, 1, 0, 1.0);
         add_undirected_edge(vs, 1, 2, 1, 2.0);
 
-        EdgeNode *el = edge_list_from_adj_list(vs, 3, 1);
+        Node *el = edge_list_from_adj_list(vs, 3, 1);
         ASSERT(el != NULL, "edge_list_from_adj_list (undir): non-NULL");
-        ASSERT(count_edgenodes(el) == 2, "edge_list_from_adj_list (undir): 2 unique edges");
-        free_edgenode(&el);
+        ASSERT(count_nodes(el) == 2, "edge_list_from_adj_list (undir): 2 unique edges");
+        free_nodes(&el);
         free_vertex_array(vs, 3);
 
         /* Directed 0->1, 1->2: 2 edges */
         Vertex **vs2 = create_vertex_array(3);
         add_directed_edge(vs2, 0, 1, 0, 1.0);
         add_directed_edge(vs2, 1, 2, 1, 2.0);
-        EdgeNode *el2 = edge_list_from_adj_list(vs2, 3, 0);
-        ASSERT(count_edgenodes(el2) == 2, "edge_list_from_adj_list (dir): 2 directed edges");
-        free_edgenode(&el2);
+        Node *el2 = edge_list_from_adj_list(vs2, 3, 0);
+        ASSERT(count_nodes(el2) == 2, "edge_list_from_adj_list (dir): 2 directed edges");
+        free_nodes(&el2);
         free_vertex_array(vs2, 3);
     }
 }

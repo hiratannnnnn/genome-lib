@@ -1,8 +1,8 @@
 #include "lib.h"
 
-void	sort_pathnode(PathNode **head, int (*cmp)(int, int))
+void	sort_nodes_vertex_id(Node **head, int (*cmp)(int, int))
 {
-	PathNode *ptr1, *lptr, *prev, *tmp;
+	Node *ptr1, *lptr, *prev, *tmp;
 	int swapped;
 
 	if (!head || !*head)
@@ -14,7 +14,8 @@ void	sort_pathnode(PathNode **head, int (*cmp)(int, int))
 		prev = NULL;
 		while (ptr1->next != lptr)
 		{
-			if (cmp(ptr1->v->id, ptr1->next->v->id) > 0)
+			if (cmp(((Vertex *)ptr1->ptr)->id,
+					((Vertex *)ptr1->next->ptr)->id) > 0)
 			{
 				tmp = ptr1->next;
 				ptr1->next = tmp->next;
@@ -45,9 +46,9 @@ void	sort_pathnode(PathNode **head, int (*cmp)(int, int))
 	} while (swapped);
 }
 
-void sort_edgenode_cost(EdgeNode **head, int (*cmp)(double, double))
+void	sort_nodes_edge_cost(Node **head, int (*cmp)(double, double))
 {
-	EdgeNode *ptr1, *lptr, *prev, *tmp;
+	Node *ptr1, *lptr, *prev, *tmp;
 	int swapped;
 
 	if (!head || !*head)
@@ -59,7 +60,8 @@ void sort_edgenode_cost(EdgeNode **head, int (*cmp)(double, double))
 		prev = NULL;
 		while (ptr1->next != lptr)
 		{
-			if (cmp(ptr1->edge->cost, ptr1->next->edge->cost) > 0)
+			if (cmp(((Edge *)ptr1->ptr)->cost,
+					((Edge *)ptr1->next->ptr)->cost) > 0)
 			{
 				tmp = ptr1->next;
 				ptr1->next = tmp->next;

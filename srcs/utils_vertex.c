@@ -44,11 +44,11 @@ void reset_labels(Vertex **vs, int n)
 		vs[i]->label = i;
 }
 
-void	update_labels(PathNode *node, int label)
+void	update_labels(Node *node, int label)
 {
 	while (node)
 	{
-		node->v->label = label;
+		((Vertex *)node->ptr)->label = label;
 		node = node->next;
 	}
 }

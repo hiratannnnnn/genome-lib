@@ -115,12 +115,13 @@ int write_adjacent_list(int **matrix, int n, char const *filename)
 	return (0);
 }
 
-int 	write_path_node(PathNode *head, char const *filename)
+int 	write_path_node(Node *head, char const *filename)
 {
 	FILE *fp;
+	Vertex *v;
+
 	if (!head)
 		return -1;
-
 	fp = fopen(filename, "w");
 	if (!fp)
 	{
@@ -129,7 +130,8 @@ int 	write_path_node(PathNode *head, char const *filename)
 	}
 	while (head)
 	{
-		fprintf(fp, "%d%c", head->v->id, head->next ? ' ' : '\n');
+		v = (Vertex *)head->ptr;
+		fprintf(fp, "%d%c", v->id, head->next ? ' ' : '\n');
 		head = head->next;
 	}
 	fclose(fp);

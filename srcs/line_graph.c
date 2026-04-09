@@ -58,57 +58,57 @@ static char *name_v_of_LG(int from, int to, int is_undir)
  */
 int		**line_graph_from_adj_list(Vertex **vs, int n, char ***names, int *size, int is_undir)
 {
-	EdgeNode **node_array;
-	EdgeNode *head, *ni;
+	Node **node_array;
+	Node *head, *ni;
 	Edge *ei, *ej;
 	int len, i, j;
 	int **matrix;
 
 	head = edge_list_from_adj_list(vs, n, is_undir);
-	len = count_edgenodes(head);	*size = len;
+	len = count_nodes(head);	*size = len;
 	matrix = gen_matrix_int(len, len);
 	*names = (char **)xmalloc(sizeof(char *) * len);
 	if (!*names)
 	{
-		free_edgenode(&head);
+		free_nodes(&head);
 		return NULL;
 	}
 	if (!matrix)
 	{
 		free_array_char(*names, len);
-		free_edgenode(&head);
+		free_nodes(&head);
 		return (NULL);
 	}
 
-	node_array = xmalloc(sizeof(EdgeNode *) * len);
+	node_array = xmalloc(sizeof(Node *) * len);
 	if (!node_array)
 	{
 		free_array_char(*names, len);
 		free_matrix_int(matrix, len, len);
-		free_edgenode(&head);
+		free_nodes(&head);
 		return NULL;
 	}
 	ni = head;
 	for (i = 0; i < len && ni; i++, ni = ni->next)
 	{
 		node_array[i] = ni;
-		ei = ni->edge;
+		ei = (Edge *)ni->ptr;
 		(*names)[i] = name_v_of_LG(ei->from, ei->to, is_undir);
 		if (!(*names)[i])
 		{
 			free_array_char(*names, len);
 			free_matrix_int(matrix, len, len);
-			free_edgenode(&head);
+			free_nodes(&head);
 			return NULL;
 		}
 	}
 	for (i = 0; i < len; i++)
 	{
-		ei = node_array[i]->edge;
+		ei = (Edge *)node_array[i]->ptr;
 		for (j = 0; j < len; j++)
 		{
 			if (i == j) continue;
-			ej = node_array[j]->edge;
+			ej = (Edge *)node_array[j]->ptr;
 			if (is_undir)
 			{
 				if (ei->from == ej->from ||
@@ -124,7 +124,7 @@ int		**line_graph_from_adj_list(Vertex **vs, int n, char ***names, int *size, in
 			}
 		}
 	}
-	xfree(node_array, sizeof(EdgeNode *) * len);
-	free_edgenode(&head);
+	xfree(node_array, sizeof(Node *) * len);
+	free_nodes(&head);
 	return matrix;
 }

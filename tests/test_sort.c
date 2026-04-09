@@ -23,21 +23,21 @@ static int edge_list_is_sorted_desc(Edge *head)
     return 1;
 }
 
-static int pathnode_is_sorted_asc(PathNode *head)
+static int node_vertex_is_sorted_asc(Node *head)
 {
     while (head && head->next)
     {
-        if (head->v->id > head->next->v->id) return 0;
+        if (((Vertex *)head->ptr)->id > ((Vertex *)head->next->ptr)->id) return 0;
         head = head->next;
     }
     return 1;
 }
 
-static int edgenode_cost_is_sorted_asc(EdgeNode *head)
+static int node_edge_cost_is_sorted_asc(Node *head)
 {
     while (head && head->next)
     {
-        if (head->edge->cost > head->next->edge->cost + DBL_EPSILON) return 0;
+        if (((Edge *)head->ptr)->cost > ((Edge *)head->next->ptr)->cost + DBL_EPSILON) return 0;
         head = head->next;
     }
     return 1;
@@ -105,42 +105,42 @@ void run_tests_sort(void)
         free_vertex_array(vs, 4);
     }
 
-    TEST_GROUP("sort_pathnode");
+    TEST_GROUP("sort_nodes_vertex_id");
     {
         Vertex **vs = create_vertex_array(4);
-        PathNode *head = NULL;
+        Node *head = NULL;
         /* Add in order: id=3, id=1, id=0, id=2 */
-        append_pathnode(&head, create_pathnode(vs[3]));
-        append_pathnode(&head, create_pathnode(vs[1]));
-        append_pathnode(&head, create_pathnode(vs[0]));
-        append_pathnode(&head, create_pathnode(vs[2]));
+        append_node(&head, create_node(vs[3], NODE_TYPE_VERTEX));
+        append_node(&head, create_node(vs[1], NODE_TYPE_VERTEX));
+        append_node(&head, create_node(vs[0], NODE_TYPE_VERTEX));
+        append_node(&head, create_node(vs[2], NODE_TYPE_VERTEX));
 
-        sort_pathnode(&head, cmp_int_asc);
-        ASSERT(pathnode_is_sorted_asc(head),
-               "sort_pathnode(cmp_int_asc): sorted by vertex id ascending");
-        ASSERT(head->v->id == 0, "sort_pathnode: first node is id=0");
+        sort_nodes_vertex_id(&head, cmp_int_asc);
+        ASSERT(node_vertex_is_sorted_asc(head),
+               "sort_nodes_vertex_id(cmp_int_asc): sorted by vertex id ascending");
+        ASSERT(((Vertex *)head->ptr)->id == 0, "sort_nodes_vertex_id: first node is id=0");
 
-        free_pathnode(&head);
+        free_nodes(&head);
         free_vertex_array(vs, 4);
     }
 
-    TEST_GROUP("sort_edgenode_cost");
+    TEST_GROUP("sort_nodes_edge_cost");
     {
         Edge *e1 = create_edge(0, 0, 1, 3.0);
         Edge *e2 = create_edge(1, 1, 2, 1.0);
         Edge *e3 = create_edge(2, 2, 3, 2.0);
 
-        EdgeNode *head = NULL;
-        append_edgenode(&head, create_edgenode(e1));
-        append_edgenode(&head, create_edgenode(e2));
-        append_edgenode(&head, create_edgenode(e3));
+        Node *head = NULL;
+        append_node(&head, create_node(e1, NODE_TYPE_EDGE));
+        append_node(&head, create_node(e2, NODE_TYPE_EDGE));
+        append_node(&head, create_node(e3, NODE_TYPE_EDGE));
 
-        sort_edgenode_cost(&head, cmp_double_asc);
-        ASSERT(edgenode_cost_is_sorted_asc(head),
-               "sort_edgenode_cost(asc): sorted by cost ascending");
-        ASSERT(head->edge->cost == 1.0, "sort_edgenode_cost: first edge has cost 1.0");
+        sort_nodes_edge_cost(&head, cmp_double_asc);
+        ASSERT(node_edge_cost_is_sorted_asc(head),
+               "sort_nodes_edge_cost(asc): sorted by cost ascending");
+        ASSERT(((Edge *)head->ptr)->cost == 1.0, "sort_nodes_edge_cost: first edge has cost 1.0");
 
-        free_edgenode(&head);
+        free_nodes(&head);
         xfree(e1, sizeof(Edge));
         xfree(e2, sizeof(Edge));
         xfree(e3, sizeof(Edge));

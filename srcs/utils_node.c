@@ -19,7 +19,7 @@ Node 	*create_node(void *ptr, NodeType type)
 	return node;
 }
 
-int 	get_node_length(Node *node)
+int 	count_nodes(Node *node)
 {
 	int count;
 	count = 0;
@@ -78,6 +78,68 @@ void	enqueue_node(Node **queue, Node *node)
 Node	*dequeue_node(Node **queue)
 {
 	return pop_first_node(queue);
+}
+
+void	insert_node_after(Node *pos, Node *new_node)
+{
+	if (!pos || !new_node)
+		return ;
+	new_node->next = pos->next;
+	new_node->prev = pos;
+	if (pos->next)
+		pos->next->prev = new_node;
+	pos->next = new_node;
+}
+
+void	pop_last_node(Node **head)
+{
+	Node *last;
+
+	if (!head || !*head)
+		return ;
+	last = get_last_node(*head);
+	if (last->prev)
+		last->prev->next = NULL;
+	else
+		*head = NULL;
+	xfree(last, sizeof(Node));
+}
+
+void	merge_nodes(Node **a, Node **b)
+{
+	Node *a_last;
+
+	if (*a != NULL && *a == *b)
+	{
+		printf("Do not pass the same pointers\n");
+		return ;
+	}
+	a_last = get_last_node(*a);
+	if (a_last)
+	{
+		if (*b)
+		{
+			(*b)->prev = a_last;
+			a_last->next = (*b);
+		}
+	}
+	else
+		*a = *b;
+	*b = NULL;
+}
+
+double	cost_of_nodes(Node *head)
+{
+	double cost;
+
+	cost = 0.0;
+	while (head)
+	{
+		if (head->type == NODE_TYPE_EDGE)
+			cost += ((Edge *)head->ptr)->cost;
+		head = head->next;
+	}
+	return cost;
 }
 
 Edge	*node_get_edge(const Node *node)

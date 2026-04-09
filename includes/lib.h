@@ -92,7 +92,7 @@ Vertex 		**comp_adj_list				(int **matrix, int n, int undir);
 int			**dbcost_to_adj				(int **cost, int n);
 
 // utils_edge_list.c
-EdgeNode	*edge_list_from_adj_list	(Vertex **vs, int n, int is_undir);		// ok?
+Node		*edge_list_from_adj_list	(Vertex **vs, int n, int is_undir);
 
 // line_graph.c
 int			**line_graph_from_adj_list	(Vertex **vs, int n, char ***names, int *size, int is_undir); // ok?
@@ -117,10 +117,10 @@ int 	cmp_edge_cost		(Edge *e1, Edge *e2);
 int 	cmp_edge_cost_id	(Edge *e1, Edge *e2);
 
 // sort_edge_list.c
-void	sort_list			(Edge **head, int (*cmp)(int, int));
-void	sort_pathnode		(PathNode **head, int (*cmp)(int, int));
-void 	sort_edgenode_cost	(EdgeNode **head, int (*cmp)(double, double));
-void	sort_list_by_degree	(Edge **head, int *degree, int (*cmp)(int, int));
+void	sort_list				(Edge **head, int (*cmp)(int, int));
+void	sort_nodes_vertex_id	(Node **head, int (*cmp)(int, int));
+void	sort_nodes_edge_cost	(Node **head, int (*cmp)(double, double));
+void	sort_list_by_degree		(Edge **head, int *degree, int (*cmp)(int, int));
 
 
 /* ========= Utilities =========*/
@@ -137,7 +137,7 @@ Edge 		*get_target_edge		(Edge *head, int t);
 Vertex		*create_vertex			(int id);									// ok
 Vertex		**create_vertex_array	(int n);									// ok
 void 		reset_labels			(Vertex **vs, int n);
-void		update_labels			(PathNode *node, int label);
+void		update_labels			(Node *node, int label);
 void 		sort_list_cyclic		(Vertex **vs, int n, int asc);
 
 /* ========= Euler Tour Utilities =========*/
@@ -151,56 +151,34 @@ double		min_double		(double a, double b);
 double 		max_double		(double a, double b);
 
 // utils_char.c
-void	 	free_array_char			(char **ss, int n);						// ok
-int 		count_digit				(int number);					// ok
-
-// utils_edge_list.c
-EdgeNode		*edge_list_from_adj_list	(Vertex **vs, int n, int is_undir);		// fine
+void	 	free_array_char			(char **ss, int n);
+int 		count_digit				(int number);
 
 // utils_free.c
 void		free_array_int		(int *ptr, int const n);
 void		free_matrix_int		(int **matrix, int const r, int const c);
 void		free_array_double	(double *ptr, int const c);
 void		free_matrix_double	(double **matrix, int const r, int const c);
-void		free_edge_list		(Edge *head);					// ok, but directory messy?
-void		free_edgenode		(EdgeNode **head);					// ok
-void		free_vertex			(Vertex *vertex);				// ok
-void		free_vertex_array	(Vertex **vs, int n);			// ok
-
-// utils_edgenode.c
-EdgeNode	*create_edgenode		(Edge *edge);					// ok
-void		append_edgenode			(EdgeNode **head, EdgeNode *new_node);
-void		insert_node_after		(EdgeNode *pos, EdgeNode *new_node);
-EdgeNode 	*get_last_edgenode		(EdgeNode *head);
-int			count_edgenodes			(EdgeNode *head);
-double 		cost_of_edgenodes		(EdgeNode *head);
-void		merge_edgenode			(EdgeNode **a, EdgeNode **b);
-EdgeNode	*edgenode_pop_first			(EdgeNode **head);
-
-
-// utils_pathnode.c
-PathNode	*create_pathnode		(Vertex *vertex);
-void		append_pathnode			(PathNode **head, PathNode *new_pathnode);
-void		insert_pathnode_after	(PathNode *pos, PathNode *new_pathnode);
-PathNode	*get_last_pathnode		(PathNode *head);
-PathNode 	*pathnode_pop_first		(PathNode **head);
-void		pathnode_pop_last		(PathNode **head);
-int			count_pathnodes			(PathNode *head);
-void		merge_pathnode			(PathNode **a, PathNode **b);
-void		free_pathnode			(PathNode **head);
+void		free_edge_list		(Edge *head);
+void		free_vertex			(Vertex *vertex);
+void		free_vertex_array	(Vertex **vs, int n);
 
 // utils_node.c
-Node 		*create_node		(void *ptr, NodeType type);
-int 		get_node_length		(Node *node);
-Node 		*get_last_node		(Node *node);
-void		append_node			(Node **queue, Node *node);
-Node		*pop_first_node		(Node **queue);
-void		enqueue_node		(Node **queue, Node *node);
-Node		*dequeue_node		(Node **queue);
-Edge		*node_get_edge		(const Node *node);
-Vertex 		*node_get_vertex	(const Node *node);
-void		free_node			(Node *node);
-void		free_nodes			(Node **node);
+Node 		*create_node			(void *ptr, NodeType type);
+int 		count_nodes				(Node *node);
+Node 		*get_last_node			(Node *node);
+void		append_node				(Node **queue, Node *node);
+Node		*pop_first_node			(Node **queue);
+void		insert_node_after		(Node *pos, Node *new_node);
+void		pop_last_node			(Node **head);
+void		merge_nodes				(Node **a, Node **b);
+double		cost_of_nodes			(Node *head);
+void		enqueue_node			(Node **queue, Node *node);
+Node		*dequeue_node			(Node **queue);
+Edge		*node_get_edge			(const Node *node);
+Vertex 		*node_get_vertex		(const Node *node);
+void		free_node				(Node *node);
+void		free_nodes				(Node **node);
 
 // utils_math.c
 int			*rand_perm		(int n);
@@ -218,16 +196,16 @@ void 		print_array_double			(double *arr, int c, int max_width, int precision);
 void		print_vertex		(Vertex *v, int one_based);
 void		print_vertices		(Vertex **vs, int n, int one_based);
 void		print_edge_list		(Edge *head, int one_based);
-void 		print_pathnode		(PathNode *head, int one_based);
-void		print_array_pathnode(PathNode **ps, int n, int one_based);
-void 		print_edgenode		(EdgeNode *head, int one_based);
+void 		print_node_path			(Node *head, int one_based);
+void		print_array_node_path	(Node **ps, int n, int one_based);
+void 		print_node_edges		(Node *head, int one_based);
 void		print_array_char	(char **ss, int n);
 void		print_info			(	);
 
 // write_to_file.c
 int			write_adjacent_matrix	(int **matrix, int n, char const *filename);	// ok
 int 		write_adjacent_list		(int **matrix, int n, char const *filename);	// ok
-int 		write_path_node			(PathNode *head, char const *filename);
+int 		write_path_node			(Node *head, char const *filename);
 int 		write_double_matrix		(double **matrix, int r, int c, char const *filename);
 int 		write_perm				(int *perm, int n, char const *filename);
 void 		save_some_matrix		(int n, double edge_prob,						// ok

@@ -68,7 +68,6 @@ static void test_vertices(void)
         ASSERT(vs[0]->id == 0,          "create_vertex_array: vs[0].id = 0");
         ASSERT(vs[3]->id == 3,          "create_vertex_array: vs[3].id = 3");
 
-        /* Modify labels, then reset */
         vs[0]->label = 99;
         vs[1]->label = 88;
         reset_labels(vs, 4);
@@ -77,181 +76,58 @@ static void test_vertices(void)
         free_vertex_array(vs, 4);
     }
 
-    TEST_GROUP("Vertex: update_labels");
+    TEST_GROUP("Vertex: update_labels via Node list");
     {
         Vertex **vs = create_vertex_array(3);
-        PathNode *p0 = create_pathnode(vs[0]);
-        PathNode *p1 = create_pathnode(vs[1]);
-        PathNode *p2 = create_pathnode(vs[2]);
-        p0->next = p1; p1->prev = p0;
-        p1->next = p2; p2->prev = p1;
+        Node *n0 = create_node(vs[0], NODE_TYPE_VERTEX);
+        Node *n1 = create_node(vs[1], NODE_TYPE_VERTEX);
+        Node *n2 = create_node(vs[2], NODE_TYPE_VERTEX);
+        Node *head = NULL;
+        append_node(&head, n0);
+        append_node(&head, n1);
+        append_node(&head, n2);
 
-        update_labels(p0, 42);
+        update_labels(head, 42);
         ASSERT(vs[0]->label == 42, "update_labels: vs[0] updated");
         ASSERT(vs[1]->label == 42, "update_labels: vs[1] updated");
         ASSERT(vs[2]->label == 42, "update_labels: vs[2] updated");
 
-        xfree(p0, sizeof(PathNode));
-        xfree(p1, sizeof(PathNode));
-        xfree(p2, sizeof(PathNode));
+        free_nodes(&head);
         free_vertex_array(vs, 3);
     }
 }
 
-/* ===== EdgeNode ===== */
-
-static void test_edgenodes(void)
-{
-    TEST_GROUP("EdgeNode: create / append / insert / count / cost / pop / merge");
-    {
-        Edge *e1 = create_edge(0, 0, 1, 1.0);
-        Edge *e2 = create_edge(1, 1, 2, 2.0);
-        Edge *e3 = create_edge(2, 2, 3, 3.0);
-
-        EdgeNode *en1 = create_edgenode(e1);
-        ASSERT(en1 != NULL,        "create_edgenode: non-NULL");
-        ASSERT(en1->edge == e1,    "create_edgenode: edge pointer set");
-        ASSERT(en1->prev == NULL,  "create_edgenode: prev is NULL");
-        ASSERT(en1->next == NULL,  "create_edgenode: next is NULL");
-
-        EdgeNode *en2 = create_edgenode(e2);
-        EdgeNode *en3 = create_edgenode(e3);
-
-        EdgeNode *head = NULL;
-        append_edgenode(&head, en1);
-        append_edgenode(&head, en2);
-        append_edgenode(&head, en3);
-
-        ASSERT(count_edgenodes(head) == 3, "count_edgenodes: 3 nodes");
-        ASSERT(count_edgenodes(NULL) == 0, "count_edgenodes(NULL): 0");
-        ASSERT(get_last_edgenode(head) == en3, "get_last_edgenode: returns tail");
-
-        double total = cost_of_edgenodes(head);
-        ASSERT(total == 6.0, "cost_of_edgenodes: 1+2+3 = 6.0");
-
-        /* insert_node_after en1 */
-        Edge *e_mid = create_edge(99, 0, 9, 9.9);
-        EdgeNode *en_mid = create_edgenode(e_mid);
-        insert_node_after(en1, en_mid);
-        ASSERT(count_edgenodes(head) == 4,   "insert_node_after: count becomes 4");
-        ASSERT(en1->next == en_mid,           "insert_node_after: en1->next is new node");
-        ASSERT(en_mid->next == en2,           "insert_node_after: new node->next is en2");
-
-        /* pop first */
-        EdgeNode *popped = edgenode_pop_first(&head);
-        ASSERT(popped == en1,              "edgenode_pop_first: returns first node");
-        ASSERT(count_edgenodes(head) == 3, "edgenode_pop_first: count becomes 3");
-        xfree(popped, sizeof(EdgeNode));
-
-        /* merge two lists */
-        EdgeNode *head2 = NULL;
-        Edge *e4 = create_edge(3, 3, 4, 4.0);
-        EdgeNode *en4 = create_edgenode(e4);
-        append_edgenode(&head2, en4);
-
-        merge_edgenode(&head, &head2);
-        ASSERT(count_edgenodes(head) == 4, "merge_edgenode: total 4 nodes after merge");
-        ASSERT(head2 == NULL, "merge_edgenode: source list becomes NULL");
-
-        /* cleanup */
-        free_edgenode(&head);
-        ASSERT(head == NULL, "free_edgenode: head set to NULL");
-        xfree(e1, sizeof(Edge));
-        xfree(e2, sizeof(Edge));
-        xfree(e3, sizeof(Edge));
-        xfree(e4, sizeof(Edge));
-        xfree(e_mid, sizeof(Edge));
-    }
-}
-
-/* ===== PathNode ===== */
-
-static void test_pathnodes(void)
-{
-    TEST_GROUP("PathNode: create / append / count / pop / merge / free");
-    {
-        Vertex **vs = create_vertex_array(5);
-
-        PathNode *p0 = create_pathnode(vs[0]);
-        ASSERT(p0 != NULL,        "create_pathnode: non-NULL");
-        ASSERT(p0->v == vs[0],    "create_pathnode: vertex pointer set");
-        ASSERT(p0->prev == NULL,  "create_pathnode: prev is NULL");
-        ASSERT(p0->next == NULL,  "create_pathnode: next is NULL");
-
-        PathNode *head = NULL;
-        append_pathnode(&head, p0);
-        append_pathnode(&head, create_pathnode(vs[1]));
-        append_pathnode(&head, create_pathnode(vs[2]));
-        ASSERT(count_pathnodes(head) == 3, "count_pathnodes: 3 nodes");
-        ASSERT(count_pathnodes(NULL) == 0, "count_pathnodes(NULL): 0");
-
-        PathNode *last = get_last_pathnode(head);
-        ASSERT(last->v == vs[2], "get_last_pathnode: tail vertex is vs[2]");
-
-        /* pop last */
-        pathnode_pop_last(&head);
-        ASSERT(count_pathnodes(head) == 2, "pathnode_pop_last: count becomes 2");
-        ASSERT(get_last_pathnode(head)->v == vs[1], "pathnode_pop_last: new tail is vs[1]");
-
-        /* pop first */
-        PathNode *first = pathnode_pop_first(&head);
-        ASSERT(first->v == vs[0], "pathnode_pop_first: returns head (vs[0])");
-        ASSERT(count_pathnodes(head) == 1, "pathnode_pop_first: count becomes 1");
-        xfree(first, sizeof(PathNode));
-
-        /* insert after */
-        PathNode *p_new = create_pathnode(vs[3]);
-        insert_pathnode_after(head, p_new);
-        ASSERT(count_pathnodes(head) == 2, "insert_pathnode_after: count becomes 2");
-        ASSERT(head->next == p_new, "insert_pathnode_after: head->next is new node");
-
-        /* merge */
-        PathNode *head2 = NULL;
-        append_pathnode(&head2, create_pathnode(vs[4]));
-        merge_pathnode(&head, &head2);
-        ASSERT(count_pathnodes(head) == 3, "merge_pathnode: total 3 nodes");
-        ASSERT(head2 == NULL, "merge_pathnode: source becomes NULL");
-
-        free_pathnode(&head);
-        ASSERT(head == NULL, "free_pathnode: head set to NULL");
-        free_vertex_array(vs, 5);
-    }
-}
-
-/* ===== Node (generic) ===== */
+/* ===== Node ===== */
 
 static void test_nodes(void)
 {
-    TEST_GROUP("Node: create / append / length / pop / enqueue / dequeue / type access");
+    TEST_GROUP("Node: create / append / count / pop_first / enqueue / dequeue / type access");
     {
         Edge *e = create_edge(0, 0, 1, 1.0);
         Vertex *v = create_vertex(7);
 
         Node *ne = create_node(e, NODE_TYPE_EDGE);
-        ASSERT(ne != NULL,              "create_node(edge): non-NULL");
+        ASSERT(ne != NULL,                 "create_node(edge): non-NULL");
         ASSERT(ne->type == NODE_TYPE_EDGE, "create_node(edge): type set");
-        ASSERT(node_get_edge(ne) == e,  "node_get_edge: returns correct edge");
-        ASSERT(node_get_vertex(ne) == NULL, "node_get_vertex on edge node: NULL");
+        ASSERT(node_get_edge(ne) == e,     "node_get_edge: returns correct edge");
+        ASSERT(node_get_vertex(ne) == NULL,"node_get_vertex on edge node: NULL");
 
         Node *nv = create_node(v, NODE_TYPE_VERTEX);
         ASSERT(nv->type == NODE_TYPE_VERTEX, "create_node(vertex): type set");
-        ASSERT(node_get_vertex(nv) == v, "node_get_vertex: returns correct vertex");
+        ASSERT(node_get_vertex(nv) == v,     "node_get_vertex: returns correct vertex");
         ASSERT(node_get_edge(nv) == NULL,    "node_get_edge on vertex node: NULL");
 
-        /* append / length */
         Node *queue = NULL;
         append_node(&queue, ne);
         append_node(&queue, nv);
-        ASSERT(get_node_length(queue) == 2, "get_node_length: 2 nodes");
-        ASSERT(get_node_length(NULL) == 0,  "get_node_length(NULL): 0");
+        ASSERT(count_nodes(queue) == 2, "count_nodes: 2 nodes");
+        ASSERT(count_nodes(NULL) == 0,  "count_nodes(NULL): 0");
 
-        /* pop first */
         Node *popped = pop_first_node(&queue);
         ASSERT(popped == ne,               "pop_first_node: returns first node");
-        ASSERT(get_node_length(queue) == 1, "pop_first_node: length decreases to 1");
+        ASSERT(count_nodes(queue) == 1,    "pop_first_node: length decreases to 1");
         free_node(popped);
 
-        /* enqueue / dequeue (FIFO) */
         Node *q2 = NULL;
         Edge *ea = create_edge(1, 1, 2, 2.0);
         Edge *eb = create_edge(2, 2, 3, 3.0);
@@ -263,7 +139,6 @@ static void test_nodes(void)
         ASSERT(dq == na, "dequeue_node: FIFO - first in, first out");
         free_node(dq);
 
-        /* cleanup */
         free_nodes(&queue);
         ASSERT(queue == NULL, "free_nodes: queue set to NULL");
         free_nodes(&q2);
@@ -272,13 +147,56 @@ static void test_nodes(void)
         xfree(ea, sizeof(Edge));
         xfree(eb, sizeof(Edge));
     }
+
+    TEST_GROUP("Node: insert_after / pop_last / merge / cost_of_nodes");
+    {
+        Edge *e1 = create_edge(0, 0, 1, 1.0);
+        Edge *e2 = create_edge(1, 1, 2, 2.0);
+        Edge *e3 = create_edge(2, 2, 3, 3.0);
+
+        Node *n1 = create_node(e1, NODE_TYPE_EDGE);
+        Node *n2 = create_node(e2, NODE_TYPE_EDGE);
+        Node *n3 = create_node(e3, NODE_TYPE_EDGE);
+
+        Node *head = NULL;
+        append_node(&head, n1);
+        append_node(&head, n3);
+
+        /* insert n2 after n1 */
+        insert_node_after(n1, n2);
+        ASSERT(count_nodes(head) == 3,  "insert_node_after: count becomes 3");
+        ASSERT(n1->next == n2,          "insert_node_after: n1->next is n2");
+        ASSERT(n2->next == n3,          "insert_node_after: n2->next is n3");
+
+        /* cost_of_nodes */
+        double total = cost_of_nodes(head);
+        ASSERT(total == 6.0, "cost_of_nodes: 1+2+3 = 6.0");
+
+        /* pop_last */
+        pop_last_node(&head);
+        ASSERT(count_nodes(head) == 2, "pop_last_node: count becomes 2");
+        ASSERT(n1->next == n2,         "pop_last_node: n1->next still n2");
+
+        /* merge */
+        Edge *e4 = create_edge(3, 3, 4, 4.0);
+        Node *n4 = create_node(e4, NODE_TYPE_EDGE);
+        Node *head2 = NULL;
+        append_node(&head2, n4);
+        merge_nodes(&head, &head2);
+        ASSERT(count_nodes(head) == 3, "merge_nodes: total 3 nodes");
+        ASSERT(head2 == NULL,          "merge_nodes: source becomes NULL");
+
+        free_nodes(&head);
+        xfree(e1, sizeof(Edge));
+        xfree(e2, sizeof(Edge));
+        xfree(e3, sizeof(Edge));
+        xfree(e4, sizeof(Edge));
+    }
 }
 
 void run_tests_data_structures(void)
 {
     test_edges();
     test_vertices();
-    test_edgenodes();
-    test_pathnodes();
     test_nodes();
 }

@@ -7,11 +7,11 @@
  * @param n
  * @param is_undir is undirected graph(1) or not(0)
  */
-EdgeNode	*edge_list_from_adj_list(Vertex **vs, int n, int is_undir)
+Node	*edge_list_from_adj_list(Vertex **vs, int n, int is_undir)
 {
 	Edge *edge;
-	EdgeNode *edge_list;
-	EdgeNode *new_node;
+	Node *edge_list;
+	Node *new_node;
 	Vertex *v;
 	int i;
 
@@ -25,8 +25,8 @@ EdgeNode	*edge_list_from_adj_list(Vertex **vs, int n, int is_undir)
 		{
 			if (!is_undir || (edge->from < edge->to))
 			{
-				new_node = create_edgenode(edge);
-				append_edgenode(&edge_list, new_node);
+				new_node = create_node(edge, NODE_TYPE_EDGE);
+				append_node(&edge_list, new_node);
 			}
 			edge = edge->next;
 		}

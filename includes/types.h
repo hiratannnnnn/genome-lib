@@ -19,26 +19,10 @@ typedef struct 	Vertex
     Edge        *incidence;	// incidence list (edge list)
 }               Vertex;
 
-typedef struct 	EdgeNode
-{
-    Edge		*edge;
-    struct EdgeNode *prev;		// prev node
-    struct EdgeNode *next;		// next node
-}               EdgeNode;
-
-typedef struct 	PathNode
-{
-    Vertex          *v;
-    struct PathNode *prev;	// prev node
-    struct PathNode *next;	// next node
-}				PathNode;
-
 typedef enum
 {
 	NODE_TYPE_EDGE,
     NODE_TYPE_VERTEX,
-    ROUND,
-    SQUARE
 }			NodeType;
 
 typedef struct Node
