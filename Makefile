@@ -3,7 +3,7 @@ CFLAGS  = -Wall -Wextra -Werror -Iincludes
 AR      = ar
 ARFLAGS = rcs
 
-TARGET   = lib
+TARGET   = libgenome
 SRCS_DIR = srcs
 DISTDIR  = dist
 
@@ -29,4 +29,9 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+# Usage: make compile SRC=main.c
+# Optional: make compile SRC=main.c OUT=my_program
+compile: $(LIB)
+	$(CC) $(CFLAGS) $(SRC) -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o $(if $(OUT),$(OUT),$(basename $(SRC)))
+
+.PHONY: all clean fclean re compile

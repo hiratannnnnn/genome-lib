@@ -4,12 +4,6 @@
 #include "lib.h"
 #include "test_framework.h"
 
-/* ---- global state required by lib.h ---- */
-size_t  mem      = 0;
-size_t  mem_peak = 0;
-clock_t proc_start = 0;
-clock_t proc_end   = 0;
-
 /* ---- global test counters ---- */
 int g_passed = 0;
 int g_failed = 0;
