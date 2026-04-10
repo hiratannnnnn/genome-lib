@@ -246,7 +246,15 @@ int     is_identity_permutation     (int *perm, int n);
 void    inverse_permutation         (int *perm, int *inv, int n);
 void    compose_permutation         (int *p, int *q, int *res, int n);
 int     count_breakpoints           (int *perm, int n);
+int     find_value                  (int *perm, int n, int val);
+int     first_breakpoint_position   (int *perm, int n);
 void    block_interchange           (int *arr, int n, int i, int j, int k, int l);
 void    prefix_block_interchange    (int *arr, int n, int j, int k, int l);
+
+// breakpoint_graph.c
+BreakpointGraph *bg_build               (int *perm, int n);
+void             bg_decompose_cycles    (BreakpointGraph *bg);
+int              bg_black_arc_in_leftmost(BreakpointGraph *bg, int v);
+void             bg_free                (BreakpointGraph *bg);
 
 #endif

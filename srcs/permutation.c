@@ -1,5 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   permutation.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/10 08:11:47 by thirata           #+#    #+#             */
+/*   Updated: 2026/04/10 08:11:58 by thirata          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lib.h"
-#include <string.h>
 
 /*
  * Permutation convention: 0-indexed, values in {0, 1, ..., n-1}.
@@ -115,6 +126,34 @@ void    block_interchange(int *arr, int n, int i, int j, int k, int l)
     memcpy(arr + i, tmp, (size_t)total * sizeof(int));
 
     xfree(tmp, (size_t)total * sizeof(int));
+}
+
+/*
+ * Return the 0-indexed position of value val in perm.
+ * Returns -1 if not found.
+ */
+int     find_value(int *perm, int n, int val)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+        if (perm[i] == val)
+            return i;
+    return -1;
+}
+
+/*
+ * Return the smallest 0-indexed i such that perm[i+1] != perm[i]+1.
+ * Returns -1 if no such i exists (i.e., perm[0..n-1] is a consecutive run).
+ */
+int     first_breakpoint_position(int *perm, int n)
+{
+    int i;
+
+    for (i = 0; i < n - 1; i++)
+        if (perm[i + 1] != perm[i] + 1)
+            return i;
+    return -1;
 }
 
 /*

@@ -34,4 +34,9 @@ re: fclean all
 compile: $(LIB)
 	$(CC) $(CFLAGS) $(SRC) -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o $(if $(OUT),$(OUT),$(basename $(SRC)))
 
-.PHONY: all clean fclean re compile
+# Build and run main.c + approx_sbpbi.c
+demo: $(LIB)
+	$(CC) $(CFLAGS) main.c approx_sbpbi.c -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o demo
+	./demo
+
+.PHONY: all clean fclean re compile demo

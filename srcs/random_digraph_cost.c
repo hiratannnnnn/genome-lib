@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   random_digraph_cost.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/10 08:12:07 by thirata           #+#    #+#             */
+/*   Updated: 2026/04/10 08:12:08 by thirata          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lib.h"
 
 double **gen_rand_digraph_dbcost(int n, double min, double max, double edge_prob)
@@ -17,7 +29,7 @@ double **gen_rand_digraph_dbcost(int n, double min, double max, double edge_prob
                 continue;
             if ((double) rand() / RAND_MAX <= edge_prob)
                 matrix[i][j] = (double)rand() / RAND_MAX * size + min;
-            else 
+            else
                 matrix[i][j] = DBL_MAX / 2;
         }
    	return matrix;
