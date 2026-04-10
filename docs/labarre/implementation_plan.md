@@ -152,7 +152,7 @@ int first_breakpoint_position(int *perm, int n);
 
 ```c
 // π（0-indexed, 値 0..n-1）から breakpoint graph を構築
-BreakpointGraph *bg_build(int *perm, int n);
+BreakpointGraph *bg_init(int *perm, int n);
 
 // alternating cycle 分解を行い cycle_id と num_cycles をセット
 void             bg_decompose_cycles(BreakpointGraph *bg);
@@ -189,7 +189,7 @@ static int find_case_b(int *perm, int n, int j, int *out_i, int *out_k);
 
 1. `find_value` / `first_breakpoint_position` → `permutation.c`
 2. `BreakpointGraph` 構造体 → `includes/types.h`
-3. `bg_build` → 灰辺・黒辺の隣接表を構築
+3. `bg_init` → 灰辺・黒辺の隣接表を構築
 4. `bg_decompose_cycles` → DFS/BFS で cycle_id を付番
 5. `bg_black_arc_in_leftmost` → cycle_id の比較
 6. `find_case_a` / `find_case_b` → 線形探索 O(n)
@@ -202,7 +202,7 @@ static int find_case_b(int *perm, int n, int j, int *out_i, int *out_k);
 
 | 処理 | 計算量 |
 |------|--------|
-| `bg_build` | O(n) |
+| `bg_init` | O(n) |
 | `bg_decompose_cycles` | O(n) |
 | `find_case_a` / `find_case_b` | O(n) |
 | `prefix_block_interchange` | O(n) |

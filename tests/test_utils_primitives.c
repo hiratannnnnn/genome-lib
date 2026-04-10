@@ -89,21 +89,21 @@ void run_tests_utils_primitives(void)
 
     TEST_GROUP("rand_perm");
     {
-        int *p5 = rand_perm(5);
-        ASSERT(p5 != NULL, "rand_perm(5): returns non-NULL");
-        ASSERT(is_valid_perm(p5, 5), "rand_perm(5): valid permutation of [0..4]");
+        int *p5 = rand_perm(5, 1);
+        ASSERT(p5 != NULL, "rand_perm(5, 1): returns non-NULL");
+        ASSERT(is_valid_perm(p5, 5), "rand_perm(5, 1): valid permutation of [0..4]");
         free(p5);
 
-        int *p1 = rand_perm(1);
-        ASSERT(p1 != NULL, "rand_perm(1): returns non-NULL");
-        ASSERT(p1[0] == 0, "rand_perm(1): single element is 0");
+        int *p1 = rand_perm(1, 1);
+        ASSERT(p1 != NULL, "rand_perm(1, 1): returns non-NULL");
+        ASSERT(p1[0] == 0, "rand_perm(1, 1): single element is 0");
         free(p1);
 
         /* Multiple calls should (eventually) differ — not strictly testable,
            but we at least verify structural validity each time */
-        int *p10 = rand_perm(10);
-        ASSERT(p10 != NULL, "rand_perm(10): returns non-NULL");
-        ASSERT(is_valid_perm(p10, 10), "rand_perm(10): valid permutation of [0..9]");
+        int *p10 = rand_perm(10, 1);
+        ASSERT(p10 != NULL, "rand_perm(10, 1): returns non-NULL");
+        ASSERT(is_valid_perm(p10, 10), "rand_perm(10, 1): valid permutation of [0..9]");
         free(p10);
     }
 

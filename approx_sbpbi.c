@@ -6,7 +6,7 @@
 /*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 08:10:37 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/10 08:59:37 by thirata          ###   ########.fr       */
+/*   Updated: 2026/04/10 22:33:44 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,25 +125,33 @@ int approx_sbpbi(int *perm, int n, int (*ops)[3])
 
     while (!is_identity_permutation(perm, n))
     {
-        bg = bg_build(perm, n);
+        bg = bg_init(perm, n);
         bg_decompose_cycles(bg);
 
         if (perm[0] != 0)
         {
-            /* j_code = position of value perm[0]-1 */
-            j_code = find_value(perm, n, perm[0] - 1);
+            /* j_code = perm[0]-1 as a 0-indexed position bound.
+             * Paper: j = π₁ - 1 (used directly as a position, not a value lookup). */
+            j_code = perm[0] - 1;
 
             if (find_case_a(perm, n, j_code, bg, &i_code, &k_code))
             {
                 /* Case A: Lemma 4 cases 1-3 */
-                op_j = i_code;
+                op_j = i_code + 1;
                 op_k = j_code + 1;
                 op_l = k_code;
             }
             else
             {
                 /* Case B: Lemma 4 case 4 (guaranteed to succeed) */
-                find_case_b(perm, n, j_code, &i_code, &k_code);
+                if (!find_case_b(perm, n, j_code, &i_code, &k_code))
+                {
+                    fprintf(stderr,
+                        "[approx_sbpbi] BUG: find_case_b failed (should be impossible). "
+                        "perm[0]=%d j_code=%d n=%d\n", perm[0], j_code, n);
+                    bg_free(bg);
+                    return -1;
+                }
                 op_j = i_code;
                 op_k = j_code + 1;
                 op_l = k_code;

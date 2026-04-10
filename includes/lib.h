@@ -181,7 +181,7 @@ void		free_node				(Node *node);
 void		free_nodes				(Node **node);
 
 // utils_math.c
-int			*rand_perm		(int n);
+int			*rand_perm		(int n, int is_natural);
 
 // utils_array.c
 int			max_of_array		(int *arr, int n);
@@ -252,9 +252,8 @@ void    block_interchange           (int *arr, int n, int i, int j, int k, int l
 void    prefix_block_interchange    (int *arr, int n, int j, int k, int l);
 
 // breakpoint_graph.c
-BreakpointGraph *bg_build               (int *perm, int n);
-void             bg_decompose_cycles    (BreakpointGraph *bg);
-int              bg_black_arc_in_leftmost(BreakpointGraph *bg, int v);
-void             bg_free                (BreakpointGraph *bg);
+void 	print_bp_graph(t_bp_graph *bp, int size);
+
+void    bp_graph_init(t_bp_graph *bp, int size, int *arr, int n);
 
 #endif
