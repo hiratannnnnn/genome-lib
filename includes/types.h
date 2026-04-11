@@ -45,7 +45,6 @@ typedef struct
 
 typedef struct s_bp_graph
 {
-    int num;
     int grey;
     int black;
     int cycle_id;

@@ -6,7 +6,7 @@
 /*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 08:11:47 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/10 08:11:58 by thirata          ###   ########.fr       */
+/*   Updated: 2026/04/11 21:26:53 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
  */
 
 /* Fill perm with the identity: perm[i] = i. */
-void    identity_permutation(int *perm, int n)
+void    identity_permutation(int *perm, int n, int is_natural)
 {
     int i;
 
     for (i = 0; i < n; i++)
-        perm[i] = i;
+        perm[i] = i + is_natural;
 }
 
 /* Copy src into dst (both length n). */
@@ -33,12 +33,14 @@ void    copy_permutation(int *src, int *dst, int n)
 }
 
 /* Return 1 if perm is the identity, 0 otherwise. */
-int     is_identity_permutation(int *perm, int n)
+int     is_identity_permutation(int *perm, int n, int is_natural)
 {
     int i;
 
+    if (is_natural != 0 && is_natural != 1)
+        return (0);
     for (i = 0; i < n; i++)
-        if (perm[i] != i)
+        if (perm[i] != i + is_natural)
             return 0;
     return 1;
 }
@@ -94,41 +96,6 @@ int     count_breakpoints(int *perm, int n)
 }
 
 /*
- * Block interchange: swap arr[i..j] with arr[k..l].
- *
- * Precondition: 0 <= i <= j < k <= l < n.
- * The segment arr[j+1..k-1] (the "middle") shifts but is otherwise untouched.
- *
- * Before: ... [i..j] [j+1..k-1] [k..l] ...
- * After:  ... [k..l] [j+1..k-1] [i..j] ...
- */
-void    block_interchange(int *arr, int n, int i, int j, int k, int l)
-{
-    int len1, len2, mid, total;
-    int *tmp;
-
-    if (!arr || i < 0 || i > j || j >= k || k > l || l >= n)
-        return;
-
-    len1  = j - i + 1;
-    len2  = l - k + 1;
-    mid   = k - j - 1;
-    total = l - i + 1;
-
-    tmp = (int *)xmalloc((size_t)total * sizeof(int));
-    if (!tmp)
-        return;
-
-    /* New layout starting at position i: [block2][middle][block1] */
-    memcpy(tmp,              arr + k,     (size_t)len2 * sizeof(int));
-    memcpy(tmp + len2,       arr + j + 1, (size_t)mid  * sizeof(int));
-    memcpy(tmp + len2 + mid, arr + i,     (size_t)len1 * sizeof(int));
-    memcpy(arr + i, tmp, (size_t)total * sizeof(int));
-
-    xfree(tmp, (size_t)total * sizeof(int));
-}
-
-/*
  * Return the 0-indexed position of value val in perm.
  * Returns -1 if not found.
  */
@@ -154,15 +121,4 @@ int     first_breakpoint_position(int *perm, int n)
         if (perm[i + 1] != perm[i] + 1)
             return i;
     return -1;
-}
-
-/*
- * Prefix block interchange: swap arr[0..j] with arr[k..l].
- *
- * This is block_interchange with i = 0.
- * Precondition: 0 <= j < k <= l < n.
- */
-void    prefix_block_interchange(int *arr, int n, int j, int k, int l)
-{
-    block_interchange(arr, n, 0, j, k, l);
 }

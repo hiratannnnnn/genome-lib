@@ -6,7 +6,7 @@
 /*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 08:10:34 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/10 08:10:36 by thirata          ###   ########.fr       */
+/*   Updated: 2026/04/11 22:42:28 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,25 @@
  *      The caller must ensure ops has space for at least n entries.
  * Returns: the number of operations applied.
  */
-int approx_sbpbi(int *perm, int n, int (*ops)[3]);
+
+# include "lib.h"
+
+typedef struct s_sbpbi_ctx
+{
+	t_bp_graph	*bp;
+	int			size;
+	int 		*arr;
+	int 		n;
+	int			*tmp;
+	FILE		*fp;
+	int			count;
+}				t_sbpbi_ctx;
+
+void	sbpbi_ctx_free(t_sbpbi_ctx *ctx);
+
+void	refresh_tmp(t_sbpbi_ctx *ctx);
+int		approx_sbpbi(t_sbpbi_ctx *ctx, int log_output);
+
+int		solve(int *arr, int n, int log_output);
 
 #endif

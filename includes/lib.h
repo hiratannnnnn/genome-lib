@@ -41,7 +41,6 @@ void		shuffle_vertices			(int **matrix, int n);
 
 // rand_bigraph_cost.c
 
-int		 	max_bipartite_matching		(int **adj, int a, int b, int *match_to);
 double 		**gen_rand_bigraph_cost		(int a, int b);
 
 // rand_bigraph.c
@@ -190,6 +189,7 @@ int			min_of_array_index	(int *arr, int n);
 
 // utils_print.c
 void 		print_matrix_int	(int **matrix, int r, int c);
+void		fprint_array_int	(FILE *fp, int *arr, int n, int max_width);
 void		print_array_int		(int *arr, int n, int max_width);
 void		print_matrix_double			(double **matrix, int r, int c, int precision);
 void 		print_array_double			(double *arr, int c, int max_width, int precision);
@@ -240,20 +240,23 @@ void		*xrealloc			(void *ptr, size_t old_size, size_t new_size);
  */
 
 // permutation.c
-void    identity_permutation        (int *perm, int n);
+void    identity_permutation		(int *perm, int n, int is_natural);
 void    copy_permutation            (int *src, int *dst, int n);
-int     is_identity_permutation     (int *perm, int n);
+int     is_identity_permutation     (int *perm, int n, int is_natural);
 void    inverse_permutation         (int *perm, int *inv, int n);
 void    compose_permutation         (int *p, int *q, int *res, int n);
 int     count_breakpoints           (int *perm, int n);
 int     find_value                  (int *perm, int n, int val);
 int     first_breakpoint_position   (int *perm, int n);
-void    block_interchange           (int *arr, int n, int i, int j, int k, int l);
-void    prefix_block_interchange    (int *arr, int n, int j, int k, int l);
+
+// generate_permutation.c
+void	rev_array_int(int *begin, int *end);
+int 	next_permutation(int *arr, int n);
 
 // breakpoint_graph.c
 void 	print_bp_graph(t_bp_graph *bp, int size);
 
+int 	set_cycle_id(t_bp_graph *bp, int size);
 void    bp_graph_init(t_bp_graph *bp, int size, int *arr, int n);
 
 #endif

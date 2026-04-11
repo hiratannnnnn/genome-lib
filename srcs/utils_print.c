@@ -6,7 +6,7 @@
 /*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 08:12:38 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/10 08:12:39 by thirata          ###   ########.fr       */
+/*   Updated: 2026/04/11 22:52:26 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,16 @@ void print_matrix_int(int **matrix, int r, int c)
 	}
 }
 
+void	fprint_array_int(FILE *fp, int *arr, int n, int max_width)
+{
+	int i;
+
+	for (i = 0; i < n; i++)
+	{
+		fprintf(fp, "%*d", max_width, arr[i]);
+		fprintf(fp, (i == n - 1) ? "\n" : " ");
+	}
+}
 
 /**
  * @param max_width 0, if you wanna disable digit alignment

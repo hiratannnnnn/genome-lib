@@ -6,182 +6,282 @@
 /*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 08:10:37 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/10 22:33:44 by thirata          ###   ########.fr       */
+/*   Updated: 2026/04/11 23:11:57 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lib.h"
 #include "approx_sbpbi.h"
 
-/*
- * Index translation between paper notation and code:
- *
- *   Paper: π is 1-indexed, values in {1,...,n}.
- *   Code:  perm is 0-indexed, values in {0,...,n-1}.
- *   Relation: paper πᵢ = perm[i-1]+1.
- *
- *   Paper β(1, paper_i, paper_j, paper_k) is implemented as:
- *     prefix_block_interchange(arr, n, paper_i-1, paper_j, paper_k-1)
- *
- *   Given 0-indexed search results (i_code, j_code, k_code):
- *     paper_i = i_code+1, paper_j = j_code+1, paper_k = k_code+1
- *   => prefix_block_interchange(arr, n, i_code, j_code+1, k_code)
+/**
+ * 1-indexed
  */
-
-/*
- * Build the position array: pos[v] = position of value v in perm.
- * Caller must free with xfree(pos, n * sizeof(int)).
- */
-static int *build_pos(int *perm, int n)
+typedef struct s_bi_pos
 {
-    int *pos;
-    int  i;
+	int i;
+	int j;
+	int k;
+	int l;
+}	t_bi_pos;
 
-    pos = (int *)xmalloc((size_t)n * sizeof(int));
-    for (i = 0; i < n; i++)
-        pos[perm[i]] = i;
-    return pos;
+static void	print_pos(t_bi_pos *pos)
+{
+	printf("bi(%d, %d, %d, %d)\n", pos->i, pos->j, pos->k, pos->l);
 }
 
-/*
- * Case A: find (i_code, k_code) such that
- *   i_code <= j_code < k_code,
- *   perm[k_code] == perm[i_code]+1,
- *   the black arc at pbar-value perm[i_code]+1 is in the leftmost cycle.
- *
- * Returns 1 if found, 0 otherwise.
- */
-static int find_case_a(int *perm, int n, int j_code, BreakpointGraph *bg,
-                        int *out_i, int *out_k)
+static void write_to_log(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 {
-    int *pos;
-    int  i, k;
-
-    pos = build_pos(perm, n);
-    for (i = 0; i <= j_code; i++)
-    {
-        if (perm[i] + 1 >= n)           /* value perm[i]+1 must exist in perm */
-            continue;
-        k = pos[perm[i] + 1];
-        if (k > j_code && bg_black_arc_in_leftmost(bg, perm[i] + 1))
-        {
-            *out_i = i;
-            *out_k = k;
-            xfree(pos, (size_t)n * sizeof(int));
-            return 1;
-        }
-    }
-    xfree(pos, (size_t)n * sizeof(int));
-    return 0;
+	fprintf(ctx->fp, "[%-5d]:\tBI(%d, %d, %d, %d)\n",
+			ctx->count, pos->i, pos->j, pos->k, pos->l);
 }
 
-/*
- * Case B: find (i_code, k_code) such that
- *   i_code <= j_code < k_code,
- *   perm[k_code] == perm[i_code]-1.
- *
- * The proof guarantees this always succeeds when Case A fails.
- * Returns 1 if found, 0 otherwise.
- */
-static int find_case_b(int *perm, int n, int j_code, int *out_i, int *out_k)
+void refresh_tmp(t_sbpbi_ctx *ctx)
 {
-    int *pos;
-    int  i, k;
+	int i;
+	int index;
 
-    pos = build_pos(perm, n);
-    for (i = 0; i <= j_code; i++)
-    {
-        if (perm[i] - 1 < 0)            /* value perm[i]-1 must exist in perm */
-            continue;
-        k = pos[perm[i] - 1];
-        if (k > j_code)
-        {
-            *out_i = i;
-            *out_k = k;
-            xfree(pos, (size_t)n * sizeof(int));
-            return 1;
-        }
-    }
-    xfree(pos, (size_t)n * sizeof(int));
-    return 0;
+	ctx->tmp[0] = 0;
+	ctx->tmp[ctx->size - 1] = ctx->size - 1;
+	i = 0;
+	index = 1;
+	while (i < ctx->n)
+	{
+		index = 2 * i + 1;
+		ctx->tmp[index++] = ctx->arr[i] * 2 - 1;
+		ctx->tmp[index++] = ctx->arr[i] * 2;
+		i++;
+	}
 }
 
-/*
- * ApproximateSbpbi: 2-approximation for sorting by prefix block-interchanges.
- *
- * perm: permutation (0-indexed, values 0..n-1), sorted in-place.
- * ops:  if non-NULL, records each operation as {j, k, l} (args to
- *       prefix_block_interchange). Caller must provide space for >= n entries.
- * Returns: number of operations applied.
- */
-int approx_sbpbi(int *perm, int n, int (*ops)[3])
+void block_interchange(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 {
-    BreakpointGraph *bg;
-    int              num_ops;
-    int              op_j, op_k, op_l;
-    int              i_code, k_code, j_code, bp;
+	const int i = pos->i;
+	const int j = pos->j;
+	const int k = pos->k;
+	const int l = pos->l;
 
-    num_ops = 0;
+	if (!(1 <= i && i < j && j <= k && k < l && l <= ctx->n + 1))
+	{
+		print_pos(pos);
+		print_array_int(ctx->arr, ctx->n, 0);
+		printf("cannot block interchange.\n");
+		sbpbi_ctx_free(ctx);
+		exit(1);
+	}
 
-    while (!is_identity_permutation(perm, n))
-    {
-        bg = bg_init(perm, n);
-        bg_decompose_cycles(bg);
+	int arr_num;
 
-        if (perm[0] != 0)
-        {
-            /* j_code = perm[0]-1 as a 0-indexed position bound.
-             * Paper: j = π₁ - 1 (used directly as a position, not a value lookup). */
-            j_code = perm[0] - 1;
+	ctx->tmp[0] = 0;
+	ctx->tmp[ctx->size - 1] = ctx->size - 1;
+	int ind;
 
-            if (find_case_a(perm, n, j_code, bg, &i_code, &k_code))
-            {
-                /* Case A: Lemma 4 cases 1-3 */
-                op_j = i_code + 1;
-                op_k = j_code + 1;
-                op_l = k_code;
-            }
-            else
-            {
-                /* Case B: Lemma 4 case 4 (guaranteed to succeed) */
-                if (!find_case_b(perm, n, j_code, &i_code, &k_code))
-                {
-                    fprintf(stderr,
-                        "[approx_sbpbi] BUG: find_case_b failed (should be impossible). "
-                        "perm[0]=%d j_code=%d n=%d\n", perm[0], j_code, n);
-                    bg_free(bg);
-                    return -1;
-                }
-                op_j = i_code;
-                op_k = j_code + 1;
-                op_l = k_code;
-            }
-        }
-        else
-        {
-            /* Case C: Theorem 5 — perm[0] == 0 */
-            bp     = first_breakpoint_position(perm, n);
-            /* perm[0..bp] = 0..bp (consecutive from 0), perm[bp+1] != bp+1 */
-            /* find position of value bp+1 = perm[bp]+1 */
-            j_code = find_value(perm, n, perm[bp] + 1);
-            /* paper β(1, bp+1, bp+1, j_code+1) */
-            op_j = bp;
-            op_k = bp + 1;
-            op_l = j_code;
-        }
+	ind = 0;
+	while (ind < ctx->n)
+	{
+		arr_num = ctx->arr[ind];
+		ctx->tmp[ind * 2 + 1] = arr_num * 2 - 1;
+		ctx->tmp[ind * 2 + 2] = arr_num * 2;
+		ind++;
+	}
+	if (j != k)
+	{
 
-        print_array_int(perm, n, 0);
-        bg_free(bg);
+		/* A: right(pos i-1) <-> left(pos k) */
+		ctx->bp[ctx->tmp[2 * (i - 1)]].black = ctx->tmp[2 * k - 1];
+		ctx->bp[ctx->tmp[2 * k - 1]].black   = ctx->tmp[2 * (i - 1)];
+		/* B: right(pos l-1) <-> left(pos j) */
+		ctx->bp[ctx->tmp[2 * (l - 1)]].black = ctx->tmp[2 * j - 1];
+		ctx->bp[ctx->tmp[2 * j - 1]].black   = ctx->tmp[2 * (l - 1)];
+		/* C: right(pos k-1) <-> left(pos i) */
+		ctx->bp[ctx->tmp[2 * (k - 1)]].black = ctx->tmp[2 * i - 1];
+		ctx->bp[ctx->tmp[2 * i - 1]].black   = ctx->tmp[2 * (k - 1)];
+		/* D: right(pos j-1) <-> left(pos l) */
+		ctx->bp[ctx->tmp[2 * (j - 1)]].black = ctx->tmp[2 * l - 1];
+		ctx->bp[ctx->tmp[2 * l - 1]].black   = ctx->tmp[2 * (j - 1)];
+	}
+	else
+	{
+		/* A: right(pos i-1) <-> left(pos k) */
+		ctx->bp[ctx->tmp[2 * (i - 1)]].black = ctx->tmp[2 * k - 1];
+		ctx->bp[ctx->tmp[2 * k - 1]].black   = ctx->tmp[2 * (i - 1)];	// k or j
+		/* B: right(pos l-1) <-> left(pos j) */
+		ctx->bp[ctx->tmp[2 * (l - 1)]].black = ctx->tmp[2 * i - 1];		// j -> i
+		// ctx->bp[ctx->tmp[2 * j - 1]].black   = ctx->tmp[2 * (l - 1)];
+		/* C: right(pos k-1) <-> left(pos i) */
+		// ctx->bp[ctx->tmp[2 * (k - 1)]].black = ctx->tmp[2 * l - 1];
+		ctx->bp[ctx->tmp[2 * i - 1]].black   = ctx->tmp[2 * (l - 1)];	// k -> l
+		/* D: right(pos j-1) <-> left(pos l) */
+		ctx->bp[ctx->tmp[2 * (j - 1)]].black = ctx->tmp[2 * l - 1];		// j or k
+		ctx->bp[ctx->tmp[2 * l - 1]].black   = ctx->tmp[2 * (j - 1)];
+	}
+	/* arr swap: block2=[k..l), middle=[j..k), block1=[i..j)  (1-indexed, exclusive end) */
+	memcpy(ctx->tmp,                       ctx->arr + k - 1, sizeof(int) * (l - k));
+	memcpy(ctx->tmp + (l - k),             ctx->arr + j - 1, sizeof(int) * (k - j));
+	memcpy(ctx->tmp + (l - k) + (k - j),  ctx->arr + i - 1, sizeof(int) * (j - i));
+	memcpy(ctx->arr + i - 1, ctx->tmp, sizeof(int) * (l - i));
 
-        prefix_block_interchange(perm, n, op_j, op_k, op_l);
-        if (ops)
-        {
-            ops[num_ops][0] = op_j;
-            ops[num_ops][1] = op_k;
-            ops[num_ops][2] = op_l;
-        }
-        num_ops++;
-    }
+	ctx->count++;
+}
 
-    return num_ops;
+static void set_pos(t_bi_pos *pos, int i, int j, int k, int l)
+{
+	pos->i = i;
+	pos->j = j;
+	pos->k = k;
+	pos->l = l;
+}
+
+int		find_pattern_a(t_sbpbi_ctx *ctx, t_bi_pos *pos)
+{
+	// printf("[A]\n");
+	int first;
+	int i;
+	int j;
+	int k;
+
+	first = ctx->tmp[1];
+	j = 0;
+	while (j < ctx->size)
+	{
+		if (ctx->tmp[j] == first - 1)
+			break;
+		j++;
+	}
+	// printf("j: %d\n", j);
+	i = 2;
+	while (i < j)
+	{
+		k = j + 1;
+		while (k < ctx->size)
+		{
+			if (ctx->tmp[i] + 1 == ctx->tmp[k] &&
+				ctx->bp[ctx->tmp[i]].cycle_id == 0)
+			{
+				//case 2, 3, 4;
+				// printf("%d, %d, %d\n", i, j, k);
+				if (j + 1 == k)
+					set_pos(pos, 1, i / 2 + 1, i / 2 + 1, k / 2 + 1);
+				else
+					set_pos(pos, 1, i / 2 + 1, j / 2 + 1, k / 2 + 1);
+				return (1);
+			}
+			k++;
+		}
+		i++;
+	}
+	return (0);
+}
+
+void	find_pattern_b(t_sbpbi_ctx *ctx, t_bi_pos *pos)
+{
+	// printf("[B]\n");
+	int first;
+	int i;
+	int j;
+	int k;
+
+	first = ctx->tmp[1];
+	// printf("first: %d\n", first);
+	j = 0;
+	while (j < ctx->size)
+	{
+		if (ctx->tmp[j] == first - 1)
+			break;
+		j++;
+	}
+	i = 2;
+	while (i < j)
+	{
+		k = j;
+		while (k < ctx->size)
+		{
+			if (ctx->tmp[i] - 1 == ctx->tmp[k])
+			{
+				// case 1, 4;
+				// printf("%d, %d, %d\n", i, j, k);
+				set_pos(pos, 1, i / 2 + 1, j / 2 + 1, k / 2 + 1);
+				return ;
+			}
+			k++;
+		}
+		i++;
+	}
+}
+
+void	find_pattern_c(t_sbpbi_ctx *ctx, t_bi_pos *pos)
+{
+	// printf("[C]\n");
+	int i;
+	int target;
+
+	i = 0;
+	while(i < ctx->n)
+	{
+		if (ctx->arr[i + 1] != ctx->arr[i] + 1)
+		{
+			target = ctx->arr[i] + 1;
+			break;
+		}
+		i++;
+	}
+	int j;
+
+	j = i;
+	while (j < ctx->n)
+	{
+		if (ctx->arr[j] == target)
+		{
+			set_pos(pos, 1, i + 2, i + 2, j + 1);
+			return ;
+		}
+		j++;
+	}
+
+}
+
+int approx_sbpbi(t_sbpbi_ctx *ctx, int log_output)
+{
+	t_bi_pos pos;
+	int o_count;
+
+	if (log_output)
+	{
+		fprintf(ctx->fp, "PERM:\t\t");
+		fprint_array_int(ctx->fp, ctx->arr, ctx->n, 2);
+	}
+	o_count = set_cycle_id(ctx->bp, ctx->size);
+	while (o_count < ctx->n + 1)
+	{
+		refresh_tmp(ctx);
+		if (ctx->arr[0] != 1)
+		{
+			if (find_pattern_a(ctx, &pos))
+			{
+				// print_pos(&pos);
+				block_interchange(ctx, &pos);
+				if (log_output)
+					write_to_log(ctx, &pos);
+			}
+			else
+			{
+				find_pattern_b(ctx, &pos);
+				// print_pos(&pos);
+				block_interchange(ctx, &pos);
+				if (log_output)
+					write_to_log(ctx, &pos);
+			}
+		}
+		else
+		{
+			find_pattern_c(ctx, &pos);
+			// print_pos(&pos);
+			block_interchange(ctx, &pos);
+			if (log_output)
+				write_to_log(ctx, &pos);
+		}
+		// set_pos(&pos, 1, 3, 4, 6);
+		// block_interchange(ctx, &pos);
+		o_count = set_cycle_id(ctx->bp, ctx->size);
+		// usleep(100000);
+	}
+	return (ctx->count);
 }

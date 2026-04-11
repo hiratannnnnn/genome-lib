@@ -10,7 +10,7 @@ void run_tests_permutation(void)
         ASSERT(perm[0] == 0 && perm[1] == 1 && perm[2] == 2
                && perm[3] == 3 && perm[4] == 4,
                "identity_permutation: perm[i] = i");
-        ASSERT(is_identity_permutation(perm, 5) == 1,
+        ASSERT(is_identity_permutation(perm, 5, 1) == 1,
                "is_identity_permutation: identity -> 1");
 
         int cp[5];
@@ -19,7 +19,7 @@ void run_tests_permutation(void)
                "copy_permutation: values match");
 
         int non_id[5] = {0, 2, 1, 3, 4};
-        ASSERT(is_identity_permutation(non_id, 5) == 0,
+        ASSERT(is_identity_permutation(non_id, 5, 1) == 0,
                "is_identity_permutation: non-identity -> 0");
     }
 

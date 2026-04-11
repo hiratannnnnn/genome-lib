@@ -6,161 +6,171 @@
 /*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 08:10:43 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/11 00:03:34 by thirata          ###   ########.fr       */
+/*   Updated: 2026/04/11 16:24:02 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lib.h"
 
+/*
+ * Index-based breakpoint graph for a 1-indexed permutation arr[0..n-1]
+ * (values 1..n).
+ *
+ * Vertex numbering: bp[v] IS vertex v.
+ *   right(0)   = vertex 0          (left sentinel)
+ *   left(k)    = vertex 2k-1       (k = 1..n)
+ *   right(k)   = vertex 2k         (k = 1..n)
+ *   left(n+1)  = vertex 2n+1       (right sentinel)
+ *   size       = 2*(n+1)
+ *
+ * Grey arcs (identity / sorted adjacency):
+ *   right(k) -- left(k+1)  for k = 0..n
+ *   => bp[v].grey = v+1 if v is even
+ *   => bp[v].grey = v-1 if v is odd
+ *
+ * Black arcs (permutation adjacency):
+ *   right(pbar[i]) -- left(pbar[i+1])  for i = 0..n
+ *   where pbar[0]=0, pbar[1..n]=arr[0..n-1], pbar[n+1]=n+1.
+ *   => bp[2*pbar[i]].black     = 2*pbar[i+1]-1
+ *   => bp[2*pbar[i+1]-1].black = 2*pbar[i]
+ */
+
 void print_bp_graph(t_bp_graph *bp, int size)
 {
-    int i;
+    int v;
 
-    i = 0;
-    while (i < size)
+    v = 0;
+    while (v < size)
     {
-        printf("%d\t%c", bp[i].num, i == size - 1 ? '\n' : ' ');
-        i++;
+        printf("%d\t%c", v, v == size - 1 ? '\n' : ' ');
+        v++;
     }
-    i = 0;
-    while (i < size)
+    v = 0;
+    while (v < size)
     {
-        printf("%d\t%c", bp[i].grey, i == size - 1 ? '\n' : ' ');
-        i++;
+        printf("%d\t%c", bp[v].grey, v == size - 1 ? '\n' : ' ');
+        v++;
     }
-    i = 0;
-    while (i < size)
+    v = 0;
+    while (v < size)
     {
-        printf("%d\t%c", bp[i].black, i == size - 1 ? '\n' : ' ');
-        i++;
+        printf("%d\t%c", bp[v].black, v == size - 1 ? '\n' : ' ');
+        v++;
     }
-    i = 0;
-    while (i < size)
+    v = 0;
+    while (v < size)
     {
-        printf("%d\t%c", bp[i].cycle_id, i == size - 1 ? '\n' : ' ');
-        i++;
-    }
-}
-
-static void set_trivials(t_bp_graph *bp, int size, int *arr, int n)
-{
-    int i;
-
-    bp[0].num = 0;
-    bp[0].grey = 1;
-    bp[0].black = arr[0] * 2 - 1;
-
-    bp[size - 1].num = size - 1;
-    bp[size - 1].grey = size - 2;
-    bp[size - 1].black = arr[n - 1] * 2;
-
-    i = 0;
-    while (i < size)
-    {
-        bp[i].cycle_id = -1;
-        i++;
+        printf("%d\t%c", bp[v].cycle_id, v == size - 1 ? '\n' : ' ');
+        v++;
     }
 }
 
-static void set_num_greys(t_bp_graph *bp, int size, int *arr)
+/*
+ * Grey arcs: identity adjacency.
+ * Even vertex v (= right of some value): grey neighbor = v+1 (the next left).
+ * Odd vertex v  (= left of some value):  grey neighbor = v-1 (the prev right).
+ */
+static void set_greys(t_bp_graph *bp, int size)
 {
-    int i;
-    int arr_num;
-    int res;
+    int v;
 
-    i = 1;
-    while (i < size - 1)
+    v = 0;
+    while (v < size)
     {
-        arr_num = arr[(i - 1) / 2];
-        res = i % 2;
-        if (res == 1)
-        {
-            bp[i].num = arr_num * 2 - 1;
-            bp[i].grey = arr_num * 2 - 1 - 1;
-        }
+        if (v % 2 == 0)
+            bp[v].grey = v + 1;
         else
-        {
-            bp[i].num = arr_num * 2;
-            bp[i].grey = arr_num * 2 + 1;
-        }
-        i++;
+            bp[v].grey = v - 1;
+        v++;
     }
 }
 
-static void set_blacks(t_bp_graph *bp, int size)
+/*
+ * Black arcs: permutation adjacency.
+ * Extended permutation pbar: pbar[0]=0, pbar[1..n]=arr[0..n-1], pbar[n+1]=n+1.
+ * Arc i connects right(pbar[i]) = vertex 2*pbar[i]
+ *              to  left(pbar[i+1]) = vertex 2*pbar[i+1]-1.
+ */
+static void set_blacks(t_bp_graph *bp, int size, int *arr, int n)
 {
-    int i;
-    int res;
+    int *pbar;
+    int  i;
+
+    (void)size;
+    pbar = (int *)xmalloc((size_t)(n + 2) * sizeof(int));
+    pbar[0] = 0;
+    i = 0;
+    while (i < n)
+    {
+        pbar[i + 1] = arr[i];
+        i++;
+    }
+    pbar[n + 1] = n + 1;
 
     i = 0;
-    while (i < size)
+    while (i <= n)
     {
-        res = i % 2;
-        if (res == 0)
-        {
-            bp[i].black = bp[i + 1].num;
-        }
-        else
-        {
-            bp[i].black = bp[i - 1].num;
-        }
+        bp[2 * pbar[i]].black       = 2 * pbar[i + 1] - 1;
+        bp[2 * pbar[i + 1] - 1].black = 2 * pbar[i];
         i++;
     }
+
+    xfree(pbar, (size_t)(n + 2) * sizeof(int));
 }
 
-static int find_index(t_bp_graph *bp, int size, int target)
+/*
+ * Cycle decomposition: follow black then grey alternately.
+ * Direct indexing — no linear search needed.
+ */
+static void seek_cycles(t_bp_graph *bp, int start, int id)
 {
-    int i;
-
-    i = 0;
-    while (i < size)
-    {
-        if (bp[i].num == target)
-            return (i);
-        i++;
-    }
-    return (-1);
-}
-
-static void seek_cycles(t_bp_graph *bp, int size, int i, int id)
-{
-    int next;
     int cur;
 
-    cur = i;
+    cur = start;
     while (bp[cur].cycle_id == -1)
     {
         bp[cur].cycle_id = id;
-        next = bp[cur].black;
-        cur = find_index(bp, size, next);
+        cur = bp[cur].black;
         bp[cur].cycle_id = id;
-        next = bp[cur].grey;
-        cur = find_index(bp, size, next);
+        cur = bp[cur].grey;
     }
 }
 
-static void set_cycle_id(t_bp_graph *bp, int size)
+static void clear_cycle_id(t_bp_graph*bp, int size)
 {
-    int i;
+    int v;
+
+    v = 0;
+    while (v < size)
+    {
+        bp[v].cycle_id = -1;
+        v++;
+    }
+}
+
+int set_cycle_id(t_bp_graph *bp, int size)
+{
+    int v;
     int id;
 
-    i = 0;
+    clear_cycle_id(bp, size);
+    v = 0;
     id = 0;
-    while (i < size)
+    while (v < size)
     {
-        if (bp[i].cycle_id == -1)
+        if (bp[v].cycle_id == -1)
         {
-            seek_cycles(bp, size, i, id);
+            seek_cycles(bp, v, id);
             id++;
         }
-        i++;
+        v++;
     }
+    return (id);
 }
 
 void    bp_graph_init(t_bp_graph *bp, int size, int *arr, int n)
 {
-    set_trivials(bp, size, arr, n);
-    set_num_greys(bp, size, arr);
-    set_blacks(bp, size);
+    set_greys(bp, size);
+    set_blacks(bp, size, arr, n);
     set_cycle_id(bp, size);
 }
