@@ -14,7 +14,9 @@
 
 static void	swap_int(int *a, int *b)
 {
-	int tmp = *a;
+	int	tmp;
+
+	tmp = *a;
 	*a = *b;
 	*b = tmp;
 }
@@ -27,9 +29,10 @@ void	rev_array_int(int *begin, int *end)
 	}
 }
 
-int next_permutation(int *arr, int n)
+int	next_permutation(int *arr, int n)
 {
-	int i;
+	int	i;
+	int	j;
 
 	i = n - 2;
 	while (i >= 0 && arr[i] >= arr[i + 1])
@@ -38,8 +41,6 @@ int next_permutation(int *arr, int n)
 	}
 	if (i < 0)
 		return (0);
-	int j;
-
 	j = n - 1;
 	while (arr[i] >= arr[j])
 	{

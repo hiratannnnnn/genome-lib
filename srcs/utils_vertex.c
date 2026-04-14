@@ -12,7 +12,6 @@
 
 #include "lib.h"
 
-
 Vertex	*create_vertex(int id)
 {
 	Vertex	*vertex;
@@ -48,9 +47,9 @@ Vertex	**create_vertex_array(int n)
 	return (vs);
 }
 
-void reset_labels(Vertex **vs, int n)
+void	reset_labels(Vertex **vs, int n)
 {
-	int i;
+	int	i;
 
 	for (i = 0; i < n; i++)
 		vs[i]->label = i;
@@ -68,11 +67,10 @@ void	update_labels(Node *node, int label)
 /**
  * @param asc for asc, 1. for desc, 0.
  */
-void sort_list_cyclic(Vertex **vs, int n, int asc)
+void	sort_list_cyclic(Vertex **vs, int n, int asc)
 {
 	Edge *list, *last, *target, *t_prev;
 	int i, t, t_p;
-
 	if (asc != 0 && asc != 1)
 		return ;
 	for (i = 0; i < n; i++)
@@ -90,11 +88,10 @@ void sort_list_cyclic(Vertex **vs, int n, int asc)
 		}
 		t_p = (i + n - 2 + asc) % n;
 		t = (t_p + 1 + asc) % n;
-
 		// swap list (first) and target
 		last = get_last_edge(list);
 		if (!last)
-			continue;
+			continue ;
 		target = get_target_edge(list, t);
 		t_prev = get_target_edge(list, t_p);
 		last->next = list;

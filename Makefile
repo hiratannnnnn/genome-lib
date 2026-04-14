@@ -29,6 +29,8 @@ fclean: clean
 
 re: fclean all
 
+format:	find . -name "*.c" | xargs c_formatter_42
+
 # Usage: make compile SRC=main.c
 # Optional: make compile SRC=main.c OUT=my_program
 compile: $(LIB)

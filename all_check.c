@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "approx_sbpbi.h"
+#include "approx_sbpbi.h"
 
 static void	put_error(void)
 {
@@ -24,7 +24,7 @@ static void	init_free(int *arr, int *copy, int *max_perm, int n)
 	free_array_int(max_perm, n);
 }
 
-static int init(int **arr, int **copy, int **max_perm, int n)
+static int	init(int **arr, int **copy, int **max_perm, int n)
 {
 	*arr = (int *)xmalloc(sizeof(int) * n);
 	*copy = (int *)xmalloc(sizeof(int) * n);
@@ -36,11 +36,10 @@ static int init(int **arr, int **copy, int **max_perm, int n)
 	return (1);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	int	n, result, res, max;
-	int	*arr, *copy, *max_perm;
-
+	int n, result, res, max;
+	int *arr, *copy, *max_perm;
 	if (ac <= 1)
 		return (put_error(), 1);
 	n = atoi(av[1]);

@@ -18,25 +18,24 @@
  * @param n size of array
  */
 
-int		*rand_perm(int n, int is_natural)
+int	*rand_perm(int n, int is_natural)
 {
-	int *perm;
-	int i, j, tmp;
+	int	*perm;
 
+	int i, j, tmp;
 	if (is_natural != 0 && is_natural != 1)
 		return (NULL);
-
 	perm = xmalloc(sizeof(int) * n);
 	if (!perm)
 		return (NULL);
 	for (i = 0; i < n; i++)
 		perm[i] = i + is_natural;
-	for (i = n - 1; i > 0; i--)				// Fisher-Yates Shuffle
+	for (i = n - 1; i > 0; i--) // Fisher-Yates Shuffle
 	{
 		j = rand() % (i + 1);
 		tmp = perm[i];
 		perm[i] = perm[j];
 		perm[j] = tmp;
 	}
-	return perm;
+	return (perm);
 }

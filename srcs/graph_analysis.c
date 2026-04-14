@@ -19,40 +19,39 @@
  * @param n Number of vertices
  * @param degree Array to store degree values
  */
-void compute_degrees(int **matrix, int n, int *degree)
+void	compute_degrees(int **matrix, int n, int *degree)
 {
-    int i, j;
-
-    for (i = 0; i < n; i++)
-    {
-        degree[i] = 0;
-        for (j = 0; j < n; j++)
-            if (matrix[i][j])
-                degree[i]++;
-    }
+	int i, j;
+	for (i = 0; i < n; i++)
+	{
+		degree[i] = 0;
+		for (j = 0; j < n; j++)
+			if (matrix[i][j])
+				degree[i]++;
+	}
 }
 
-int     need_double_edge(int *degree, int n)
+int	need_double_edge(int *degree, int n)
 {
-    int i;
-    if (n % 2 == 1)
-        return (0);
-    for (i = 0; i < n; i++)
-    {
-        if (degree[i] == n - 1)
+	int	i;
+
+	if (n % 2 == 1)
+		return (0);
+	for (i = 0; i < n; i++)
+	{
+		if (degree[i] == n - 1)
 			return (1);
-    }
+	}
 	return (0);
 }
 
-int		count_edges(int *degree, int n)
+int	count_edges(int *degree, int n)
 {
 	int sum, i;
-
 	sum = 0;
 	for (i = 0; i < n; i++)
 		sum += degree[i];
-	return sum / 2;
+	return (sum / 2);
 }
 
 /**
@@ -63,10 +62,10 @@ int		count_edges(int *degree, int n)
  * @param degree Array to store degree values
  */
 
-void compute_degrees_from_list(Vertex **vs, int n, int *degree)
+void	compute_degrees_from_list(Vertex **vs, int n, int *degree)
 {
-	int i;
-	Edge *list;
+	int		i;
+	Edge	*list;
 
 	for (i = 0; i < n; i++)
 	{
@@ -97,10 +96,10 @@ static void	dfs(int **matrix, int n, int vertex, int *visited);
 
 int	is_tree(int **matrix, int n)
 {
-	int i, j;
 	int	edge_count;
 	int	*visited;
 
+	int i, j;
 	edge_count = 0;
 	for (i = 0; i < n; i++)
 		for (j = i + 1; j < n; j++)
@@ -139,21 +138,18 @@ static void	dfs(int **matrix, int n, int vertex, int *visited)
  * @param odd_list Array to store indices of odd-degree vertices
  * @return Number of odd-degree vertices found
  */
-int find_odd_vertices(int *degree, int n, int *odd_list)
+int	find_odd_vertices(int *degree, int n, int *odd_list)
 {
-    int i, odd_count = 0;
-
-    for (i = 0; i < n; i++)
-        if (degree[i] % 2 == 1)
-            odd_list[odd_count++] = i;
-
-    return odd_count;
+	int i, odd_count = 0;
+	for (i = 0; i < n; i++)
+		if (degree[i] % 2 == 1)
+			odd_list[odd_count++] = i;
+	return (odd_count);
 }
 
-int is_undigraph(int **matrix, int n)
+int	is_undigraph(int **matrix, int n)
 {
 	int i, j;
-
 	for (i = 0; i < n; i++)
 	{
 		for (j = 0; j < n; j++)

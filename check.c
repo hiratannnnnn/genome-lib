@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "approx_sbpbi.h"
+#include "approx_sbpbi.h"
 
-static int is_distinct(int *arr, int n)
+static int	is_distinct(int *arr, int n)
 {
-	int i;
-	int j;
-	int tmp;
-	int *tmpp;
+	int	i;
+	int	j;
+	int	tmp;
+	int	*tmpp;
 
 	tmpp = (int *)xmalloc(sizeof(int) * n);
 	if (!tmpp)
@@ -44,7 +44,7 @@ static int is_distinct(int *arr, int n)
 	return (tmp);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	int	n;
 	int	*arr;
@@ -53,7 +53,6 @@ int main(int ac, char **av)
 	arr = (int *)xmalloc(sizeof(int) * n);
 	if (!arr)
 		return (1);
-
 	for (int i = 0; i < n; i++)
 		arr[i] = atoi(av[i + 1]);
 	print_array_int(arr, n, 0);

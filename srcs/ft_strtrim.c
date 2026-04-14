@@ -51,9 +51,9 @@ static void	put_word(char *res, int const start, int const size, char const *s)
 
 char	*ft_strtrim(char const *s1, char const *set)
 {
-	int	start, end, size;
 	char	*res;
 
+	int start, end, size;
 	if (!s1 || !set)
 		return (NULL);
 	start = 0;

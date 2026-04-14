@@ -1,3 +1,6 @@
+# clangd
+compile_commands.json
+
 # Build artifacts
 dist/
 *.o

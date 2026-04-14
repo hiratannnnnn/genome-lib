@@ -24,16 +24,17 @@
 
 int	*gen_rand_prufer(int n)
 {
-	int i;
+	int	i;
+	int	*prufer;
 
 	if (n < 2)
 		return (NULL);
-	int *prufer = (int *)xmalloc((n - 2) * sizeof(int));
+	prufer = (int *)xmalloc((n - 2) * sizeof(int));
 	if (!prufer)
 		return (NULL);
 	for (i = 0; i < n - 2; i++)
 		prufer[i] = rand() % n;
-	return prufer;
+	return (prufer);
 }
 
 /**
@@ -47,18 +48,19 @@ int	*gen_rand_prufer(int n)
  * 			or NULL on failure.
  */
 
-int *count_degrees_from(const int *prufer, int n)
+int	*count_degrees_from(const int *prufer, int n)
 {
-	int i;
+	int	i;
+	int	*degree;
 
-	int *degree = (int *)xmalloc(n * sizeof(int));
+	degree = (int *)xmalloc(n * sizeof(int));
 	if (!degree)
 		return (NULL);
 	for (i = 0; i < n; i++)
 		degree[i] = 1;
 	for (i = 0; i < n - 2; i++)
 		degree[prufer[i]]++;
-	return degree;
+	return (degree);
 }
 
 /**
@@ -72,12 +74,14 @@ int *count_degrees_from(const int *prufer, int n)
  * 			or NULL on failure.
  */
 
-int **gen_rand_tree(int n)
+int	**gen_rand_tree(int n)
 {
-	int **matrix;
+	int	**matrix;
+	int	u;
+	int	v;
+
 	int *prufer, *degree;
 	int i, j;
-
 	// initialization
 	matrix = gen_matrix_int(n, n);
 	if (!matrix)
@@ -96,7 +100,6 @@ int **gen_rand_tree(int n)
 		return (NULL);
 	}
 	// initialization
-
 	// build the tree from the Prufer code
 	for (i = 0; i < n - 2; i++)
 	{
@@ -108,19 +111,21 @@ int **gen_rand_tree(int n)
 				matrix[prufer[i]][j] = 1;
 				degree[j]--;
 				degree[prufer[i]]--;
-				break;
+				break ;
 			}
 		}
 	}
-		// the last two nodes
-	int u = -1;
-	int v = -1;
+	// the last two nodes
+	u = -1;
+	v = -1;
 	for (i = 0; i < n; i++)
 	{
 		if (degree[i] == 1)
 		{
-			if (u == -1) u = i;
-			else v = i;
+			if (u == -1)
+				u = i;
+			else
+				v = i;
 		}
 	}
 	if (u != -1 && v != -1)
@@ -128,12 +133,11 @@ int **gen_rand_tree(int n)
 		matrix[u][v] = 1;
 		matrix[v][u] = 1;
 	}
-		// the last two nodes
+	// the last two nodes
 	// build the tree from the Prufer code
-
 	xfree(prufer, sizeof(int) * (n - 2));
 	xfree(degree, sizeof(int) * n);
-	return matrix;
+	return (matrix);
 	// free_matrix_int(matrix, n, n);
 }
 
@@ -145,31 +149,36 @@ int **gen_rand_tree(int n)
  * @param degree Working array for vertex degrees
  * @param n Number of vertices
  */
-void build_tree_from(int **matrix, int *prufer, int *degree, int n)
+void	build_tree_from(int **matrix, int *prufer, int *degree, int n)
 {
-    int i, j, u = -1, v = -1;
-
-    // Process Prufer code
-    for (i = 0; i < n - 2; i++) {
-        for (j = 0; j < n; j++) {
-            if (degree[j] == 1) {
-                matrix[j][prufer[i]] = matrix[prufer[i]][j] = 1;
-                degree[j]--;
-                degree[prufer[i]]--;
-                break;
-            }
-        }
-    }
-
-    // Connect last two vertices
-    for (i = 0; i < n; i++) {
-        if (degree[i] == 1) {
-            if (u == -1) u = i;
-            else v = i;
-        }
-    }
-
-    if (u != -1 && v != -1) {
-        matrix[u][v] = matrix[v][u] = 1;
-    }
+	int i, j, u = -1, v = -1;
+	// Process Prufer code
+	for (i = 0; i < n - 2; i++)
+	{
+		for (j = 0; j < n; j++)
+		{
+			if (degree[j] == 1)
+			{
+				matrix[j][prufer[i]] = matrix[prufer[i]][j] = 1;
+				degree[j]--;
+				degree[prufer[i]]--;
+				break ;
+			}
+		}
+	}
+	// Connect last two vertices
+	for (i = 0; i < n; i++)
+	{
+		if (degree[i] == 1)
+		{
+			if (u == -1)
+				u = i;
+			else
+				v = i;
+		}
+	}
+	if (u != -1 && v != -1)
+	{
+		matrix[u][v] = matrix[v][u] = 1;
+	}
 }

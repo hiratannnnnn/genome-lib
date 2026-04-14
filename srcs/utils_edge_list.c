@@ -21,14 +21,13 @@
  */
 Node	*edge_list_from_adj_list(Vertex **vs, int n, int is_undir)
 {
-	Edge *edge;
-	Node *edge_list;
-	Node *new_node;
-	Vertex *v;
-	int i;
+	Edge	*edge;
+	Node	*edge_list;
+	Node	*new_node;
+	Vertex	*v;
+	int		i;
 
 	edge_list = NULL;
-
 	for (i = 0; i < n; i++)
 	{
 		v = vs[i];

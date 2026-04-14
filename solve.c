@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   solve.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: thirata <thirata@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/10 22:22:53 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/11 23:41:34 by thirata          ###   ########.fr       */
+/*   Updated: 2026/04/14 14:30:58 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	sbpbi_ctx_free(t_sbpbi_ctx *ctx)
 	fclose(ctx->fp);
 }
 
-static int sbpbi_ctx_init(t_sbpbi_ctx *ctx, int *arr, int n)
+static int	sbpbi_ctx_init(t_sbpbi_ctx *ctx, int *arr, int n)
 {
 	ctx->size = 2 * (n + 1);
 	ctx->bp = (t_bp_graph *)xmalloc(sizeof(t_bp_graph) * ctx->size);
@@ -38,8 +38,8 @@ static int sbpbi_ctx_init(t_sbpbi_ctx *ctx, int *arr, int n)
 
 int	solve(int *arr, int n, int log_output)
 {
-	t_sbpbi_ctx ctx;
-	int result;
+	t_sbpbi_ctx	ctx;
+	int			result;
 
 	if (!sbpbi_ctx_init(&ctx, arr, n) || !(log_output == 1 || log_output == 0))
 		return (-1);

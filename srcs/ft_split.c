@@ -12,7 +12,7 @@
 
 #include "lib.h"
 
-static int is_sep(char c, char *sep)
+static int	is_sep(char c, char *sep)
 {
 	while (*sep)
 	{
@@ -23,18 +23,18 @@ static int is_sep(char c, char *sep)
 	return (0);
 }
 
-static int count_words(char *str, char *sep)
+static int	count_words(char *str, char *sep)
 {
-	int count;
-	int in_word;
+	int	count;
+	int	in_word;
+
 	count = 0;
 	in_word = 0;
-
 	while (*str)
 	{
 		if (is_sep(*str, sep))
 			in_word = 0;
-		else if(!in_word)
+		else if (!in_word)
 		{
 			in_word = 1;
 			count++;
@@ -44,11 +44,11 @@ static int count_words(char *str, char *sep)
 	return (count);
 }
 
-static char *copy_word(char *start, char const *end)
+static char	*copy_word(char *start, char const *end)
 {
-	char *word;
-	int len, i;
+	char	*word;
 
+	int len, i;
 	len = end - start;
 	word = (char *)xmalloc(sizeof(char) * (len + 1));
 	i = 0;
@@ -63,17 +63,17 @@ static char *copy_word(char *start, char const *end)
 	return (word);
 }
 
-char **ft_split(char const *str, char *sep)
+char	**ft_split(char const *str, char *sep)
 {
-	char **dd;
-	int word_c, i;
-	char *start;
+	char	**dd;
+	char	*start;
 
+	int word_c, i;
 	word_c = count_words((char *)str, sep);
 	i = 0;
 	dd = (char **)xmalloc(sizeof(char *) * (word_c + 1));
 	if (!dd)
-		return NULL;
+		return (NULL);
 	while (*str)
 	{
 		while (*str && is_sep(*str, sep))

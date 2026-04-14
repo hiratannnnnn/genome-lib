@@ -17,27 +17,27 @@
  */
 typedef struct s_bi_pos
 {
-	int i;
-	int j;
-	int k;
-	int l;
-}	t_bi_pos;
+	int		i;
+	int		j;
+	int		k;
+	int		l;
+}			t_bi_pos;
 
 static void	print_pos(t_bi_pos *pos)
 {
 	printf("bi(%d, %d, %d, %d)\n", pos->i, pos->j, pos->k, pos->l);
 }
 
-static void write_to_log(t_sbpbi_ctx *ctx, t_bi_pos *pos)
+static void	write_to_log(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 {
-	fprintf(ctx->fp, "[%-5d]:\tBI(%d, %d, %d, %d)\n",
-			ctx->count, pos->i, pos->j, pos->k, pos->l);
+	fprintf(ctx->fp, "[%-5d]:\tBI(%d, %d, %d, %d)\n", ctx->count, pos->i,
+		pos->j, pos->k, pos->l);
 }
 
-void refresh_tmp(t_sbpbi_ctx *ctx)
+void	refresh_tmp(t_sbpbi_ctx *ctx)
 {
-	int i;
-	int index;
+	int	i;
+	int	index;
 
 	ctx->tmp[0] = 0;
 	ctx->tmp[ctx->size - 1] = ctx->size - 1;
@@ -52,12 +52,14 @@ void refresh_tmp(t_sbpbi_ctx *ctx)
 	}
 }
 
-void block_interchange(t_sbpbi_ctx *ctx, t_bi_pos *pos)
+void	block_interchange(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 {
-	const int i = pos->i;
-	const int j = pos->j;
-	const int k = pos->k;
-	const int l = pos->l;
+	const int	i = pos->i;
+	const int	j = pos->j;
+	const int	k = pos->k;
+	const int	l = pos->l;
+	int			arr_num;
+	int			ind;
 
 	if (!(1 <= i && i < j && j <= k && k < l && l <= ctx->n + 1))
 	{
@@ -67,13 +69,8 @@ void block_interchange(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 		sbpbi_ctx_free(ctx);
 		exit(1);
 	}
-
-	int arr_num;
-
 	ctx->tmp[0] = 0;
 	ctx->tmp[ctx->size - 1] = ctx->size - 1;
-	int ind;
-
 	ind = 0;
 	while (ind < ctx->n)
 	{
@@ -84,45 +81,45 @@ void block_interchange(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 	}
 	if (j != k)
 	{
-
 		/* A: right(pos i-1) <-> left(pos k) */
 		ctx->bp[ctx->tmp[2 * (i - 1)]].black = ctx->tmp[2 * k - 1];
-		ctx->bp[ctx->tmp[2 * k - 1]].black   = ctx->tmp[2 * (i - 1)];
+		ctx->bp[ctx->tmp[2 * k - 1]].black = ctx->tmp[2 * (i - 1)];
 		/* B: right(pos l-1) <-> left(pos j) */
 		ctx->bp[ctx->tmp[2 * (l - 1)]].black = ctx->tmp[2 * j - 1];
-		ctx->bp[ctx->tmp[2 * j - 1]].black   = ctx->tmp[2 * (l - 1)];
+		ctx->bp[ctx->tmp[2 * j - 1]].black = ctx->tmp[2 * (l - 1)];
 		/* C: right(pos k-1) <-> left(pos i) */
 		ctx->bp[ctx->tmp[2 * (k - 1)]].black = ctx->tmp[2 * i - 1];
-		ctx->bp[ctx->tmp[2 * i - 1]].black   = ctx->tmp[2 * (k - 1)];
+		ctx->bp[ctx->tmp[2 * i - 1]].black = ctx->tmp[2 * (k - 1)];
 		/* D: right(pos j-1) <-> left(pos l) */
 		ctx->bp[ctx->tmp[2 * (j - 1)]].black = ctx->tmp[2 * l - 1];
-		ctx->bp[ctx->tmp[2 * l - 1]].black   = ctx->tmp[2 * (j - 1)];
+		ctx->bp[ctx->tmp[2 * l - 1]].black = ctx->tmp[2 * (j - 1)];
 	}
 	else
 	{
 		/* A: right(pos i-1) <-> left(pos k) */
 		ctx->bp[ctx->tmp[2 * (i - 1)]].black = ctx->tmp[2 * k - 1];
-		ctx->bp[ctx->tmp[2 * k - 1]].black   = ctx->tmp[2 * (i - 1)];	// k or j
+		ctx->bp[ctx->tmp[2 * k - 1]].black = ctx->tmp[2 * (i - 1)]; // k or j
 		/* B: right(pos l-1) <-> left(pos j) */
-		ctx->bp[ctx->tmp[2 * (l - 1)]].black = ctx->tmp[2 * i - 1];		// j -> i
+		ctx->bp[ctx->tmp[2 * (l - 1)]].black = ctx->tmp[2 * i - 1]; // j -> i
 		// ctx->bp[ctx->tmp[2 * j - 1]].black   = ctx->tmp[2 * (l - 1)];
 		/* C: right(pos k-1) <-> left(pos i) */
 		// ctx->bp[ctx->tmp[2 * (k - 1)]].black = ctx->tmp[2 * l - 1];
-		ctx->bp[ctx->tmp[2 * i - 1]].black   = ctx->tmp[2 * (l - 1)];	// k -> l
+		ctx->bp[ctx->tmp[2 * i - 1]].black = ctx->tmp[2 * (l - 1)]; // k -> l
 		/* D: right(pos j-1) <-> left(pos l) */
-		ctx->bp[ctx->tmp[2 * (j - 1)]].black = ctx->tmp[2 * l - 1];		// j or k
-		ctx->bp[ctx->tmp[2 * l - 1]].black   = ctx->tmp[2 * (j - 1)];
+		ctx->bp[ctx->tmp[2 * (j - 1)]].black = ctx->tmp[2 * l - 1]; // j or k
+		ctx->bp[ctx->tmp[2 * l - 1]].black = ctx->tmp[2 * (j - 1)];
 	}
-	/* arr swap: block2=[k..l), middle=[j..k), block1=[i..j)  (1-indexed, exclusive end) */
-	memcpy(ctx->tmp,                       ctx->arr + k - 1, sizeof(int) * (l - k));
-	memcpy(ctx->tmp + (l - k),             ctx->arr + j - 1, sizeof(int) * (k - j));
-	memcpy(ctx->tmp + (l - k) + (k - j),  ctx->arr + i - 1, sizeof(int) * (j - i));
+	/* arr swap: block2=[k..l), middle=[j..k), block1=[i..j)  (1-indexed,
+		exclusive end) */
+	memcpy(ctx->tmp, ctx->arr + k - 1, sizeof(int) * (l - k));
+	memcpy(ctx->tmp + (l - k), ctx->arr + j - 1, sizeof(int) * (k - j));
+	memcpy(ctx->tmp + (l - k) + (k - j), ctx->arr + i - 1, sizeof(int) * (j
+			- i));
 	memcpy(ctx->arr + i - 1, ctx->tmp, sizeof(int) * (l - i));
-
 	ctx->count++;
 }
 
-static void set_pos(t_bi_pos *pos, int i, int j, int k, int l)
+static void	set_pos(t_bi_pos *pos, int i, int j, int k, int l)
 {
 	pos->i = i;
 	pos->j = j;
@@ -130,20 +127,20 @@ static void set_pos(t_bi_pos *pos, int i, int j, int k, int l)
 	pos->l = l;
 }
 
-int		find_pattern_a(t_sbpbi_ctx *ctx, t_bi_pos *pos)
+int	find_pattern_a(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 {
-	// printf("[A]\n");
-	int first;
-	int i;
-	int j;
-	int k;
+	int	first;
+	int	i;
+	int	j;
+	int	k;
 
+	// printf("[A]\n");
 	first = ctx->tmp[1];
 	j = 0;
 	while (j < ctx->size)
 	{
 		if (ctx->tmp[j] == first - 1)
-			break;
+			break ;
 		j++;
 	}
 	// printf("j: %d\n", j);
@@ -153,10 +150,10 @@ int		find_pattern_a(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 		k = j + 1;
 		while (k < ctx->size)
 		{
-			if (ctx->tmp[i] + 1 == ctx->tmp[k] &&
-				ctx->bp[ctx->tmp[i]].cycle_id == 0)
+			if (ctx->tmp[i] + 1 == ctx->tmp[k]
+				&& ctx->bp[ctx->tmp[i]].cycle_id == 0)
 			{
-				//case 2, 3, 4;
+				// case 2, 3, 4;
 				// printf("%d, %d, %d\n", i, j, k);
 				if (j + 1 == k)
 					set_pos(pos, 1, i / 2 + 1, i / 2 + 1, k / 2 + 1);
@@ -173,19 +170,19 @@ int		find_pattern_a(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 
 void	find_pattern_b(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 {
-	// printf("[B]\n");
-	int first;
-	int i;
-	int j;
-	int k;
+	int	first;
+	int	i;
+	int	j;
+	int	k;
 
+	// printf("[B]\n");
 	first = ctx->tmp[1];
 	// printf("first: %d\n", first);
 	j = 0;
 	while (j < ctx->size)
 	{
 		if (ctx->tmp[j] == first - 1)
-			break;
+			break ;
 		j++;
 	}
 	i = 2;
@@ -209,22 +206,21 @@ void	find_pattern_b(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 
 void	find_pattern_c(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 {
-	// printf("[C]\n");
-	int i;
-	int target;
+	int	i;
+	int	target;
+	int	j;
 
+	// printf("[C]\n");
 	i = 0;
-	while(i < ctx->n)
+	while (i < ctx->n)
 	{
 		if (ctx->arr[i + 1] != ctx->arr[i] + 1)
 		{
 			target = ctx->arr[i] + 1;
-			break;
+			break ;
 		}
 		i++;
 	}
-	int j;
-
 	j = i;
 	while (j < ctx->n)
 	{
@@ -235,13 +231,12 @@ void	find_pattern_c(t_sbpbi_ctx *ctx, t_bi_pos *pos)
 		}
 		j++;
 	}
-
 }
 
-int approx_sbpbi(t_sbpbi_ctx *ctx, int log_output)
+int	approx_sbpbi(t_sbpbi_ctx *ctx, int log_output)
 {
-	t_bi_pos pos;
-	int o_count;
+	t_bi_pos	pos;
+	int			o_count;
 
 	if (log_output)
 	{

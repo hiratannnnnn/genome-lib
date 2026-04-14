@@ -21,11 +21,11 @@ void	free_array_int(int *ptr, int const n)
 
 void	free_matrix_int(int **matrix, int const r, int const c)
 {
-	int i;
+	int	i;
 
 	if (!matrix)
 		return ;
-	for (i = 0;  i < r; i++)
+	for (i = 0; i < r; i++)
 		if (matrix[i])
 			free_array_int(matrix[i], c);
 	xfree(matrix, sizeof(int *) * r);
@@ -40,7 +40,7 @@ void	free_array_double(double *ptr, int const c)
 
 void	free_matrix_double(double **matrix, int const r, int const c)
 {
-	int i;
+	int	i;
 
 	if (!matrix)
 		return ;

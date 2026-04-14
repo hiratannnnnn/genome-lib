@@ -25,18 +25,22 @@
  * @return Pointer to the allocated 2D adjacency matrix, or NULL on failure.
  */
 
-int **read_adj(int *n, char const *filename)
+int	**read_adj(int *n, char const *filename)
 {
-	FILE *fp;
-	int **matrix;
-	int i, j;
+	FILE	*fp;
+	int		**matrix;
+	FILE	*fp;
+	int		**matrix;
+	int		i;
+	FILE	*fp;
+	int		**matrix;
 
+	int i, j;
 	// opening file
 	fp = fopen(filename, "r");
 	if (!fp)
 		return (NULL);
 	// opening file
-
 	// set size n
 	if (fscanf(fp, "%d", n) != 1)
 	{
@@ -66,12 +70,9 @@ int **read_adj(int *n, char const *filename)
 		}
 	}
 	// set matrix
-
 	fclose(fp);
-	return matrix;
-}	// *** has to be freed
-
-
+	return (matrix);
+} // *** has to be freed
 /**
  * @brief Reads an adjacency matrix from a file.
  *
@@ -84,21 +85,15 @@ int **read_adj(int *n, char const *filename)
  * @param filename The name of the file to read from
  * @return Pointer to the allocated 2D adjacency matrix, or NULL on failure.
  */
-
-int **read_list(int *n, char const *filename)
+int	**read_list(int *n, char const *filename)
 {
-	FILE *fp;
-	int **matrix;
-	int i;
 	int vertex, neighbor;
 	char line[1024], *p;
-
 	// opening file
 	fp = fopen(filename, "r");
 	if (!fp)
 		return (NULL);
 	// opening file
-
 	// set size n
 	if (fscanf(fp, "%d", n) != 1)
 	{
@@ -106,7 +101,6 @@ int **read_list(int *n, char const *filename)
 		return (NULL);
 	}
 	// set size n
-
 	// initialize matrix
 	matrix = gen_matrix_int(*n, *n);
 	if (!matrix)
@@ -115,37 +109,33 @@ int **read_list(int *n, char const *filename)
 		return (NULL);
 	}
 	// initialize matrix *** has to be freed
-
 	// set matrix
 	i = 0;
 	while (i < *n && fgets(line, sizeof(line), fp))
 	{
 		p = line;
 		if (sscanf(p, "%d:", &vertex) != 1)
-			continue;
+			continue ;
 		p = strchr(p, ':');
-		if (p) p++;
+		if (p)
+			p++;
 		while (p && sscanf(p, "%d", &neighbor) == 1)
 		{
 			matrix[vertex][neighbor] = 1;
-			while (*p && *p != ' ' && *p != '\n') p++;
-			while (*p == ' ') p++;
+			while (*p && *p != ' ' && *p != '\n')
+				p++;
+			while (*p == ' ')
+				p++;
 		}
 		i++;
 	}
 	// set matrix
-
 	fclose(fp);
-	return matrix;
-}	// *** has to be freed
-
-
-int **read_matrix(int *a, int *b, char const *filename)
+	return (matrix);
+} // *** has to be freed
+int	**read_matrix(int *a, int *b, char const *filename)
 {
-	FILE *fp;
-	int **matrix;
 	int i, j;
-
 	fp = fopen(filename, "r");
 	if (!fp)
 		return (NULL);
@@ -173,49 +163,43 @@ int **read_matrix(int *a, int *b, char const *filename)
 		}
 	}
 	// set matrix
-
 	fclose(fp);
-	return matrix;
+	return (matrix);
 }
 
-
-double **read_double_matrix(int *r, int *c, char const *filename)
+double	**read_double_matrix(int *r, int *c, char const *filename)
 {
-    FILE *fp;
-    double **matrix;
-    int i, j;
+	FILE	*fp;
+	double	**matrix;
 
-    fp = fopen(filename, "r");
-    if (!fp)
-        return NULL;
-
-    // read size
-    if (fscanf(fp, "%d %d", r, c) != 2)
-    {
-        fclose(fp);
-        return NULL;
-    }
-
-    matrix = gen_matrix_double(*r, *c);
-    if (!matrix)
-    {
-        fclose(fp);
-        return NULL;
-    }
-
-    for (i = 0; i < *r; i++)
-    {
-        for (j = 0; j < *c; j++)
-        {
-            if (fscanf(fp, "%lf", &matrix[i][j]) != 1)
-            {
-                free_matrix_double(matrix, *r, *c);
-                fclose(fp);
-                return NULL;
-            }
-        }
-    }
-
-    fclose(fp);
-    return matrix;
+	int i, j;
+	fp = fopen(filename, "r");
+	if (!fp)
+		return (NULL);
+	// read size
+	if (fscanf(fp, "%d %d", r, c) != 2)
+	{
+		fclose(fp);
+		return (NULL);
+	}
+	matrix = gen_matrix_double(*r, *c);
+	if (!matrix)
+	{
+		fclose(fp);
+		return (NULL);
+	}
+	for (i = 0; i < *r; i++)
+	{
+		for (j = 0; j < *c; j++)
+		{
+			if (fscanf(fp, "%lf", &matrix[i][j]) != 1)
+			{
+				free_matrix_double(matrix, *r, *c);
+				fclose(fp);
+				return (NULL);
+			}
+		}
+	}
+	fclose(fp);
+	return (matrix);
 }

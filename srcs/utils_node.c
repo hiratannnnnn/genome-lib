@@ -12,49 +12,50 @@
 
 #include "lib.h"
 
-Node 	*create_node(void *ptr, NodeType type)
+Node	*create_node(void *ptr, NodeType type)
 {
-	Node *node;
+	Node	*node;
+
 	if (!ptr)
 	{
 		printf("pointer is pointing NULL.\n");
-		return NULL;
+		return (NULL);
 	}
-
 	node = (Node *)xmalloc(sizeof(Node));
 	if (!node)
-		return NULL;
+		return (NULL);
 	node->ptr = ptr;
 	node->type = type;
 	node->prev = NULL;
 	node->next = NULL;
-	return node;
+	return (node);
 }
 
-int 	count_nodes(Node *node)
+int	count_nodes(Node *node)
 {
-	int count;
+	int	count;
+
 	count = 0;
 	while (node)
 	{
 		count++;
 		node = node->next;
 	}
-	return count;
+	return (count);
 }
 
-Node 	*get_last_node(Node *node)
+Node	*get_last_node(Node *node)
 {
 	if (!node)
-		return NULL;
+		return (NULL);
 	while (node->next)
 		node = node->next;
-	return node;
+	return (node);
 }
 
 void	append_node(Node **queue, Node *node)
 {
-	Node *last;
+	Node	*last;
 
 	last = get_last_node(*queue);
 	if (last)
@@ -68,7 +69,7 @@ void	append_node(Node **queue, Node *node)
 
 Node	*pop_first_node(Node **queue)
 {
-	Node *first;
+	Node	*first;
 
 	first = *queue;
 	if (first)
@@ -79,7 +80,7 @@ Node	*pop_first_node(Node **queue)
 		first->next = NULL;
 		first->prev = NULL;
 	}
-	return first;
+	return (first);
 }
 
 void	enqueue_node(Node **queue, Node *node)
@@ -89,7 +90,7 @@ void	enqueue_node(Node **queue, Node *node)
 
 Node	*dequeue_node(Node **queue)
 {
-	return pop_first_node(queue);
+	return (pop_first_node(queue));
 }
 
 void	insert_node_after(Node *pos, Node *new_node)
@@ -105,7 +106,7 @@ void	insert_node_after(Node *pos, Node *new_node)
 
 void	pop_last_node(Node **head)
 {
-	Node *last;
+	Node	*last;
 
 	if (!head || !*head)
 		return ;
@@ -119,7 +120,7 @@ void	pop_last_node(Node **head)
 
 void	merge_nodes(Node **a, Node **b)
 {
-	Node *a_last;
+	Node	*a_last;
 
 	if (*a != NULL && *a == *b)
 	{
@@ -142,7 +143,7 @@ void	merge_nodes(Node **a, Node **b)
 
 double	cost_of_nodes(Node *head)
 {
-	double cost;
+	double	cost;
 
 	cost = 0.0;
 	while (head)
@@ -151,43 +152,39 @@ double	cost_of_nodes(Node *head)
 			cost += ((Edge *)head->ptr)->cost;
 		head = head->next;
 	}
-	return cost;
+	return (cost);
 }
 
 Edge	*node_get_edge(const Node *node)
 {
 	if (!node || node->type != NODE_TYPE_EDGE)
 	{
-		printf("Expected Edge, got type %d\n",
-				node ? (int)node->type : -1);
-		return NULL;
+		printf("Expected Edge, got type %d\n", node ? (int)node->type : -1);
+		return (NULL);
 	}
 	return (Edge *)(node->ptr);
 }
 
-Vertex 	*node_get_vertex(const Node *node)
+Vertex	*node_get_vertex(const Node *node)
 {
 	if (!node || node->type != NODE_TYPE_VERTEX)
 	{
-		printf("Expected Vertex, got type %d\n",
-				node ? (int)node->type : -1);
-		return NULL;
+		printf("Expected Vertex, got type %d\n", node ? (int)node->type : -1);
+		return (NULL);
 	}
-	return (Vertex *)node->ptr;
+	return ((Vertex *)node->ptr);
 }
 
 void	free_node(Node *node)
 {
 	if (!node)
 		return ;
-
 	xfree(node, sizeof(Node));
 }
 
 void	free_nodes(Node **node)
 {
 	Node *head, *next;
-
 	head = *node;
 	while (head)
 	{

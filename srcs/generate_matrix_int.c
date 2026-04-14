@@ -32,8 +32,7 @@ int	**gen_matrix_int(int r, int c)
 	int	j;
 
 	if (r < 1 || c < 1)
-		return NULL;
-
+		return (NULL);
 	result = (int **)xmalloc(sizeof(int *) * r);
 	if (!result)
 		return (NULL);
@@ -57,16 +56,16 @@ int	**gen_matrix_int(int r, int c)
 	return (result);
 }
 
-int		**copy_matrix_int(int **matrix, int r, int c)
+int	**copy_matrix_int(int **matrix, int r, int c)
 {
-	int **dest;
-	int i, j;
+	int	**dest;
 
+	int i, j;
 	dest = gen_matrix_int(r, c);
 	if (!dest)
 		return (NULL);
 	for (i = 0; i < r; i++)
 		for (j = 0; j < c; j++)
 			dest[i][j] = matrix[i][j];
-	return dest;
+	return (dest);
 }

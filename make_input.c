@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   make_input.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thirata <thirata@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: thirata <thirata@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/12 00:13:31 by thirata           #+#    #+#             */
-/*   Updated: 2026/04/12 00:24:45 by thirata          ###   ########.fr       */
+/*   Updated: 2026/04/14 14:30:48 by thirata          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lib.h"
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	int n;
-	int *arr;
-	FILE *fp;
+	int		n;
+	int		*arr;
+	FILE	*fp;
 
 	fp = fopen("input", "w");
 	if (ac != 2)
@@ -26,9 +26,7 @@ int main(int ac, char **av)
 	if (!arr)
 		return (1);
 	fprint_array_int(fp, arr, n, 0);
-
 	fclose(fp);
 	free_array_int(arr, n);
-
 	return (0);
 }

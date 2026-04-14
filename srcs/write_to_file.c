@@ -31,11 +31,11 @@
  * - Error handling and memory deallocation must be performed by the caller.
  */
 
-int write_adjacent_matrix(int **matrix, int n, char const *filename)
+int	write_adjacent_matrix(int **matrix, int n, char const *filename)
 {
-	FILE 	*fp;
-	int 	i, j;
+	FILE	*fp;
 
+	int i, j;
 	if (!matrix)
 		return (-2);
 	fp = fopen(filename, "w");
@@ -56,47 +56,47 @@ int write_adjacent_matrix(int **matrix, int n, char const *filename)
 	return (0);
 }
 
-int write_double_matrix(double **matrix, int r, int c, char const *filename)
+int	write_double_matrix(double **matrix, int r, int c, char const *filename)
 {
-    FILE *fp;
-    int i, j;
+	FILE	*fp;
 
-    if (!matrix)
-        return -2;
-    fp = fopen(filename, "w");
-    if (!fp)
-    {
-        printf("Failed to open file %s\n", filename);
-        return -1;
-    }
-    fprintf(fp, "%d %d\n", r, c);
-    for (i = 0; i < r; i++)
-    {
-        if (!matrix[i])
-        {
-            fclose(fp);
-            return -2;
-        }
-        for (j = 0; j < c; j++)
-            fprintf(fp, "%.10f%c", matrix[i][j], (j == c - 1) ? '\n' : ' ');
-    }
-    fclose(fp);
-    return 0;
+	int i, j;
+	if (!matrix)
+		return (-2);
+	fp = fopen(filename, "w");
+	if (!fp)
+	{
+		printf("Failed to open file %s\n", filename);
+		return (-1);
+	}
+	fprintf(fp, "%d %d\n", r, c);
+	for (i = 0; i < r; i++)
+	{
+		if (!matrix[i])
+		{
+			fclose(fp);
+			return (-2);
+		}
+		for (j = 0; j < c; j++)
+			fprintf(fp, "%.10f%c", matrix[i][j], (j == c - 1) ? '\n' : ' ');
+	}
+	fclose(fp);
+	return (0);
 }
 
 /**
  * @brief write adjacent list to file
  *
  * @param matrix adjacency matrix size of (n, n)
- * @param n 	 size
+ * @param n 		size
  * @param filename name of file
  */
 
-int write_adjacent_list(int **matrix, int n, char const *filename)
+int	write_adjacent_list(int **matrix, int n, char const *filename)
 {
-	FILE 	*fp;
-	int 	i, j, first;
+	FILE	*fp;
 
+	int i, j, first;
 	if (!matrix)
 		return (-2);
 	fp = fopen(filename, "w");
@@ -127,13 +127,13 @@ int write_adjacent_list(int **matrix, int n, char const *filename)
 	return (0);
 }
 
-int 	write_path_node(Node *head, char const *filename)
+int	write_path_node(Node *head, char const *filename)
 {
-	FILE *fp;
-	Vertex *v;
+	FILE	*fp;
+	Vertex	*v;
 
 	if (!head)
-		return -1;
+		return (-1);
 	fp = fopen(filename, "w");
 	if (!fp)
 	{
@@ -150,32 +150,34 @@ int 	write_path_node(Node *head, char const *filename)
 	return (0);
 }
 
-int write_perm(int *perm, int n, char const *filename)
+int	write_perm(int *perm, int n, char const *filename)
 {
-    FILE *fp;
-    int i;
+	FILE	*fp;
+	int		i;
 
-    if (!perm || n <= 0)
-        return (-2);
-    fp = fopen(filename, "w");
-    if (!fp)
-    {
-        printf("Failed to open file %s\n", filename);
-        return (-1);
-    }
-    fprintf(fp, "%d\n", n);
-    for (i = 0; i < n; i++)
-        {fprintf(fp, "%d%c", perm[i], (i == n - 1) ? '\n' : ' ');}
+	if (!perm || n <= 0)
+		return (-2);
+	fp = fopen(filename, "w");
+	if (!fp)
+	{
+		printf("Failed to open file %s\n", filename);
+		return (-1);
+	}
+	fprintf(fp, "%d\n", n);
 	for (i = 0; i < n; i++)
-		fprintf(fp, "%d%c", i+1, (i == n - 1) ? '\n' : ' ');
-    fclose(fp);
-    return (0);
+	{
+		fprintf(fp, "%d%c", perm[i], (i == n - 1) ? '\n' : ' ');
+	}
+	for (i = 0; i < n; i++)
+		fprintf(fp, "%d%c", i + 1, (i == n - 1) ? '\n' : ' ');
+	fclose(fp);
+	return (0);
 }
 
-void 	save_some_matrix(int n, double edge_prob,
-	int **(*gen_some_mat)(int, double), char const *filename)
+void	save_some_matrix(int n, double edge_prob, int **(*gen_some_mat)(int,
+			double), char const *filename)
 {
-	int **matrix;
+	int	**matrix;
 
 	matrix = gen_some_mat(n, edge_prob);
 	if (!matrix)

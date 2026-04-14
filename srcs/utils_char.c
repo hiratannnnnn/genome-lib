@@ -12,9 +12,9 @@
 
 #include "lib.h"
 
-void 	free_array_char(char **ss, int n)
+void	free_array_char(char **ss, int n)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < n && ss[i])
@@ -25,10 +25,10 @@ void 	free_array_char(char **ss, int n)
 	xfree(ss, sizeof(char *) * n);
 }
 
-int 	count_digit(int number)
+int	count_digit(int number)
 {
 	if (number == -2147483648)
-		return 11;
+		return (11);
 	if (number < 0)
 		return (count_digit((-1) * number) + 1);
 	if (number < 10)

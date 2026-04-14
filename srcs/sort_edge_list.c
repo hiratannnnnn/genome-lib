@@ -14,13 +14,14 @@
 
 void	sort_nodes_vertex_id(Node **head, int (*cmp)(int, int))
 {
-	Node *ptr1, *lptr, *prev, *tmp;
-	int swapped;
+	int	swapped;
 
+	Node *ptr1, *lptr, *prev, *tmp;
 	if (!head || !*head)
 		return ;
 	lptr = NULL;
-	do {
+	do
+	{
 		swapped = 0;
 		ptr1 = *head;
 		prev = NULL;
@@ -60,13 +61,14 @@ void	sort_nodes_vertex_id(Node **head, int (*cmp)(int, int))
 
 void	sort_nodes_edge_cost(Node **head, int (*cmp)(double, double))
 {
-	Node *ptr1, *lptr, *prev, *tmp;
-	int swapped;
+	int	swapped;
 
+	Node *ptr1, *lptr, *prev, *tmp;
 	if (!head || !*head)
 		return ;
 	lptr = NULL;
-	do {
+	do
+	{
 		swapped = 0;
 		ptr1 = *head;
 		prev = NULL;
@@ -106,9 +108,9 @@ void	sort_nodes_edge_cost(Node **head, int (*cmp)(double, double))
 
 void	sort_list(Edge **head, int (*cmp)(int, int))
 {
-	Edge *ptr1, *lptr, *prev, *tmp;
-	int swapped;
+	int	swapped;
 
+	Edge *ptr1, *lptr, *prev, *tmp;
 	if (!head || !*head)
 		return ;
 	lptr = NULL;
@@ -143,9 +145,9 @@ void	sort_list(Edge **head, int (*cmp)(int, int))
 
 void	sort_list_by_degree(Edge **head, int *degree, int (*cmp)(int, int))
 {
-	Edge *ptr1, *lptr, *tmp, *prev;
-	int swapped;
+	int	swapped;
 
+	Edge *ptr1, *lptr, *tmp, *prev;
 	if (!head || !*head)
 		return ;
 	lptr = NULL;
