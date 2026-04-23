@@ -49,6 +49,12 @@ int	main(int ac, char **av)
 	int	n;
 	int	*arr;
 
+	if (ac <= 1)
+	{
+		printf("[Usage] ./check <e1> <e2> ... <en>\n");
+		printf("  e.g. : ./check 5 3 2 4 1\n");
+		return (1);
+	}
 	n = ac - 1;
 	arr = (int *)xmalloc(sizeof(int) * n);
 	if (!arr)

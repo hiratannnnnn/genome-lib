@@ -14,7 +14,8 @@
 
 static void	put_error(void)
 {
-	printf("[Usage] ./all_check <n> <log_output:0/1>\n");
+	printf("[Usage] ./all_check <n>\n");
+	printf("  n : permutation size\n");
 }
 
 static void	init_free(int *arr, int *copy, int *max_perm, int n)

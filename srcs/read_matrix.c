@@ -29,13 +29,8 @@ int	**read_adj(int *n, char const *filename)
 {
 	FILE	*fp;
 	int		**matrix;
-	FILE	*fp;
-	int		**matrix;
 	int		i;
-	FILE	*fp;
-	int		**matrix;
-
-	int i, j;
+	int		j;
 	// opening file
 	fp = fopen(filename, "r");
 	if (!fp)
@@ -87,8 +82,13 @@ int	**read_adj(int *n, char const *filename)
  */
 int	**read_list(int *n, char const *filename)
 {
-	int vertex, neighbor;
-	char line[1024], *p;
+	FILE	*fp;
+	int		**matrix;
+	int		i;
+	int		vertex;
+	int		neighbor;
+	char	line[1024];
+	char	*p;
 	// opening file
 	fp = fopen(filename, "r");
 	if (!fp)
@@ -135,7 +135,11 @@ int	**read_list(int *n, char const *filename)
 } // *** has to be freed
 int	**read_matrix(int *a, int *b, char const *filename)
 {
-	int i, j;
+	FILE	*fp;
+	int		**matrix;
+	int		i;
+	int		j;
+
 	fp = fopen(filename, "r");
 	if (!fp)
 		return (NULL);

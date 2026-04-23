@@ -18,9 +18,13 @@ int	main(int ac, char **av)
 	int		*arr;
 	FILE	*fp;
 
-	fp = fopen("input", "w");
 	if (ac != 2)
-		return (fclose(fp), 1);
+	{
+		printf("[Usage] ./make_input <n>\n");
+		printf("  n : permutation size\n");
+		return (1);
+	}
+	fp = fopen("input", "w");
 	n = atoi(av[1]);
 	arr = rand_perm(n, 1);
 	if (!arr)

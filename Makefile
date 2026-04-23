@@ -26,19 +26,61 @@ clean:
 
 fclean: clean
 	rm -f $(LIB)
+	rm -f check all_check make_input benchmark
+	rm -f log input
 
 re: fclean all
 
 format:	find . -name "*.c" | xargs c_formatter_42
+
+# ---------------------------------------------------------------
+# sbpbi (Sorting by Prefix Block Interchanges)
+# ---------------------------------------------------------------
+# make sbpbi           -- 全ツールをビルド
+# 将来 make <algo> の形で他アルゴリズムを追加していく
+
+SBPBI = sbpbi
+
+check: $(LIB)
+	$(CC) $(CFLAGS) $(SBPBI)/check.c $(SBPBI)/approx_sbpbi.c $(SBPBI)/solve.c -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o check
+
+run-check: check
+	./check $(ARGS)
+
+all_check: $(LIB)
+	$(CC) $(CFLAGS) $(SBPBI)/all_check.c $(SBPBI)/approx_sbpbi.c $(SBPBI)/solve.c -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o all_check
+
+run-all_check: all_check
+	./all_check $(N)
+
+make_input: $(LIB)
+	$(CC) $(CFLAGS) $(SBPBI)/make_input.c -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o make_input
+
+gen: make_input
+	./make_input $(N)
+
+check-input: check make_input
+	cat input | xargs ./check
+
+benchmark: $(LIB)
+	$(CC) $(CFLAGS) $(SBPBI)/benchmark.c $(SBPBI)/approx_sbpbi.c $(SBPBI)/solve.c -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o benchmark
+
+run-benchmark: benchmark
+	./benchmark $(N) $(T)
+
+sbpbi: check all_check make_input benchmark
+
+# ---------------------------------------------------------------
+# Misc
+# ---------------------------------------------------------------
 
 # Usage: make compile SRC=main.c
 # Optional: make compile SRC=main.c OUT=my_program
 compile: $(LIB)
 	$(CC) $(CFLAGS) $(SRC) -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o $(if $(OUT),$(OUT),$(basename $(SRC)))
 
-# Build and run main.c + approx_sbpbi.c
-demo: $(LIB)
-	$(CC) $(CFLAGS) main.c approx_sbpbi.c -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o demo
-	./demo
-
-.PHONY: all clean fclean re compile demo
+.PHONY: all clean fclean re compile format \
+        sbpbi \
+        check run-check all_check run-all_check \
+        make_input gen check-input \
+        benchmark run-benchmark
