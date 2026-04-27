@@ -122,7 +122,7 @@ static int	uf_find(int *parent, int x)
 
 static void	uf_union(int *parent, int *sz, int x, int y)
 {
-		int t;
+	int	t;
 
 	x = uf_find(parent, x);
 	y = uf_find(parent, y);

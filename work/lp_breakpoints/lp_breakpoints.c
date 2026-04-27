@@ -335,6 +335,7 @@ BPOp	*lp_bp_tpos(int *perm, int n, int lambda, int *op_count)
 				local[k].k);
 	}
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(BPOp) * cap, sizeof(BPOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }
@@ -377,6 +378,7 @@ BPOp	*lp_bp_both(int *perm, int n, int lambda, int is_signed, int *op_count)
 				local[k].k);
 	}
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(BPOp) * cap, sizeof(BPOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }
@@ -437,6 +439,7 @@ BPOp	*lp_bp_rev(int *perm, int n, int lambda, int is_signed, int *op_count)
 				local[k].k);
 	}
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(BPOp) * cap, sizeof(BPOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }

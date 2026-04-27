@@ -135,7 +135,8 @@ void	run_tests_permutation(void)
 		rev_array_int(ra, ra + 4);
 		ASSERT(ra[0] == 4 && ra[1] == 3 && ra[2] == 2 && ra[3] == 1
 			&& ra[4] == 0, "rev_array_int: full reversal {0,1,2,3,4}
-			-> {4,3,2,1,0}");
+			-> {
+			4, 3, 2, 1, 0}");
 		/* Reverse suffix [1..3]: {0,1,2,3,4} -> {0,3,2,1,4} */
 		rev_array_int(rb + 1, rb + 3);
 		ASSERT(rb[0] == 0 && rb[1] == 3 && rb[2] == 2 && rb[3] == 1

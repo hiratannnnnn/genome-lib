@@ -18,6 +18,7 @@
 #include "lw_exact/lw_exact.h"
 #include "lw_inversion/lw_inversion.h"
 #include "lw_phi/lw_phi.h"
+#include "utils.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -159,7 +160,7 @@ static void	run_lp_inv(int *perm, int n, int lambda, int mode,
 	int		*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lp_inv_greedy(perm, n, lambda, mode, &cnt);
 	if (cnt == 0)
@@ -167,8 +168,8 @@ static void	run_lp_inv(int *perm, int n, int lambda, int mode,
 	else
 		apply_and_show_lp(cur, n, ops, cnt);
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(LPOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 static void	run_lp_score(int *perm, int n, int lambda, int mode,
@@ -179,7 +180,7 @@ static void	run_lp_score(int *perm, int n, int lambda, int mode,
 	int			*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lp_score_greedy(perm, n, lambda, mode, &cnt);
 	if (cnt == 0)
@@ -187,8 +188,8 @@ static void	run_lp_score(int *perm, int n, int lambda, int mode,
 	else
 		apply_and_show_score(cur, n, ops, cnt);
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(LPScoreOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 static void	run_lp_bp_tpos(int *perm, int n, int lambda, const char *label)
@@ -198,7 +199,7 @@ static void	run_lp_bp_tpos(int *perm, int n, int lambda, const char *label)
 	int		*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lp_bp_tpos(perm, n, lambda, &cnt);
 	if (cnt == 0)
@@ -206,8 +207,8 @@ static void	run_lp_bp_tpos(int *perm, int n, int lambda, const char *label)
 	else
 		apply_and_show_bp(cur, n, ops, cnt);
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(BPOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 static void	run_lp_bp_both(int *perm, int n, int lambda, int is_signed,
@@ -218,7 +219,7 @@ static void	run_lp_bp_both(int *perm, int n, int lambda, int is_signed,
 	int		*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lp_bp_both(perm, n, lambda, is_signed, &cnt);
 	if (cnt == 0)
@@ -226,8 +227,8 @@ static void	run_lp_bp_both(int *perm, int n, int lambda, int is_signed,
 	else
 		apply_and_show_bp(cur, n, ops, cnt);
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(BPOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 static void	run_lp_bp_rev(int *perm, int n, int lambda, int is_signed,
@@ -238,7 +239,7 @@ static void	run_lp_bp_rev(int *perm, int n, int lambda, int is_signed,
 	int		*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lp_bp_rev(perm, n, lambda, is_signed, &cnt);
 	if (cnt == 0)
@@ -246,8 +247,8 @@ static void	run_lp_bp_rev(int *perm, int n, int lambda, int is_signed,
 	else
 		apply_and_show_bp(cur, n, ops, cnt);
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(BPOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 /* ── [2020] length-weighted runners ────────────────────────────── */
@@ -260,7 +261,7 @@ static void	run_lw_inv(int *perm, int n, int lambda, int mode,
 	int		*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lw_inv_greedy(perm, n, lambda, LW_ALPHA, mode, &cnt);
 	if (cnt == 0)
@@ -286,8 +287,8 @@ static void	run_lw_inv(int *perm, int n, int lambda, int mode,
 		}
 	}
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(LWOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 static void	run_lw_ent(int *perm, int n, int lambda, int mode,
@@ -298,7 +299,7 @@ static void	run_lw_ent(int *perm, int n, int lambda, int mode,
 	int		*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lw_ent_greedy(perm, n, lambda, LW_ALPHA, mode, &cnt);
 	if (cnt == 0)
@@ -324,8 +325,8 @@ static void	run_lw_ent(int *perm, int n, int lambda, int mode,
 		}
 	}
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(LWEntOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 static void	run_lw_phi(int *perm, int n, int lambda, const char *label)
@@ -335,7 +336,7 @@ static void	run_lw_phi(int *perm, int n, int lambda, const char *label)
 	int		*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lw_phi_greedy(perm, n, lambda, LW_ALPHA, LW_PHI_RBAR, &cnt);
 	if (cnt == 0)
@@ -361,8 +362,8 @@ static void	run_lw_phi(int *perm, int n, int lambda, const char *label)
 		}
 	}
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(LWPhiOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 static void	run_lw_psi(int *perm, int n, const char *label)
@@ -372,7 +373,7 @@ static void	run_lw_psi(int *perm, int n, const char *label)
 	int		*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lw_psi_greedy_short(perm, n, &cnt);
 	if (cnt == 0)
@@ -398,8 +399,8 @@ static void	run_lw_psi(int *perm, int n, const char *label)
 		}
 	}
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(LWPhiOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 static void	run_lw_exact(int *perm, int n, int mode, const char *label)
@@ -409,7 +410,7 @@ static void	run_lw_exact(int *perm, int n, int mode, const char *label)
 	int			*cur;
 
 	separator(label);
-	cur = malloc(sizeof(int) * n);
+	cur = xmalloc(sizeof(int) * n);
 	memcpy(cur, perm, sizeof(int) * n);
 	ops = lw_exact(perm, n, 3.0, mode, &cnt);
 	if (cnt == 0)
@@ -440,8 +441,8 @@ static void	run_lw_exact(int *perm, int n, int mode, const char *label)
 		}
 	}
 	print_result(cur, n, cnt);
-	free(ops);
-	free(cur);
+	xfree(ops, sizeof(LWExactOp) * cnt);
+	xfree(cur, sizeof(int) * n);
 }
 
 /* ── main ───────────────────────────────────────────────────────── */
@@ -453,6 +454,7 @@ int	main(int ac, char **av)
 	int	*perm;
 	int	is_signed;
 
+	proc_start = clock();
 	if (ac < 3)
 	{
 		printf("Usage: ./run_lp <lambda> <e1> <e2> ... <en>\n");
@@ -462,14 +464,14 @@ int	main(int ac, char **av)
 	}
 	lambda = atoi(av[1]);
 	n = ac - 2;
-	perm = malloc(sizeof(int) * n);
+	perm = xmalloc(sizeof(int) * n);
 	for (int i = 0; i < n; i++)
 		perm[i] = atoi(av[i + 2]);
 	/* ── header ── */
 	printf("Input:      ");
 	print_perm(perm, n);
-	printf("   n=%d  λ=%d\n", n, lambda);
-	printf("λ-perm:     %s\n", is_lam_perm(perm, n,
+	printf("   n=%d  lam=%d\n", n, lambda);
+	printf("lam-perm:   %s\n", is_lam_perm(perm, n,
 			lambda) ? "YES" : "NO (result may be wrong)");
 	printf("Inversions: %d\n", cnt_inv(perm, n));
 	is_signed = has_negative(perm, n);
@@ -480,7 +482,8 @@ int	main(int ac, char **av)
 	if (is_sorted_signed(perm, n))
 	{
 		printf("\nAlready sorted — nothing to do.\n");
-		free(perm);
+		xfree(perm, sizeof(int) * n);
+		print_info();
 		return (0);
 	}
 	/* ── run algorithms ── */
@@ -494,35 +497,36 @@ int	main(int ac, char **av)
 		run_lp_bp_both(perm, n, lambda, 0, "Thm 4  lp_bp_both  (tpos + rev)");
 		run_lp_bp_rev(perm, n, lambda, 0,
 			"Thm 6  lp_bp_rev   (reversals only)");
-		printf("\n── [2020] Miranda length-weighted (α=%.1f) ──────────────────────\n",
+		printf("\n── [2020] Miranda length-weighted (a=%.1f) ──────────────────────\n",
 			LW_ALPHA);
 		run_lw_inv(perm, n, lambda, LW_MODE_BOTH, "Alg 1  lw_inv  (rev+tpos,
-			weighted ΔInv/|β|^α)");
+			weighted DInv/|b|^a)");
 		run_lw_ent(perm, n, lambda, LW_ENT_MODE_BOTH, "Alg 2  lw_ent  (rev+tpos,
-			weighted Δent/|β|^α)");
-		printf("\n── [2020] Exact (α=3,
-			optimal cost = 2³·Inv) ───────────────────\n");
+			weighted Dent/|b|^a)");
+		printf("\n── [2020] Exact (a=3,
+			optimal cost = 2^3*Inv) ──────────────────\n");
 		run_lw_exact(perm, n, LW_EXACT_BOTH,
 			"Thm 9  lw_exact  (size-2 adjacent swaps)");
 	}
 	else
 	{
-		printf("\n── [2021] Miranda λ-permutation algorithms (signed) ─────────────\n");
+		printf("\n── [2021] Miranda lambda-permutation algorithms (signed) ────────\n");
 		run_lp_score(perm, n, lambda, LP_SCORE_REV,
 			"Thm 3  lp_score  (signed rev, maximise score)");
-		printf("\n── [2020] Miranda length-weighted signed (α=%.1f) ───────────────\n",
+		printf("\n── [2020] Miranda length-weighted signed (a=%.1f) ───────────────\n",
 			LW_ALPHA);
 		run_lw_phi(perm, n, lambda, "Alg 3  lw_phi  (signed rev,
-			weighted Δ(2Inv+E)/|β|^α)");
-		run_lw_psi(perm, n, "lw_psi (λ=3 signed rev+tpos,
-			ψ-score Δ(2Inv+codd)/|β|^α)");
-		printf("\n── [2020] Exact signed (α=3) ────────────────────────────────────\n");
+			weighted D(2Inv+E)/|b|^a)");
+		run_lw_psi(perm, n, "lw_psi (lam=3 signed rev+tpos,
+			psi-score D(2Inv+codd)/|b|^a)");
+		printf("\n── [2020] Exact signed (a=3) ────────────────────────────────────\n");
 		run_lw_exact(perm, n, LW_EXACT_RBAR,
 			"Thm12  lw_exact RBAR   (size-2 signed rev + sign fix)");
 		run_lw_exact(perm, n, LW_EXACT_RBART,
 			"Thm13  lw_exact RBART  (size-2 signed rev+tpos + sign fix)");
 	}
 	printf("\n");
-	free(perm);
+	xfree(perm, sizeof(int) * n);
+	print_info();
 	return (0);
 }

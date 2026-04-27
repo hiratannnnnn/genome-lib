@@ -149,6 +149,7 @@ LPOp	*lp_inv_greedy(int *perm, int n, int lambda, int mode, int *op_count)
 		pos = find_soop(cur, n);
 	}
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(LPOp) * capacity, sizeof(LPOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }

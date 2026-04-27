@@ -132,6 +132,7 @@ LWPhiOp	*lw_phi_greedy(int *perm, int n, int lambda, double alpha, int mode,
 	}
 	xfree(tmp, sizeof(int) * n);
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(LWPhiOp) * cap, sizeof(LWPhiOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }
@@ -166,8 +167,6 @@ LWPhiOp	*lw_psi_greedy_short(int *perm, int n, int *op_count)
 	int				fallback_k;
 	int				fallback_type;
 	double			sc;
-	int				dpsi;
-	int				dphi;
 	int				dpsi;
 	int				dphi;
 
@@ -301,6 +300,7 @@ LWPhiOp	*lw_psi_greedy_short(int *perm, int n, int *op_count)
 	}
 	xfree(tmp, sizeof(int) * n);
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(LWPhiOp) * cap, sizeof(LWPhiOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }

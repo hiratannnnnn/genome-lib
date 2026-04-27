@@ -124,6 +124,7 @@ LWOp	*lw_inv_greedy(int *perm, int n, int lambda, double alpha, int mode,
 	}
 	xfree(tmp, sizeof(int) * n);
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(LWOp) * cap, sizeof(LWOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }

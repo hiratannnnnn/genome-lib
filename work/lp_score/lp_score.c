@@ -125,6 +125,7 @@ LPScoreOp	*lp_score_greedy(int *perm, int n, int lambda, int mode,
 		cnt++;
 	}
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(LPScoreOp) * capacity, sizeof(LPScoreOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }

@@ -201,6 +201,7 @@ LWExactOp	*lw_exact(int *perm, int n, double alpha, int mode, int *op_count)
 	else if (mode == LW_EXACT_RBART)
 		exact_signed_rbart(cur, n, &ops, &cnt, &cap);
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(LWExactOp) * cap, sizeof(LWExactOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }

@@ -202,6 +202,7 @@ LWEntOp	*lw_ent_greedy(int *perm, int n, int lambda, double alpha, int mode,
 	}
 	xfree(tmp, sizeof(int) * n);
 	xfree(cur, sizeof(int) * n);
+	ops = xrealloc(ops, sizeof(LWEntOp) * cap, sizeof(LWEntOp) * cnt);
 	*op_count = cnt;
 	return (ops);
 }
