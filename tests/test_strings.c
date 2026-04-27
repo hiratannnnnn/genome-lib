@@ -44,10 +44,10 @@ void	run_tests_strings(void)
 		/* Leading and trailing separators */
 		res3 = ft_split(",,apple,,banana,,", ",");
 		ASSERT(res3 != NULL, "ft_split: leading/trailing sep - non-NULL");
-		ASSERT(strcmp(res3[0], "apple") == 0,
-			"ft_split: leading/trailing - first token");
-		ASSERT(strcmp(res3[1], "banana") == 0,
-			"ft_split: leading/trailing - second token");
+		ASSERT(strcmp(res3[0], "apple") == 0, "ft_split: leading/trailing
+			- first token");
+		ASSERT(strcmp(res3[1], "banana") == 0, "ft_split: leading/trailing
+			- second token");
 		ASSERT(res3[2] == NULL, "ft_split: leading/trailing - NULL-terminated");
 		for (int i = 0; res3[i]; i++)
 			xfree(res3[i], strlen(res3[i]) + 1);
@@ -55,8 +55,8 @@ void	run_tests_strings(void)
 		/* Single token (no separator in string) */
 		res4 = ft_split("onlyone", ",");
 		ASSERT(res4 != NULL, "ft_split: single token - non-NULL");
-		ASSERT(strcmp(res4[0], "onlyone") == 0,
-			"ft_split: single token - value");
+		ASSERT(strcmp(res4[0], "onlyone") == 0, "ft_split: single token
+			- value");
 		ASSERT(res4[1] == NULL, "ft_split: single token - NULL-terminated");
 		for (int i = 0; res4[i]; i++)
 			xfree(res4[i], strlen(res4[i]) + 1);
@@ -64,8 +64,8 @@ void	run_tests_strings(void)
 		/* All separators (no tokens) */
 		res5 = ft_split(",,,,", ",");
 		ASSERT(res5 != NULL, "ft_split: all-sep - non-NULL");
-		ASSERT(res5[0] == NULL,
-			"ft_split: all-sep - immediately NULL-terminated");
+		ASSERT(res5[0] == NULL, "ft_split: all-sep
+			- immediately NULL-terminated");
 		xfree(res5, sizeof(char *) * 1);
 	}
 	TEST_GROUP("ft_strtrim");

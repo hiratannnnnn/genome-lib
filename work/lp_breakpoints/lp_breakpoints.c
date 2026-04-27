@@ -26,8 +26,7 @@ static void	buf_push(BPOp **ops, int *cnt, int *cap, int type, int i, int j,
 	if (*cnt >= *cap)
 	{
 		*cap *= 2;
-		*ops = xrealloc(*ops, sizeof(BPOp) * (*cap / 2),
-				sizeof(BPOp) * (*cap));
+		*ops = xrealloc(*ops, sizeof(BPOp) * (*cap / 2), sizeof(BPOp) * (*cap));
 	}
 	(*ops)[*cnt].type = type;
 	(*ops)[*cnt].i = i;
@@ -118,6 +117,9 @@ int	move_strip_tpos(int *perm, int n, int lambda, Strip *s, BPOp *out)
 	int	s1;
 	int	r1;
 	int	pos;
+	int	r2;
+	int	s2;
+	int	s2_start;
 
 	si = s->start;
 	target = abs(perm[si]) - 1;
@@ -153,13 +155,11 @@ int	move_strip_tpos(int *perm, int n, int lambda, Strip *s, BPOp *out)
 	}
 	/* Round 2: swap R2=[pos, pos+rlen-r1) with S2=[si+s1, s->end] */
 	{
-		int	r2 = rlen - r1;
-		int	s2 = slen - s1;
-
+		r2 = rlen - r1;
+		s2 = slen - s1;
 		if (r2 > 0 && s2 > 0 && r2 + s2 <= lambda)
 		{
-			int	s2_start = pos + r2;
-
+			s2_start = pos + r2;
 			apply_tpos(perm, n, pos, s2_start, s2_start + s2);
 			out[cnt].type = BP_TYPE_TPOS;
 			out[cnt].i = pos;
@@ -172,8 +172,8 @@ int	move_strip_tpos(int *perm, int n, int lambda, Strip *s, BPOp *out)
 			/* S2 is already in correct segment but may need one more move */
 			if (s2 <= lambda)
 			{
-				apply_tpos(perm, n, pos, pos + s2, pos + s2 + 1 <= n
-					? pos + s2 + 1 : n);
+				apply_tpos(perm, n, pos, pos + s2, pos + s2 + 1 <= n ? pos + s2
+					+ 1 : n);
 				(void)0;
 			}
 		}
@@ -419,8 +419,8 @@ BPOp	*lp_bp_rev(int *perm, int n, int lambda, int is_signed, int *op_count)
 			xfree(strips, sizeof(Strip) * n);
 			break ;
 		}
-		if (!strips[sidx].is_increasing
-			&& strips[sidx].end - strips[sidx].start + 1 <= lambda)
+		if (!strips[sidx].is_increasing && strips[sidx].end - strips[sidx].start
+			+ 1 <= lambda)
 		{
 			apply_rev(cur, n, strips[sidx].start, strips[sidx].end);
 			buf_push(&ops, &cnt, &cap, BP_TYPE_REV, strips[sidx].start,

@@ -28,11 +28,11 @@ static int	phi_ex(int *p, int n)
  *   codd computation — TODO
  */
 
-# define LW_EXACT_REV    1
-# define LW_EXACT_TPOS   2
-# define LW_EXACT_BOTH   3
-# define LW_EXACT_RBAR   4
-# define LW_EXACT_RBART  5
+#define LW_EXACT_REV 1
+#define LW_EXACT_TPOS 2
+#define LW_EXACT_BOTH 3
+#define LW_EXACT_RBAR 4
+#define LW_EXACT_RBART 5
 
 static void	buf_push_ex(LWExactOp **ops, int *cnt, int *cap, int type, int i,
 		int j, int k)
@@ -40,8 +40,8 @@ static void	buf_push_ex(LWExactOp **ops, int *cnt, int *cap, int type, int i,
 	if (*cnt >= *cap)
 	{
 		*cap *= 2;
-		*ops = xrealloc(*ops, sizeof(LWExactOp) * (*cap / 2),
-				sizeof(LWExactOp) * (*cap));
+		*ops = xrealloc(*ops, sizeof(LWExactOp) * (*cap / 2), sizeof(LWExactOp)
+				* (*cap));
 	}
 	(*ops)[*cnt].type = type;
 	(*ops)[*cnt].i = i;
@@ -54,8 +54,8 @@ static void	buf_push_ex(LWExactOp **ops, int *cnt, int *cap, int type, int i,
  * Theorem 9: bubble sort unsigned permutation using size-2 adjacent ops.
  * Each pass removes all adjacent inversions found left-to-right.
  */
-static void	exact_unsigned(int *cur, int n, int mode, LWExactOp **ops,
-		int *cnt, int *cap)
+static void	exact_unsigned(int *cur, int n, int mode, LWExactOp **ops, int *cnt,
+		int *cap)
 {
 	int	swapped;
 
@@ -69,8 +69,7 @@ static void	exact_unsigned(int *cur, int n, int mode, LWExactOp **ops,
 				if (mode == LW_EXACT_TPOS)
 				{
 					apply_tpos(cur, n, i, i + 1, i + 2);
-					buf_push_ex(ops, cnt, cap, LW_EXACT_TPOS, i, i + 1,
-						i + 2);
+					buf_push_ex(ops, cnt, cap, LW_EXACT_TPOS, i, i + 1, i + 2);
 				}
 				else
 				{

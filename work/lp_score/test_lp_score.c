@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int	passed = 0;
-static int	failed = 0;
+static int			passed = 0;
+static int			failed = 0;
 
 static inline void	chk(int cond, const char *msg)
 {
@@ -67,12 +67,12 @@ static void	test_single_neg(void)
 
 static void	test_signed_lam3(void)
 {
-	/* (-2 +1 +3): 2-perm, signed reversals only */
 	int			p[] = {-2, 1, 3};
 	int			orig[] = {-2, 1, 3};
 	int			cnt;
 	LPScoreOp	*ops;
 
+	/* (-2 +1 +3): 2-perm, signed reversals only */
 	CHECK(is_lam_perm(orig, 3, 3), "signed_lam3: is 3-perm");
 	ops = lp_score_greedy(orig, 3, 3, LP_SCORE_REV, &cnt);
 	apply_ops(p, 3, ops, cnt);

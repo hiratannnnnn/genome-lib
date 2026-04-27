@@ -29,6 +29,7 @@ clean:
 fclean: clean
 	rm -f $(LIB)
 	rm -f check all_check make_input benchmark
+	rm -f run_lp
 	rm -f log input
 
 re: fclean all

@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int	passed = 0;
-static int	failed = 0;
+static int			passed = 0;
+static int			failed = 0;
 
 static inline void	chk(int cond, const char *msg)
 {

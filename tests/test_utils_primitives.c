@@ -88,10 +88,10 @@ void	run_tests_utils_primitives(void)
 		ASSERT(min_of_array(single, 1) == 42, "min_of_array(single): 42");
 		ASSERT(min_of_array_index(single, 1) == 0,
 			"min_of_array_index(single): index 0");
-		ASSERT(min_of_array(neg, 4) == -5,
-			"min_of_array: negatives - min is -5");
-		ASSERT(max_of_array(neg, 4) == -1,
-			"max_of_array: negatives - max is -1");
+		ASSERT(min_of_array(neg, 4) == -5, "min_of_array: negatives - min is
+			-5");
+		ASSERT(max_of_array(neg, 4) == -1, "max_of_array: negatives - max is
+			-1");
 	}
 	TEST_GROUP("rand_perm");
 	{

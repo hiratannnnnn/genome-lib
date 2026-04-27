@@ -122,14 +122,14 @@ static int	uf_find(int *parent, int x)
 
 static void	uf_union(int *parent, int *sz, int x, int y)
 {
+		int t;
+
 	x = uf_find(parent, x);
 	y = uf_find(parent, y);
 	if (x == y)
 		return ;
 	if (sz[x] < sz[y])
 	{
-		int	t;
-
 		t = x;
 		x = y;
 		y = t;

@@ -4,14 +4,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-# define LW_EXACT_REV    1
-# define LW_EXACT_TPOS   2
-# define LW_EXACT_BOTH   3
-# define LW_EXACT_RBAR   4
-# define LW_EXACT_RBART  5
+#define LW_EXACT_REV 1
+#define LW_EXACT_TPOS 2
+#define LW_EXACT_BOTH 3
+#define LW_EXACT_RBAR 4
+#define LW_EXACT_RBART 5
 
-static int	passed = 0;
-static int	failed = 0;
+static int			passed = 0;
+static int			failed = 0;
 
 static inline void	chk(int cond, const char *msg)
 {
@@ -90,12 +90,12 @@ static void	test_unsigned_tpos(void)
 
 static void	test_signed_rbar(void)
 {
-	/* {-2, +1, +3}: Inv=1, E-even=0, E+odd=1 → cost=2^3+1=9 */
 	int			orig[] = {-2, 1, 3};
 	int			p[] = {-2, 1, 3};
 	int			cnt;
 	LWExactOp	*ops;
 
+	/* {-2, +1, +3}: Inv=1, E-even=0, E+odd=1 → cost=2^3+1=9 */
 	CHECK(is_lam_perm(orig, 3, 3), "lw_exact signed: is 3-perm");
 	ops = lw_exact(orig, 3, 3.0, LW_EXACT_RBAR, &cnt);
 	apply_exact_ops(p, 3, ops, cnt);
@@ -106,12 +106,12 @@ static void	test_signed_rbar(void)
 
 static void	test_signed_all_neg(void)
 {
-	/* {-1, -2, -3}: Inv=0, needs 3 sign fixes */
 	int			orig[] = {-1, -2, -3};
 	int			p[] = {-1, -2, -3};
 	int			cnt;
 	LWExactOp	*ops;
 
+	/* {-1, -2, -3}: Inv=0, needs 3 sign fixes */
 	ops = lw_exact(orig, 3, 3.0, LW_EXACT_RBAR, &cnt);
 	apply_exact_ops(p, 3, ops, cnt);
 	CHECK(is_sorted_signed(p, 3), "lw_exact all neg: sorted");
@@ -147,12 +147,13 @@ static void	test_rbart_sign_only(void)
 
 static void	test_rbart_inv_no_sign(void)
 {
-	/* (2,1,3): one inversion, no sign errors → τ(0,1,2) preferred (no sign damage) */
 	int			orig[] = {2, 1, 3};
 	int			p[] = {2, 1, 3};
 	int			cnt;
 	LWExactOp	*ops;
 
+	/* (2,1,3): one inversion,
+		no sign errors → τ(0,1,2) preferred (no sign damage) */
 	ops = lw_exact(orig, 3, 3.0, LW_EXACT_RBART, &cnt);
 	CHECK(cnt > 0, "lw_exact rbart inv no sign: ops applied");
 	apply_exact_ops(p, 3, ops, cnt);

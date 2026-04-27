@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int	passed = 0;
-static int	failed = 0;
+static int			passed = 0;
+static int			failed = 0;
 
 static inline void	chk(int cond, const char *msg)
 {
@@ -41,9 +41,9 @@ static void	apply_phi_ops(int *p, int n, LWPhiOp *ops, int cnt)
 
 static void	test_already_sorted(void)
 {
-	int			p[] = {1, 2, 3};
-	int			cnt;
-	LWPhiOp		*ops;
+	int		p[] = {1, 2, 3};
+	int		cnt;
+	LWPhiOp	*ops;
 
 	ops = lw_phi_greedy(p, 3, 3, 1.0, LW_PHI_RBAR, &cnt);
 	CHECK(cnt == 0, "lw_phi already sorted: 0 ops");
@@ -52,10 +52,10 @@ static void	test_already_sorted(void)
 
 static void	test_single_neg_alpha1(void)
 {
-	int			orig[] = {-1, 2, 3};
-	int			p[] = {-1, 2, 3};
-	int			cnt;
-	LWPhiOp		*ops;
+	int		orig[] = {-1, 2, 3};
+	int		p[] = {-1, 2, 3};
+	int		cnt;
+	LWPhiOp	*ops;
 
 	CHECK(is_lam_perm(orig, 3, 2), "lw_phi single neg: is 2-perm");
 	ops = lw_phi_greedy(orig, 3, 2, 1.0, LW_PHI_RBAR, &cnt);
@@ -67,10 +67,10 @@ static void	test_single_neg_alpha1(void)
 
 static void	test_signed_lam3_alpha1(void)
 {
-	int			orig[] = {-2, 1, 3};
-	int			p[] = {-2, 1, 3};
-	int			cnt;
-	LWPhiOp		*ops;
+	int		orig[] = {-2, 1, 3};
+	int		p[] = {-2, 1, 3};
+	int		cnt;
+	LWPhiOp	*ops;
 
 	CHECK(is_lam_perm(orig, 3, 3), "lw_phi signed lam3: is 3-perm");
 	ops = lw_phi_greedy(orig, 3, 3, 1.0, LW_PHI_RBAR, &cnt);
@@ -82,10 +82,10 @@ static void	test_signed_lam3_alpha1(void)
 
 static void	test_signed_alpha2(void)
 {
-	int			orig[] = {-2, 1, 3};
-	int			p[] = {-2, 1, 3};
-	int			cnt;
-	LWPhiOp		*ops;
+	int		orig[] = {-2, 1, 3};
+	int		p[] = {-2, 1, 3};
+	int		cnt;
+	LWPhiOp	*ops;
 
 	ops = lw_phi_greedy(orig, 3, 3, 2.0, LW_PHI_RBAR, &cnt);
 	CHECK(cnt > 0, "lw_phi signed alpha=2: ops applied");

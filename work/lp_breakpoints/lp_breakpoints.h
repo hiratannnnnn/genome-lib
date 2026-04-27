@@ -20,6 +20,9 @@
 
 # include "../foundations/foundations.h"
 
+# define BP_TYPE_REV 1
+# define BP_TYPE_TPOS 2
+
 typedef struct
 {
 	int	type;

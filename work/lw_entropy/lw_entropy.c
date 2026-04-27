@@ -161,8 +161,8 @@ LWEntOp	*lw_ent_greedy(int *perm, int n, int lambda, double alpha, int mode,
 			if (cnt >= cap - 1)
 			{
 				cap *= 2;
-				ops = xrealloc(ops, sizeof(LWEntOp) * (cap / 2),
-						sizeof(LWEntOp) * cap);
+				ops = xrealloc(ops, sizeof(LWEntOp) * (cap / 2), sizeof(LWEntOp)
+						* cap);
 			}
 			if (best_type == LW_ENT_MODE_REV)
 			{

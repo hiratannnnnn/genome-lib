@@ -1,8 +1,8 @@
 #include "foundations.h"
 #include <stdio.h>
 
-static int	passed = 0;
-static int	failed = 0;
+static int			passed = 0;
+static int			failed = 0;
 
 static inline void	chk(int cond, const char *msg)
 {
@@ -101,24 +101,22 @@ static void	test_bp(void)
 
 static void	test_codd(void)
 {
-	/* identity: no inversions → n singleton components (all size 1, odd) */
 	int	id[] = {1, 2, 3, 4};
-	CHECK(codd_perm(id, 4) == 4, "codd identity(4): 4 singletons, all odd");
-
-	/* one inversion: edge {2,1} → one even component {1,2}, rest singletons */
 	int	p2[] = {2, 1};
-	CHECK(codd_perm(p2, 2) == 0, "codd (2,1): one even component, 0 odd");
-
-	/* (2,1,3): edge {2,1} → {1,2} even, {3} odd → codd=1 */
 	int	p3[] = {2, 1, 3};
-	CHECK(codd_perm(p3, 3) == 1, "codd (2,1,3): 1 odd component");
-
-	/* (3,2,1): edges {3,2},{3,1},{2,1} → all three in one component, size 3 odd */
 	int	p4[] = {3, 2, 1};
-	CHECK(codd_perm(p4, 3) == 1, "codd (3,2,1): one component size 3");
-
-	/* signed: codd uses |.|, so (-2,+1) same as (2,1) */
 	int	ps[] = {-2, 1};
+
+	/* identity: no inversions → n singleton components (all size 1, odd) */
+	CHECK(codd_perm(id, 4) == 4, "codd identity(4): 4 singletons, all odd");
+	/* one inversion: edge {2,1} → one even component {1,2}, rest singletons */
+	CHECK(codd_perm(p2, 2) == 0, "codd (2,1): one even component, 0 odd");
+	/* (2,1,3): edge {2,1} → {1,2} even, {3} odd → codd=1 */
+	CHECK(codd_perm(p3, 3) == 1, "codd (2,1,3): 1 odd component");
+	/* (3,2,1): edges {3,2},{3,1},{2,1} → all three in one component,
+		size 3 odd */
+	CHECK(codd_perm(p4, 3) == 1, "codd (3,2,1): one component size 3");
+	/* signed: codd uses |.|, so (-2,+1) same as (2,1) */
 	CHECK(codd_perm(ps, 2) == 0, "codd (-2,+1): same as (2,1), 0 odd");
 }
 

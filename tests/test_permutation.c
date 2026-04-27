@@ -31,14 +31,14 @@ void	run_tests_permutation(void)
 	int	counter[3] = {0, 1, 2};
 	int	steps;
 
-	TEST_GROUP("identity_permutation / copy_permutation / is_identity_permutation");
+	TEST_GROUP("identity_permutation / copy_permutation
+		/ is_identity_permutation");
 	{
 		identity_permutation(perm, 5, 0);
 		ASSERT(perm[0] == 0 && perm[1] == 1 && perm[2] == 2 && perm[3] == 3
-			&& perm[4] == 4,
-			"identity_permutation(n=5): perm[i] = i");
-				ASSERT(is_identity_permutation(perm, 5, 0) == 1,
-					"is_identity_permutation: 0-indexed identity -> 1");
+			&& perm[4] == 4, "identity_permutation(n=5): perm[i] = i");
+		ASSERT(is_identity_permutation(perm, 5, 0) == 1,
+			"is_identity_permutation: 0-indexed identity -> 1");
 		copy_permutation(perm, cp, 5);
 		ASSERT(cp[0] == 0 && cp[4] == 4, "copy_permutation: values match");
 		cp[2] = 99;
@@ -91,8 +91,8 @@ void	run_tests_permutation(void)
 	TEST_GROUP("count_breakpoints");
 	{
 		/* Identity {0,1,2,3,4}: 0 breakpoints */
-		ASSERT(count_breakpoints(id5, 5) == 0,
-			"count_breakpoints: identity -> 0");
+		ASSERT(count_breakpoints(id5, 5) == 0, "count_breakpoints: identity
+			-> 0");
 		/* Fully reversed {4,3,2,1,0}: 6 breakpoints (all positions) */
 		ASSERT(count_breakpoints(rev5, 5) == 6,
 			"count_breakpoints: fully reversed -> 6");
@@ -122,20 +122,20 @@ void	run_tests_permutation(void)
 		ASSERT(pos == -1, "first_breakpoint_position: identity -> -1");
 		/* {0,1,3,2,4}: first breakpoint between index 1 and 2 */
 		pos = first_breakpoint_position(bp3, 5);
-		ASSERT(pos == 1,
-			"first_breakpoint_position: {0,1,3,2,4} -> breakpoint at index 1");
+		ASSERT(pos == 1, "first_breakpoint_position: {0,1,3,2,4}
+			-> breakpoint at index 1");
 		/* {4,3,2,1,0}: first breakpoint at index 0 */
 		pos = first_breakpoint_position(rev5, 5);
-		ASSERT(pos == 0,
-			"first_breakpoint_position: reversed -> breakpoint at index 0");
+		ASSERT(pos == 0, "first_breakpoint_position: reversed
+			-> breakpoint at index 0");
 	}
 	TEST_GROUP("rev_array_int");
 	{
 		/* Reverse entire array in place: arr={0,1,2,3,4} -> {4,3,2,1,0} */
 		rev_array_int(ra, ra + 4);
 		ASSERT(ra[0] == 4 && ra[1] == 3 && ra[2] == 2 && ra[3] == 1
-			&& ra[4] == 0,
-			"rev_array_int: full reversal {0,1,2,3,4} -> {4,3,2,1,0}");
+			&& ra[4] == 0, "rev_array_int: full reversal {0,1,2,3,4}
+			-> {4,3,2,1,0}");
 		/* Reverse suffix [1..3]: {0,1,2,3,4} -> {0,3,2,1,4} */
 		rev_array_int(rb + 1, rb + 3);
 		ASSERT(rb[0] == 0 && rb[1] == 3 && rb[2] == 2 && rb[3] == 1

@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int	passed = 0;
-static int	failed = 0;
+static int			passed = 0;
+static int			failed = 0;
 
 static inline void	chk(int cond, const char *msg)
 {
@@ -41,9 +41,9 @@ static void	apply_ent_ops(int *p, int n, LWEntOp *ops, int cnt)
 
 static void	test_already_sorted(void)
 {
-	int			p[] = {1, 2, 3};
-	int			cnt;
-	LWEntOp		*ops;
+	int		p[] = {1, 2, 3};
+	int		cnt;
+	LWEntOp	*ops;
 
 	ops = lw_ent_greedy(p, 3, 3, 1.0, LW_ENT_MODE_BOTH, &cnt);
 	CHECK(cnt == 0, "lw_ent already sorted: 0 ops");
@@ -52,10 +52,10 @@ static void	test_already_sorted(void)
 
 static void	test_adj_swap(void)
 {
-	int			orig[] = {2, 1, 3};
-	int			p[] = {2, 1, 3};
-	int			cnt;
-	LWEntOp		*ops;
+	int		orig[] = {2, 1, 3};
+	int		p[] = {2, 1, 3};
+	int		cnt;
+	LWEntOp	*ops;
 
 	ops = lw_ent_greedy(orig, 3, 3, 1.0, LW_ENT_MODE_REV, &cnt);
 	CHECK(cnt > 0, "lw_ent adj swap: ops applied");
@@ -66,10 +66,10 @@ static void	test_adj_swap(void)
 
 static void	test_tpos_alpha1(void)
 {
-	int			orig[] = {3, 1, 2};
-	int			p[] = {3, 1, 2};
-	int			cnt;
-	LWEntOp		*ops;
+	int		orig[] = {3, 1, 2};
+	int		p[] = {3, 1, 2};
+	int		cnt;
+	LWEntOp	*ops;
 
 	CHECK(is_lam_perm(orig, 3, 3), "lw_ent tpos: is 3-perm");
 	ops = lw_ent_greedy(orig, 3, 3, 1.0, LW_ENT_MODE_TPOS, &cnt);
@@ -81,12 +81,12 @@ static void	test_tpos_alpha1(void)
 
 static void	test_lem9_fallback(void)
 {
-	/* alpha=10 makes all large ops unattractive; fallback to Lemma 9 */
-	int			orig[] = {3, 1, 2};
-	int			p[] = {3, 1, 2};
-	int			cnt;
-	LWEntOp		*ops;
+	int		orig[] = {3, 1, 2};
+	int		p[] = {3, 1, 2};
+	int		cnt;
+	LWEntOp	*ops;
 
+	/* alpha=10 makes all large ops unattractive; fallback to Lemma 9 */
 	ops = lw_ent_greedy(orig, 3, 3, 10.0, LW_ENT_MODE_REV, &cnt);
 	CHECK(cnt > 0, "lw_ent lem9 fallback: ops applied");
 	apply_ent_ops(p, 3, ops, cnt);
@@ -96,10 +96,10 @@ static void	test_lem9_fallback(void)
 
 static void	test_larger(void)
 {
-	int			orig[] = {2, 3, 1, 5, 4};
-	int			p[] = {2, 3, 1, 5, 4};
-	int			cnt;
-	LWEntOp		*ops;
+	int		orig[] = {2, 3, 1, 5, 4};
+	int		p[] = {2, 3, 1, 5, 4};
+	int		cnt;
+	LWEntOp	*ops;
 
 	CHECK(is_lam_perm(orig, 5, 3), "lw_ent larger: is 3-perm");
 	ops = lw_ent_greedy(orig, 5, 3, 1.0, LW_ENT_MODE_BOTH, &cnt);

@@ -109,8 +109,8 @@ LWPhiOp	*lw_phi_greedy(int *perm, int n, int lambda, double alpha, int mode,
 		if (cnt >= cap)
 		{
 			cap *= 2;
-			ops = xrealloc(ops, sizeof(LWPhiOp) * (cap / 2),
-					sizeof(LWPhiOp) * cap);
+			ops = xrealloc(ops, sizeof(LWPhiOp) * (cap / 2), sizeof(LWPhiOp)
+					* cap);
 		}
 		if (best_type == LW_PHI_RBAR)
 		{
@@ -146,26 +146,30 @@ LWPhiOp	*lw_phi_greedy(int *perm, int n, int lambda, double alpha, int mode,
  */
 LWPhiOp	*lw_psi_greedy_short(int *perm, int n, int *op_count)
 {
-	const int	lambda = 3;
+	const int		lambda = 3;
 	const double	alpha = 1.0;
-	int			cap;
-	LWPhiOp		*ops;
-	int			cnt;
-	int			*cur;
-	int			*tmp;
-	int			psi_cur;
-	int			phi_cur;
-	double		best_psi;
-	double		best_phi;
-	int			best_i;
-	int			best_j;
-	int			best_k;
-	int			best_type;
-	int			fallback_i;
-	int			fallback_j;
-	int			fallback_k;
-	int			fallback_type;
-	double		sc;
+	int				cap;
+	LWPhiOp			*ops;
+	int				cnt;
+	int				*cur;
+	int				*tmp;
+	int				psi_cur;
+	int				phi_cur;
+	double			best_psi;
+	double			best_phi;
+	int				best_i;
+	int				best_j;
+	int				best_k;
+	int				best_type;
+	int				fallback_i;
+	int				fallback_j;
+	int				fallback_k;
+	int				fallback_type;
+	double			sc;
+	int				dpsi;
+	int				dphi;
+	int				dpsi;
+	int				dphi;
 
 	cap = n * n + 4;
 	ops = xmalloc(sizeof(LWPhiOp) * cap);
@@ -194,8 +198,8 @@ LWPhiOp	*lw_psi_greedy_short(int *perm, int n, int *op_count)
 				apply_srev(tmp, n, i, j);
 				if (!is_lam_perm(tmp, n, lambda))
 					continue ;
-				int	dpsi = psi_cur - (2 * cnt_inv(tmp, n) + codd_perm(tmp, n));
-				int	dphi = phi_cur - phi_potential(tmp, n);
+				dpsi = psi_cur - (2 * cnt_inv(tmp, n) + codd_perm(tmp, n));
+				dphi = phi_cur - phi_potential(tmp, n);
 				if (dpsi > 0)
 				{
 					sc = (double)dpsi / pow((double)(j - i + 1), alpha);
@@ -229,8 +233,8 @@ LWPhiOp	*lw_psi_greedy_short(int *perm, int n, int *op_count)
 					apply_tpos(tmp, n, i, j, k);
 					if (!is_lam_perm(tmp, n, lambda))
 						continue ;
-					int	dpsi = psi_cur - (2 * cnt_inv(tmp, n) + codd_perm(tmp, n));
-					int	dphi = phi_cur - phi_potential(tmp, n);
+					dpsi = psi_cur - (2 * cnt_inv(tmp, n) + codd_perm(tmp, n));
+					dphi = phi_cur - phi_potential(tmp, n);
 					if (dpsi > 0)
 					{
 						sc = (double)dpsi / pow((double)(k - i), alpha);
@@ -274,8 +278,8 @@ LWPhiOp	*lw_psi_greedy_short(int *perm, int n, int *op_count)
 		if (cnt >= cap)
 		{
 			cap *= 2;
-			ops = xrealloc(ops, sizeof(LWPhiOp) * (cap / 2),
-					sizeof(LWPhiOp) * cap);
+			ops = xrealloc(ops, sizeof(LWPhiOp) * (cap / 2), sizeof(LWPhiOp)
+					* cap);
 		}
 		if (best_type == LW_PHI_RBAR)
 		{

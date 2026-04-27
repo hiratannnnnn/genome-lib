@@ -3,8 +3,8 @@
 
 # include <stdio.h>
 
-extern int	g_passed;
-extern int	g_failed;
+extern int			g_passed;
+extern int			g_failed;
 
 # define CLR_RESET "\033[0m"
 # define CLR_PASS "\033[32m"

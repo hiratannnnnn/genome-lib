@@ -45,8 +45,7 @@ static int	try_rev(int *perm, int n, int lambda, int i, int j, int *best_i,
 }
 
 static int	try_tpos(int *perm, int n, int lambda, int i, int j, int k,
-		int *best_i, int *best_j, int *best_k, int *best_delta,
-		int *best_type)
+		int *best_i, int *best_j, int *best_k, int *best_delta, int *best_type)
 {
 	int	*tmp;
 	int	delta;
@@ -123,8 +122,8 @@ LPOp	*lp_inv_greedy(int *perm, int n, int lambda, int mode, int *op_count)
 			if (cnt >= capacity)
 			{
 				capacity *= 2;
-				ops = xrealloc(ops, sizeof(LPOp) * (capacity / 2),
-						sizeof(LPOp) * capacity);
+				ops = xrealloc(ops, sizeof(LPOp) * (capacity / 2), sizeof(LPOp)
+						* capacity);
 			}
 			ops[cnt].type = LP_MODE_REV;
 			ops[cnt].i = best_i;
@@ -138,8 +137,8 @@ LPOp	*lp_inv_greedy(int *perm, int n, int lambda, int mode, int *op_count)
 			if (cnt >= capacity)
 			{
 				capacity *= 2;
-				ops = xrealloc(ops, sizeof(LPOp) * (capacity / 2),
-						sizeof(LPOp) * capacity);
+				ops = xrealloc(ops, sizeof(LPOp) * (capacity / 2), sizeof(LPOp)
+						* capacity);
 			}
 			ops[cnt].type = LP_MODE_TPOS;
 			ops[cnt].i = best_i;

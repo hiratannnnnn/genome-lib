@@ -150,13 +150,13 @@ void	run_tests_graph_analysis(void)
 			* Returns 0 otherwise.
 			*/
 		/* n=4 (even), vertex 0 has degree 3 (=n-1=3) -> need double edge */
-		ASSERT(need_double_edge(deg_need, 4) == 1,
-			"need_double_edge: even n - vertex with degree n-1 -> 1");
+		ASSERT(need_double_edge(deg_need, 4) == 1, "need_double_edge: even n
+			- vertex with degree n-1 -> 1");
 		/* n=4 (even), no vertex has degree 3 -> no double edge needed */
-		ASSERT(need_double_edge(deg_noneed, 4) == 0,
-			"need_double_edge: even n - no vertex with degree n-1 -> 0");
+		ASSERT(need_double_edge(deg_noneed, 4) == 0, "need_double_edge: even n
+			- no vertex with degree n-1 -> 0");
 		/* n=3 (odd) -> always 0 */
-		ASSERT(need_double_edge(deg_odd, 3) == 0,
-			"need_double_edge: odd n -> always 0");
+		ASSERT(need_double_edge(deg_odd, 3) == 0, "need_double_edge: odd n
+			-> always 0");
 	}
 }

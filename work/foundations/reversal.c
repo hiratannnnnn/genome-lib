@@ -21,11 +21,12 @@ void	apply_rev(int *perm, int n, int i, int j)
 void	apply_srev(int *perm, int n, int i, int j)
 {
 	int	l;
+	int	r;
 	int	tmp;
 
-	l = i, r;
 	(void)n;
-	l = i, r = j;
+	l = i;
+	r = j;
 	while (l < r)
 	{
 		tmp = -perm[l];
