@@ -86,12 +86,20 @@ FDNS_C   = $(FDNS_DIR)/perm_analysis.c $(FDNS_DIR)/reversal.c $(FDNS_DIR)/transp
 LP_INV_C = $(WORK)/lp_inversions/lp_inversions.c
 LP_SCO_C = $(WORK)/lp_score/lp_score.c
 LP_BP_C  = $(WORK)/lp_breakpoints/lp_breakpoints.c
-LP_SRC   = $(WORK)/run_lp.c $(FDNS_C) $(LP_INV_C) $(LP_SCO_C) $(LP_BP_C)
-LP_INC   = -Iincludes -I$(FDNS_DIR) -I$(WORK)/lp_inversions \
-           -I$(WORK)/lp_score -I$(WORK)/lp_breakpoints
+LW_INV_C = $(WORK)/lw_inversion/lw_inversion.c
+LW_ENT_C = $(WORK)/lw_entropy/lw_entropy.c
+LW_PHI_C = $(WORK)/lw_phi/lw_phi.c
+LW_EXC_C = $(WORK)/lw_exact/lw_exact.c
+LP_SRC   = $(WORK)/run_lp.c $(FDNS_C) \
+           $(LP_INV_C) $(LP_SCO_C) $(LP_BP_C) \
+           $(LW_INV_C) $(LW_ENT_C) $(LW_PHI_C) $(LW_EXC_C)
+LP_INC   = -Iincludes -I$(FDNS_DIR) \
+           -I$(WORK)/lp_inversions -I$(WORK)/lp_score -I$(WORK)/lp_breakpoints \
+           -I$(WORK)/lw_inversion -I$(WORK)/lw_entropy \
+           -I$(WORK)/lw_phi -I$(WORK)/lw_exact
 
 run_lp: $(LIB)
-	$(CC) $(CFLAGS) $(LP_INC) -lm $(LP_SRC) -L$(DISTDIR) -l$(TARGET:lib%=%) -o run_lp
+	$(CC) $(CFLAGS) $(LP_INC) $(LP_SRC) -L$(DISTDIR) -l$(TARGET:lib%=%) -lm -o run_lp
 	@echo "Built: run_lp"
 
 run-lp: run_lp

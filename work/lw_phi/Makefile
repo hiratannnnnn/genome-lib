@@ -1,7 +1,11 @@
 CC      = gcc
-CFLAGS  = -Wall -Wextra -Werror -g -Iincludes -I../../includes -lm
+CFLAGS  = -Wall -Wextra -Werror -g -Iincludes -I../../includes
 ROOT    = ../..
 LIB     = $(ROOT)/dist/libgenome.a
+
+FDNS_DIR = ../foundations
+FDNS_SRCS = $(FDNS_DIR)/perm_analysis.c $(FDNS_DIR)/reversal.c $(FDNS_DIR)/transposition.c
+FDNS_OBJS = $(FDNS_SRCS:.c=.o)
 
 SRCS    = $(wildcard *.c)
 OBJS    = $(SRCS:.c=.o)
@@ -12,8 +16,8 @@ all: $(LIB) $(TARGET)
 $(LIB):
 	$(MAKE) -C $(ROOT)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB)
+$(TARGET): $(OBJS) $(FDNS_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(FDNS_OBJS) $(LIB) -lm
 	@echo "Build OK: $(TARGET)"
 
 %.o: %.c

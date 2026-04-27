@@ -1,19 +1,32 @@
 /*
- * run_lp — Miranda (2021) λ-permutation algorithms demo
+ * run_lp — Miranda (2020/2021) λ-permutation algorithms demo
  *
  * Usage: ./run_lp <lambda> <e1> <e2> ... <en>
  *
- * Positive elements → unsigned permutation (Theorems 2, 5, 4, 6)
- * Negative elements → signed permutation  (Theorems 3, 4, 6)
+ * Positive elements → unsigned permutation (Theorems 2, 5, 4, 6; [2020] Algs 1,2,9)
+ * Negative elements → signed permutation  (Theorems 3; [2020] Algs 3,12)
+ *
+ * Length-weighted algorithms use alpha=1.0 (adjustable at compile time).
  */
 
 #include "foundations/foundations.h"
 #include "lp_inversions/lp_inversions.h"
 #include "lp_breakpoints/lp_breakpoints.h"
 #include "lp_score/lp_score.h"
+#include "lw_inversion/lw_inversion.h"
+#include "lw_entropy/lw_entropy.h"
+#include "lw_phi/lw_phi.h"
+#include "lw_exact/lw_exact.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
+# define LW_ALPHA 1.0
+# define LW_EXACT_REV  1
+# define LW_EXACT_TPOS 2
+# define LW_EXACT_BOTH 3
+# define LW_EXACT_RBAR 4
 
 /* ── print helpers ──────────────────────────────────────────────── */
 
@@ -233,6 +246,163 @@ static void	run_lp_bp_rev(int *perm, int n, int lambda, int is_signed,
 	free(cur);
 }
 
+/* ── [2020] length-weighted runners ────────────────────────────── */
+
+static void	run_lw_inv(int *perm, int n, int lambda, int mode,
+		const char *label)
+{
+	int		cnt;
+	LWOp	*ops;
+	int		*cur;
+
+	separator(label);
+	cur = malloc(sizeof(int) * n);
+	memcpy(cur, perm, sizeof(int) * n);
+	ops = lw_inv_greedy(perm, n, lambda, LW_ALPHA, mode, &cnt);
+	if (cnt == 0)
+		printf("  (already sorted — 0 operations)\n");
+	else
+	{
+		for (int k = 0; k < cnt; k++)
+		{
+			printf("  Step %2d:  ", k + 1);
+			if (ops[k].type == LW_MODE_REV)
+			{
+				apply_rev(cur, n, ops[k].i, ops[k].j);
+				printf("ρ(%d,%d)    ", ops[k].i, ops[k].j);
+			}
+			else
+			{
+				apply_tpos(cur, n, ops[k].i, ops[k].j, ops[k].k);
+				printf("τ(%d,%d,%d) ", ops[k].i, ops[k].j, ops[k].k);
+			}
+			printf("→  ");
+			print_perm(cur, n);
+			printf("\n");
+		}
+	}
+	print_result(cur, n, cnt);
+	free(ops);
+	free(cur);
+}
+
+static void	run_lw_ent(int *perm, int n, int lambda, int mode,
+		const char *label)
+{
+	int			cnt;
+	LWEntOp		*ops;
+	int			*cur;
+
+	separator(label);
+	cur = malloc(sizeof(int) * n);
+	memcpy(cur, perm, sizeof(int) * n);
+	ops = lw_ent_greedy(perm, n, lambda, LW_ALPHA, mode, &cnt);
+	if (cnt == 0)
+		printf("  (already sorted — 0 operations)\n");
+	else
+	{
+		for (int k = 0; k < cnt; k++)
+		{
+			printf("  Step %2d:  ", k + 1);
+			if (ops[k].type == LW_ENT_MODE_REV)
+			{
+				apply_rev(cur, n, ops[k].i, ops[k].j);
+				printf("ρ(%d,%d)    ", ops[k].i, ops[k].j);
+			}
+			else
+			{
+				apply_tpos(cur, n, ops[k].i, ops[k].j, ops[k].k);
+				printf("τ(%d,%d,%d) ", ops[k].i, ops[k].j, ops[k].k);
+			}
+			printf("→  ");
+			print_perm(cur, n);
+			printf("\n");
+		}
+	}
+	print_result(cur, n, cnt);
+	free(ops);
+	free(cur);
+}
+
+static void	run_lw_phi(int *perm, int n, int lambda, const char *label)
+{
+	int			cnt;
+	LWPhiOp		*ops;
+	int			*cur;
+
+	separator(label);
+	cur = malloc(sizeof(int) * n);
+	memcpy(cur, perm, sizeof(int) * n);
+	ops = lw_phi_greedy(perm, n, lambda, LW_ALPHA, LW_PHI_RBAR, &cnt);
+	if (cnt == 0)
+		printf("  (already sorted — 0 operations)\n");
+	else
+	{
+		for (int k = 0; k < cnt; k++)
+		{
+			printf("  Step %2d:  ", k + 1);
+			if (ops[k].type == LW_PHI_RBAR)
+			{
+				apply_srev(cur, n, ops[k].i, ops[k].j);
+				printf("ρ̃(%d,%d)   ", ops[k].i, ops[k].j);
+			}
+			else
+			{
+				apply_tpos(cur, n, ops[k].i, ops[k].j, ops[k].k);
+				printf("τ(%d,%d,%d) ", ops[k].i, ops[k].j, ops[k].k);
+			}
+			printf("→  ");
+			print_perm(cur, n);
+			printf("\n");
+		}
+	}
+	print_result(cur, n, cnt);
+	free(ops);
+	free(cur);
+}
+
+static void	run_lw_exact(int *perm, int n, int mode, const char *label)
+{
+	int			cnt;
+	LWExactOp	*ops;
+	int			*cur;
+
+	separator(label);
+	cur = malloc(sizeof(int) * n);
+	memcpy(cur, perm, sizeof(int) * n);
+	ops = lw_exact(perm, n, 3.0, mode, &cnt);
+	if (cnt == 0)
+		printf("  (already sorted — 0 operations)\n");
+	else
+	{
+		for (int k = 0; k < cnt; k++)
+		{
+			printf("  Step %2d:  ", k + 1);
+			if (ops[k].type == LW_EXACT_RBAR)
+			{
+				apply_srev(cur, n, ops[k].i, ops[k].j);
+				printf("ρ̃(%d,%d)   ", ops[k].i, ops[k].j);
+			}
+			else if (ops[k].type == LW_EXACT_TPOS)
+			{
+				apply_tpos(cur, n, ops[k].i, ops[k].j, ops[k].k);
+				printf("τ(%d,%d,%d) ", ops[k].i, ops[k].j, ops[k].k);
+			}
+			else
+			{
+				apply_rev(cur, n, ops[k].i, ops[k].j);
+				printf("ρ(%d,%d)    ", ops[k].i, ops[k].j);
+			}
+			printf("→  ");
+			print_perm(cur, n);
+			printf("\n");
+		}
+	}
+	print_result(cur, n, cnt);
+	free(ops);
+	free(cur);
+}
+
 /* ── main ───────────────────────────────────────────────────────── */
 
 int	main(int ac, char **av)
@@ -273,21 +443,37 @@ int	main(int ac, char **av)
 	/* ── run algorithms ── */
 	if (!is_signed)
 	{
+		printf("\n── [2021] Miranda λ-permutation algorithms ──────────────────────\n");
 		run_lp_inv(perm, n, lambda, LP_MODE_BOTH,
-			"Theorem 2  lp_inv  (rev + tpos, minimise inversions)");
+			"Thm 2  lp_inv  (rev+tpos, minimise inversions)");
 		run_lp_bp_tpos(perm, n, lambda,
-			"Theorem 5  lp_bp_tpos  (transpositions only)");
+			"Thm 5  lp_bp_tpos  (transpositions only)");
 		run_lp_bp_both(perm, n, lambda, 0,
-			"Theorem 4  lp_bp_both  (tpos + rev)");
+			"Thm 4  lp_bp_both  (tpos + rev)");
 		run_lp_bp_rev(perm, n, lambda, 0,
-			"Theorem 6  lp_bp_rev   (reversals only)");
+			"Thm 6  lp_bp_rev   (reversals only)");
+		printf("\n── [2020] Miranda length-weighted (α=%.1f) ──────────────────────\n",
+			LW_ALPHA);
+		run_lw_inv(perm, n, lambda, LW_MODE_BOTH,
+			"Alg 1  lw_inv  (rev+tpos, weighted ΔInv/|β|^α)");
+		run_lw_ent(perm, n, lambda, LW_ENT_MODE_BOTH,
+			"Alg 2  lw_ent  (rev+tpos, weighted Δent/|β|^α)");
+		printf("\n── [2020] Exact (α=3, optimal cost = 2³·Inv) ───────────────────\n");
+		run_lw_exact(perm, n, LW_EXACT_BOTH,
+			"Thm 9  lw_exact  (size-2 adjacent swaps)");
 	}
 	else
 	{
-		/* Theorem 3: score-based greedy for signed permutations */
+		printf("\n── [2021] Miranda λ-permutation algorithms (signed) ─────────────\n");
 		run_lp_score(perm, n, lambda, LP_SCORE_REV,
-			"Theorem 3  lp_score  (signed rev, maximise score)");
-		printf("\n  (Theorems 4/6 for signed inputs: TODO — needs apply_srev)\n");
+			"Thm 3  lp_score  (signed rev, maximise score)");
+		printf("\n── [2020] Miranda length-weighted signed (α=%.1f) ───────────────\n",
+			LW_ALPHA);
+		run_lw_phi(perm, n, lambda,
+			"Alg 3  lw_phi  (signed rev, weighted Δ(2Inv+E)/|β|^α)");
+		printf("\n── [2020] Exact signed (α=3) ────────────────────────────────────\n");
+		run_lw_exact(perm, n, LW_EXACT_RBAR,
+			"Thm12  lw_exact  (size-2 signed rev + sign fix)");
 	}
 
 	printf("\n");
