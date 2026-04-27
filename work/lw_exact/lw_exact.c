@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int	phi_ex(int *p, int n)
+{
+	return (2 * cnt_inv(p, n) + cnt_Eminus(p, n) + cnt_Eplus(p, n));
+}
+
 /*
  * [2020] Exact algorithms for alpha >= 3
  *
@@ -113,6 +118,70 @@ static void	exact_signed_rev(int *cur, int n, LWExactOp **ops, int *cnt,
 	}
 }
 
+/*
+ * Theorem 13: sort signed permutation using size-2 signed reversals AND
+ * size-2 transpositions (SbR̄T), α ≥ 3.
+ *
+ * For each adjacent inversion, choose between ρ̄(i,i+1) and τ(i,i+1,i+2):
+ * - Both have cost 2^α (size = 2).
+ * - Pick the op that reduces φ = 2·Inv + |E⁻_even| + |E⁺_odd| more.
+ * - τ preserves signs; ρ̄ flips signs.  Prefer τ when Δφ is equal (less
+ *   sign damage).
+ * After inversions resolved, fix remaining wrong signs with ρ̄(i,i).
+ */
+static void	exact_signed_rbart(int *cur, int n, LWExactOp **ops, int *cnt,
+		int *cap)
+{
+	int	*tmp;
+	int	swapped;
+	int	phi_cur;
+	int	d_rv;
+	int	d_tp;
+
+	tmp = xmalloc(sizeof(int) * n);
+	do
+	{
+		swapped = 0;
+		phi_cur = phi_ex(cur, n);
+		for (int i = 0; i < n - 1; i++)
+		{
+			if (abs(cur[i]) <= abs(cur[i + 1]))
+				continue ;
+			memcpy(tmp, cur, sizeof(int) * n);
+			apply_srev(tmp, n, i, i + 1);
+			d_rv = phi_cur - phi_ex(tmp, n);
+			d_tp = -1;
+			if (i + 2 <= n)
+			{
+				memcpy(tmp, cur, sizeof(int) * n);
+				apply_tpos(tmp, n, i, i + 1, i + 2);
+				d_tp = phi_cur - phi_ex(tmp, n);
+			}
+			if (d_tp >= d_rv && d_tp >= 0)
+			{
+				apply_tpos(cur, n, i, i + 1, i + 2);
+				buf_push_ex(ops, cnt, cap, LW_EXACT_TPOS, i, i + 1, i + 2);
+			}
+			else if (d_rv >= 0)
+			{
+				apply_srev(cur, n, i, i + 1);
+				buf_push_ex(ops, cnt, cap, LW_EXACT_RBAR, i, i + 1, -1);
+			}
+			phi_cur = phi_ex(cur, n);
+			swapped = 1;
+		}
+	} while (swapped);
+	xfree(tmp, sizeof(int) * n);
+	for (int i = 0; i < n; i++)
+	{
+		if (cur[i] < 0)
+		{
+			apply_srev(cur, n, i, i);
+			buf_push_ex(ops, cnt, cap, LW_EXACT_RBAR, i, i, -1);
+		}
+	}
+}
+
 LWExactOp	*lw_exact(int *perm, int n, double alpha, int mode, int *op_count)
 {
 	int			cap;
@@ -130,10 +199,8 @@ LWExactOp	*lw_exact(int *perm, int n, double alpha, int mode, int *op_count)
 		exact_unsigned(cur, n, mode, &ops, &cnt, &cap);
 	else if (mode == LW_EXACT_RBAR)
 		exact_signed_rev(cur, n, &ops, &cnt, &cap);
-	else
-	{
-		/* LW_EXACT_RBART (Theorem 13): needs inversion graph — TODO */
-	}
+	else if (mode == LW_EXACT_RBART)
+		exact_signed_rbart(cur, n, &ops, &cnt, &cap);
 	xfree(cur, sizeof(int) * n);
 	*op_count = cnt;
 	return (ops);

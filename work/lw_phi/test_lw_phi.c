@@ -94,12 +94,71 @@ static void	test_signed_alpha2(void)
 	free(ops);
 }
 
+static void	test_psi_sorted(void)
+{
+	int		p[] = {1, 2, 3};
+	int		cnt;
+	LWPhiOp	*ops;
+
+	ops = lw_psi_greedy_short(p, 3, &cnt);
+	CHECK(cnt == 0, "lw_psi already sorted: 0 ops");
+	free(ops);
+}
+
+static void	test_psi_sign_only(void)
+{
+	int		orig[] = {1, -2, 3};
+	int		p[] = {1, -2, 3};
+	int		cnt;
+	LWPhiOp	*ops;
+
+	ops = lw_psi_greedy_short(orig, 3, &cnt);
+	CHECK(cnt > 0, "lw_psi sign-only: ops applied");
+	apply_phi_ops(p, 3, ops, cnt);
+	CHECK(is_sorted_signed(p, 3), "lw_psi sign-only: sorted");
+	free(ops);
+}
+
+static void	test_psi_inv_and_sign(void)
+{
+	int		orig[] = {-2, 1, 3};
+	int		p[] = {-2, 1, 3};
+	int		cnt;
+	LWPhiOp	*ops;
+
+	CHECK(is_lam_perm(orig, 3, 3), "lw_psi inv+sign: is 3-perm");
+	ops = lw_psi_greedy_short(orig, 3, &cnt);
+	CHECK(cnt > 0, "lw_psi inv+sign: ops applied");
+	apply_phi_ops(p, 3, ops, cnt);
+	CHECK(is_sorted_signed(p, 3), "lw_psi inv+sign: sorted");
+	free(ops);
+}
+
+static void	test_psi_unsigned_both(void)
+{
+	int		orig[] = {3, 1, 2};
+	int		p[] = {3, 1, 2};
+	int		cnt;
+	LWPhiOp	*ops;
+
+	CHECK(is_lam_perm(orig, 3, 3), "lw_psi unsigned both: is 3-perm");
+	ops = lw_psi_greedy_short(orig, 3, &cnt);
+	CHECK(cnt > 0, "lw_psi unsigned both: ops applied");
+	apply_phi_ops(p, 3, ops, cnt);
+	CHECK(is_sorted_signed(p, 3), "lw_psi unsigned both: sorted");
+	free(ops);
+}
+
 int	main(void)
 {
 	test_already_sorted();
 	test_single_neg_alpha1();
 	test_signed_lam3_alpha1();
 	test_signed_alpha2();
+	test_psi_sorted();
+	test_psi_sign_only();
+	test_psi_inv_and_sign();
+	test_psi_unsigned_both();
 	printf("lw_phi: %d passed, %d failed\n", passed, failed);
 	return (failed > 0 ? 1 : 0);
 }

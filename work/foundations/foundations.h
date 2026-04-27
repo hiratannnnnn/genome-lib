@@ -22,6 +22,10 @@ int		cnt_inv(int *perm, int n);
 int		delta_inv_rev(int *perm, int n, int i, int j);
 int		delta_inv_tpos(int *perm, int n, int i, int j, int k);
 
+/* ── Inversion graph ─────────────────────────────────────────────── */
+
+int		codd_perm(int *perm, int n);
+
 /* ── Entropy ─────────────────────────────────────────────────────── */
 
 int		ent_elem(int val, int pos_0indexed);

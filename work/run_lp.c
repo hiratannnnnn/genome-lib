@@ -23,10 +23,11 @@
 #include <math.h>
 
 # define LW_ALPHA 1.0
-# define LW_EXACT_REV  1
-# define LW_EXACT_TPOS 2
-# define LW_EXACT_BOTH 3
-# define LW_EXACT_RBAR 4
+# define LW_EXACT_REV    1
+# define LW_EXACT_TPOS   2
+# define LW_EXACT_BOTH   3
+# define LW_EXACT_RBAR   4
+# define LW_EXACT_RBART  5
 
 /* ── print helpers ──────────────────────────────────────────────── */
 
@@ -361,6 +362,43 @@ static void	run_lw_phi(int *perm, int n, int lambda, const char *label)
 	free(cur);
 }
 
+static void	run_lw_psi(int *perm, int n, const char *label)
+{
+	int			cnt;
+	LWPhiOp		*ops;
+	int			*cur;
+
+	separator(label);
+	cur = malloc(sizeof(int) * n);
+	memcpy(cur, perm, sizeof(int) * n);
+	ops = lw_psi_greedy_short(perm, n, &cnt);
+	if (cnt == 0)
+		printf("  (already sorted — 0 operations)\n");
+	else
+	{
+		for (int k = 0; k < cnt; k++)
+		{
+			printf("  Step %2d:  ", k + 1);
+			if (ops[k].type == LW_PHI_RBAR)
+			{
+				apply_srev(cur, n, ops[k].i, ops[k].j);
+				printf("ρ̃(%d,%d)   ", ops[k].i, ops[k].j);
+			}
+			else
+			{
+				apply_tpos(cur, n, ops[k].i, ops[k].j, ops[k].k);
+				printf("τ(%d,%d,%d) ", ops[k].i, ops[k].j, ops[k].k);
+			}
+			printf("→  ");
+			print_perm(cur, n);
+			printf("\n");
+		}
+	}
+	print_result(cur, n, cnt);
+	free(ops);
+	free(cur);
+}
+
 static void	run_lw_exact(int *perm, int n, int mode, const char *label)
 {
 	int			cnt;
@@ -471,9 +509,13 @@ int	main(int ac, char **av)
 			LW_ALPHA);
 		run_lw_phi(perm, n, lambda,
 			"Alg 3  lw_phi  (signed rev, weighted Δ(2Inv+E)/|β|^α)");
+		run_lw_psi(perm, n,
+			"lw_psi (λ=3 signed rev+tpos, ψ-score Δ(2Inv+codd)/|β|^α)");
 		printf("\n── [2020] Exact signed (α=3) ────────────────────────────────────\n");
 		run_lw_exact(perm, n, LW_EXACT_RBAR,
-			"Thm12  lw_exact  (size-2 signed rev + sign fix)");
+			"Thm12  lw_exact RBAR   (size-2 signed rev + sign fix)");
+		run_lw_exact(perm, n, LW_EXACT_RBART,
+			"Thm13  lw_exact RBART  (size-2 signed rev+tpos + sign fix)");
 	}
 
 	printf("\n");

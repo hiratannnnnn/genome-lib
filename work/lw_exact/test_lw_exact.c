@@ -4,10 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-# define LW_EXACT_REV   1
-# define LW_EXACT_TPOS  2
-# define LW_EXACT_BOTH  3
-# define LW_EXACT_RBAR  4
+# define LW_EXACT_REV    1
+# define LW_EXACT_TPOS   2
+# define LW_EXACT_BOTH   3
+# define LW_EXACT_RBAR   4
+# define LW_EXACT_RBART  5
 
 static int	passed = 0;
 static int	failed = 0;
@@ -118,6 +119,76 @@ static void	test_signed_all_neg(void)
 	free(ops);
 }
 
+static void	test_rbart_sorted(void)
+{
+	int			p[] = {1, 2, 3};
+	int			cnt;
+	LWExactOp	*ops;
+
+	ops = lw_exact(p, 3, 3.0, LW_EXACT_RBART, &cnt);
+	CHECK(cnt == 0, "lw_exact rbart already sorted: 0 ops");
+	free(ops);
+}
+
+static void	test_rbart_sign_only(void)
+{
+	int			orig[] = {1, -2, 3};
+	int			p[] = {1, -2, 3};
+	int			cnt;
+	LWExactOp	*ops;
+
+	ops = lw_exact(orig, 3, 3.0, LW_EXACT_RBART, &cnt);
+	CHECK(cnt > 0, "lw_exact rbart sign-only: ops applied");
+	apply_exact_ops(p, 3, ops, cnt);
+	CHECK(is_sorted_signed(p, 3), "lw_exact rbart sign-only: sorted");
+	CHECK(cnt == 1, "lw_exact rbart sign-only: 1 sign fix");
+	free(ops);
+}
+
+static void	test_rbart_inv_no_sign(void)
+{
+	/* (2,1,3): one inversion, no sign errors → τ(0,1,2) preferred (no sign damage) */
+	int			orig[] = {2, 1, 3};
+	int			p[] = {2, 1, 3};
+	int			cnt;
+	LWExactOp	*ops;
+
+	ops = lw_exact(orig, 3, 3.0, LW_EXACT_RBART, &cnt);
+	CHECK(cnt > 0, "lw_exact rbart inv no sign: ops applied");
+	apply_exact_ops(p, 3, ops, cnt);
+	CHECK(is_sorted_signed(p, 3), "lw_exact rbart inv no sign: sorted");
+	free(ops);
+}
+
+static void	test_rbart_signed(void)
+{
+	int			orig[] = {-2, 1, 3};
+	int			p[] = {-2, 1, 3};
+	int			cnt;
+	LWExactOp	*ops;
+
+	CHECK(is_lam_perm(orig, 3, 3), "lw_exact rbart signed: is 3-perm");
+	ops = lw_exact(orig, 3, 3.0, LW_EXACT_RBART, &cnt);
+	CHECK(cnt > 0, "lw_exact rbart signed: ops applied");
+	apply_exact_ops(p, 3, ops, cnt);
+	CHECK(is_sorted_signed(p, 3), "lw_exact rbart signed: sorted");
+	free(ops);
+}
+
+static void	test_rbart_all_neg(void)
+{
+	int			orig[] = {-1, -2, -3};
+	int			p[] = {-1, -2, -3};
+	int			cnt;
+	LWExactOp	*ops;
+
+	ops = lw_exact(orig, 3, 3.0, LW_EXACT_RBART, &cnt);
+	apply_exact_ops(p, 3, ops, cnt);
+	CHECK(is_sorted_signed(p, 3), "lw_exact rbart all neg: sorted");
+	CHECK(cnt == 3, "lw_exact rbart all neg: 3 sign fixes");
+	free(ops);
+}
+
 int	main(void)
 {
 	test_already_sorted();
@@ -125,6 +196,11 @@ int	main(void)
 	test_unsigned_tpos();
 	test_signed_rbar();
 	test_signed_all_neg();
+	test_rbart_sorted();
+	test_rbart_sign_only();
+	test_rbart_inv_no_sign();
+	test_rbart_signed();
+	test_rbart_all_neg();
 	printf("lw_exact: %d passed, %d failed\n", passed, failed);
 	return (failed > 0 ? 1 : 0);
 }

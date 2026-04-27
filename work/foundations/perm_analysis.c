@@ -105,6 +105,65 @@ int	cnt_Eplus(int *perm, int n)
 	return (cnt);
 }
 
+/* ── Inversion graph ─────────────────────────────────────────────── */
+
+/*
+ * Build the inversion graph G(|π|) on vertices {1..n}:
+ * edge {a,b} exists iff elements a and b form an inversion in |π|.
+ * Return the number of odd-size connected components (codd).
+ * Used in the ψ-score: ψ(π) = 2·Inv(|π|) + codd(G(|π|)).
+ */
+static int	uf_find(int *parent, int x)
+{
+	while (parent[x] != x)
+		x = parent[x];
+	return (x);
+}
+
+static void	uf_union(int *parent, int *sz, int x, int y)
+{
+	x = uf_find(parent, x);
+	y = uf_find(parent, y);
+	if (x == y)
+		return ;
+	if (sz[x] < sz[y])
+	{
+		int	t;
+
+		t = x;
+		x = y;
+		y = t;
+	}
+	parent[y] = x;
+	sz[x] += sz[y];
+}
+
+int	codd_perm(int *perm, int n)
+{
+	int	*parent;
+	int	*sz;
+	int	codd;
+
+	parent = xmalloc(sizeof(int) * (n + 1));
+	sz = xmalloc(sizeof(int) * (n + 1));
+	for (int i = 1; i <= n; i++)
+	{
+		parent[i] = i;
+		sz[i] = 1;
+	}
+	for (int i = 0; i < n; i++)
+		for (int j = i + 1; j < n; j++)
+			if (abs(perm[i]) > abs(perm[j]))
+				uf_union(parent, sz, abs(perm[i]), abs(perm[j]));
+	codd = 0;
+	for (int v = 1; v <= n; v++)
+		if (parent[v] == v && sz[v] % 2 == 1)
+			codd++;
+	xfree(parent, sizeof(int) * (n + 1));
+	xfree(sz, sizeof(int) * (n + 1));
+	return (codd);
+}
+
 /* ── Breakpoints ─────────────────────────────────────────────────── */
 
 /* unsigned reversal breakpoint: |perm[i+1] - perm[i]| != 1
@@ -186,7 +245,6 @@ Strip	*find_strips(int *perm, int n, int is_signed, int *strip_count)
 	int		cnt;
 	int		start;
 	int		is_inc;
-	int		j;
 	int		j;
 	int		asc;
 
