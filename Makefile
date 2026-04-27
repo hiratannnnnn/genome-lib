@@ -75,6 +75,29 @@ run-benchmark: benchmark
 sbpbi: check all_check make_input benchmark
 
 # ---------------------------------------------------------------
+# Miranda (2021) λ-permutation algorithms
+# ---------------------------------------------------------------
+# make run_lp              -- ビルド
+# make run-lp ARGS="3 3 1 2"  -- 実行
+
+WORK     = work
+FDNS_DIR = $(WORK)/foundations
+FDNS_C   = $(FDNS_DIR)/perm_analysis.c $(FDNS_DIR)/reversal.c $(FDNS_DIR)/transposition.c
+LP_INV_C = $(WORK)/lp_inversions/lp_inversions.c
+LP_SCO_C = $(WORK)/lp_score/lp_score.c
+LP_BP_C  = $(WORK)/lp_breakpoints/lp_breakpoints.c
+LP_SRC   = $(WORK)/run_lp.c $(FDNS_C) $(LP_INV_C) $(LP_SCO_C) $(LP_BP_C)
+LP_INC   = -Iincludes -I$(FDNS_DIR) -I$(WORK)/lp_inversions \
+           -I$(WORK)/lp_score -I$(WORK)/lp_breakpoints
+
+run_lp: $(LIB)
+	$(CC) $(CFLAGS) $(LP_INC) -lm $(LP_SRC) -L$(DISTDIR) -l$(TARGET:lib%=%) -o run_lp
+	@echo "Built: run_lp"
+
+run-lp: run_lp
+	./run_lp $(ARGS)
+
+# ---------------------------------------------------------------
 # Misc
 # ---------------------------------------------------------------
 
@@ -87,4 +110,5 @@ compile: $(LIB)
         sbpbi \
         check run-check all_check run-all_check \
         make_input gen check-input \
-        benchmark run-benchmark
+        benchmark run-benchmark \
+        run_lp run-lp
