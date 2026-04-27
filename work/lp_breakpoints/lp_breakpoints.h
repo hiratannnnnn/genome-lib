@@ -20,23 +20,23 @@
 
 # include "../foundations/foundations.h"
 
-typedef struct { int type; int i; int j; int k; } BPOp;
+typedef struct
+{
+	int	type;
+	int	i;
+	int	j;
+	int	k;
+}		BPOp;
 
 /* entry points */
-BPOp *lp_bp_reversals    (int *perm, int n, int lambda, int is_signed,
-                           int *op_count);
-BPOp *lp_bp_transpositions(int *perm, int n, int lambda,
-                            int *op_count);
-BPOp *lp_bp_both         (int *perm, int n, int lambda, int is_signed,
-                           int *op_count);
+BPOp	*lp_bp_rev(int *perm, int n, int lambda, int is_signed, int *op_count);
+BPOp	*lp_bp_tpos(int *perm, int n, int lambda, int *op_count);
+BPOp	*lp_bp_both(int *perm, int n, int lambda, int is_signed, int *op_count);
 
 /* internal lemma helpers (also usable standalone) */
-int move_strip_transpositions(int *perm, int n, int lambda,
-                               Strip *s, BPOp *out);
-int move_strip_reversals     (int *perm, int n, int lambda,
-                               Strip *s, BPOp *out);
-int move_strip_decreasing    (int *perm, int n, int lambda,
-                               Strip *s, BPOp *out);
-int reverse_decreasing_strip (int *perm, int n, int lambda, Strip *s);
+int		move_strip_tpos(int *perm, int n, int lambda, Strip *s, BPOp *out);
+int		move_strip_rev(int *perm, int n, int lambda, Strip *s, BPOp *out);
+int		move_strip_dec(int *perm, int n, int lambda, Strip *s, BPOp *out);
+int		rev_dec_strip(int *perm, int n, int lambda, Strip *s);
 
 #endif

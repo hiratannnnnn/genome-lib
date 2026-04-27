@@ -33,7 +33,9 @@ fclean: clean
 
 re: fclean all
 
-format:	find . -name "*.c" | xargs c_formatter_42
+format:
+	find . -name "*.c" | xargs c_formatter_42
+	find . -name "*.h" | xargs c_formatter_42
 
 # ---------------------------------------------------------------
 # sbpbi (Sorting by Prefix Block Interchanges)

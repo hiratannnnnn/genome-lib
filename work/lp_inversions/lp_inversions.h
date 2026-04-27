@@ -12,13 +12,18 @@
  * mode: 1=reversals only, 2=transpositions only, 3=both
  */
 
-# define LP_MODE_REV   1
-# define LP_MODE_TRANS 2
-# define LP_MODE_BOTH  3
+# define LP_MODE_REV 1
+# define LP_MODE_TPOS 2
+# define LP_MODE_BOTH 3
 
-typedef struct { int type; int i; int j; int k; } LPOp;
+typedef struct
+{
+	int	type;
+	int	i;
+	int	j;
+	int	k;
+}		LPOp;
 
-LPOp *lp_inversions_greedy(int *perm, int n, int lambda, int mode,
-                             int *op_count);
+LPOp	*lp_inv_greedy(int *perm, int n, int lambda, int mode, int *op_count);
 
 #endif

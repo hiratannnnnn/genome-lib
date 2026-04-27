@@ -1,6 +1,6 @@
-#include "lw_phi.h"
-#include "../foundations/foundations.h"
 #include "../../includes/memory.h"
+#include "../foundations/foundations.h"
+#include "lw_phi.h"
 #include <math.h>
 
 /*
@@ -11,12 +11,16 @@
  *
  * TODO: implement φ-score computation and greedy loop
  */
-LWPhiOp *lw_phi_greedy(int *perm, int n, int lambda, double alpha,
-                         int mode, int *op_count)
+LWPhiOp	*lw_phi_greedy(int *perm, int n, int lambda, double alpha, int mode,
+		int *op_count)
 {
-    (void)perm; (void)n; (void)lambda; (void)alpha; (void)mode;
-    *op_count = 0;
-    return NULL;
+	(void)perm;
+	(void)n;
+	(void)lambda;
+	(void)alpha;
+	(void)mode;
+	*op_count = 0;
+	return (NULL);
 }
 
 /*
@@ -26,9 +30,10 @@ LWPhiOp *lw_phi_greedy(int *perm, int n, int lambda, double alpha,
  *
  * TODO: build inversion graph G(π), compute codd, greedy loop
  */
-LWPhiOp *lw_psi_greedy_short(int *perm, int n, int *op_count)
+LWPhiOp	*lw_psi_greedy_short(int *perm, int n, int *op_count)
 {
-    (void)perm; (void)n;
-    *op_count = 0;
-    return NULL;
+	(void)perm;
+	(void)n;
+	*op_count = 0;
+	return (NULL);
 }

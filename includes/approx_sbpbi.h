@@ -35,18 +35,18 @@ typedef struct s_sbpbi_ctx
 {
 	t_bp_graph	*bp;
 	int			size;
-	int 		*arr;
-	int 		n;
+	int			*arr;
+	int			n;
 	int			*tmp;
 	FILE		*fp;
 	int			count;
 }				t_sbpbi_ctx;
 
-void	sbpbi_ctx_free(t_sbpbi_ctx *ctx);
+void			sbpbi_ctx_free(t_sbpbi_ctx *ctx);
 
-void	refresh_tmp(t_sbpbi_ctx *ctx);
-int		approx_sbpbi(t_sbpbi_ctx *ctx, int log_output);
+void			refresh_tmp(t_sbpbi_ctx *ctx);
+int				approx_sbpbi(t_sbpbi_ctx *ctx, int log_output);
 
-int		solve(int *arr, int n, int log_output);
+int				solve(int *arr, int n, int log_output);
 
 #endif

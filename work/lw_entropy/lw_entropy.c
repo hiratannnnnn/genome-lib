@@ -1,6 +1,6 @@
-#include "lw_entropy.h"
-#include "../foundations/foundations.h"
 #include "../../includes/memory.h"
+#include "../foundations/foundations.h"
+#include "lw_entropy.h"
 #include <math.h>
 
 /*
@@ -13,10 +13,14 @@
  *
  * TODO: implement
  */
-LWEntOp *lw_entropy_greedy(int *perm, int n, int lambda, double alpha,
-                             int mode, int *op_count)
+LWEntOp	*lw_ent_greedy(int *perm, int n, int lambda, double alpha, int mode,
+		int *op_count)
 {
-    (void)perm; (void)n; (void)lambda; (void)alpha; (void)mode;
-    *op_count = 0;
-    return NULL;
+	(void)perm;
+	(void)n;
+	(void)lambda;
+	(void)alpha;
+	(void)mode;
+	*op_count = 0;
+	return (NULL);
 }

@@ -1,6 +1,6 @@
-#include "lw_inversion.h"
-#include "../foundations/foundations.h"
 #include "../../includes/memory.h"
+#include "../foundations/foundations.h"
+#include "lw_inversion.h"
 #include <math.h>
 
 /*
@@ -11,10 +11,14 @@
  *
  * TODO: implement
  */
-LWOp *lw_inversion_greedy(int *perm, int n, int lambda, double alpha,
-                            int mode, int *op_count)
+LWOp	*lw_inv_greedy(int *perm, int n, int lambda, double alpha, int mode,
+		int *op_count)
 {
-    (void)perm; (void)n; (void)lambda; (void)alpha; (void)mode;
-    *op_count = 0;
-    return NULL;
+	(void)perm;
+	(void)n;
+	(void)lambda;
+	(void)alpha;
+	(void)mode;
+	*op_count = 0;
+	return (NULL);
 }

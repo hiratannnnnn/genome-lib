@@ -16,18 +16,25 @@
  * ψ(π,β) = Δ(2·Inv(π) + codd(G(π))) / f(β)
  * Approximation factor: 7/3-approx for SbR̄T (λ=3)  [Theorem 7]
  *
- * mode: 1=signed reversals (SbRbar), 3=signed reversals & transpositions (SbRbarT)
+ * mode: 1=signed reversals (SbRbar),
+	3=signed reversals & transpositions (SbRbarT)
  */
 
-# define LW_PHI_RBAR  1
+# define LW_PHI_RBAR 1
 # define LW_PHI_RBBAR 3
 
-typedef struct { int type; int i; int j; int k; } LWPhiOp;
+typedef struct
+{
+	int	type;
+	int	i;
+	int	j;
+	int	k;
+}		LWPhiOp;
 
-LWPhiOp *lw_phi_greedy(int *perm, int n, int lambda, double alpha,
-                         int mode, int *op_count);
+LWPhiOp	*lw_phi_greedy(int *perm, int n, int lambda, double alpha, int mode,
+			int *op_count);
 
 /* ψ-score algorithm: only valid for lambda=3 */
-LWPhiOp *lw_psi_greedy_short(int *perm, int n, int *op_count);
+LWPhiOp	*lw_psi_greedy_short(int *perm, int n, int *op_count);
 
 #endif

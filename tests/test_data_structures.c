@@ -135,7 +135,7 @@ static void	test_nodes(void)
 	Node	*n4;
 	Node	*head2;
 
-	TEST_GROUP("Node: create / append / count / pop_first / enqueue / dequeue / type access");
+	TEST_GROUP("Node: create/append/count/pop_first/enqueue/dequeue/type");
 	{
 		e = create_edge(0, 0, 1, 1.0);
 		v = create_vertex(7);

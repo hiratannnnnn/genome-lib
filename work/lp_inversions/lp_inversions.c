@@ -1,6 +1,6 @@
-#include "lp_inversions.h"
-#include "../foundations/foundations.h"
 #include "../../includes/memory.h"
+#include "../foundations/foundations.h"
+#include "lp_inversions.h"
 #include <string.h>
 
 /*
@@ -13,10 +13,12 @@
  *
  * TODO: implement
  */
-LPOp *lp_inversions_greedy(int *perm, int n, int lambda, int mode,
-                             int *op_count)
+LPOp	*lp_inv_greedy(int *perm, int n, int lambda, int mode, int *op_count)
 {
-    (void)perm; (void)n; (void)lambda; (void)mode;
-    *op_count = 0;
-    return NULL;
+	(void)perm;
+	(void)n;
+	(void)lambda;
+	(void)mode;
+	*op_count = 0;
+	return (NULL);
 }

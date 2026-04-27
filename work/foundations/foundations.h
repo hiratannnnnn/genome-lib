@@ -7,46 +7,47 @@
  * Permutation convention: 0-indexed positions, values in {1..n} (unsigned)
  * or {-n..-1, 1..n} (signed).
  * perm[i]: element at position i (0-based).
+ * See work/ABBREV.md for the full abbreviation reference.
  */
 
 /* ── Operations ──────────────────────────────────────────────────── */
 
-void apply_reversal       (int *perm, int n, int i, int j);
-void apply_signed_reversal(int *perm, int n, int i, int j);
-void apply_transposition  (int *perm, int n, int i, int j, int k);
+void	apply_rev(int *perm, int n, int i, int j);
+void	apply_srev(int *perm, int n, int i, int j);
+void	apply_tpos(int *perm, int n, int i, int j, int k);
 
 /* ── Inversions ──────────────────────────────────────────────────── */
 
-int count_inversions         (int *perm, int n);
-int delta_inv_reversal       (int *perm, int n, int i, int j);
-int delta_inv_transposition  (int *perm, int n, int i, int j, int k);
+int		cnt_inv(int *perm, int n);
+int		delta_inv_rev(int *perm, int n, int i, int j);
+int		delta_inv_tpos(int *perm, int n, int i, int j, int k);
 
 /* ── Entropy ─────────────────────────────────────────────────────── */
 
-int entropy_element   (int val, int pos_0indexed);
-int entropy_perm      (int *perm, int n);
-int count_E_minus_even(int *perm, int n);
-int count_E_plus_odd  (int *perm, int n);
+int		ent_elem(int val, int pos_0indexed);
+int		ent_perm(int *perm, int n);
+int		cnt_Eminus(int *perm, int n);
+int		cnt_Eplus(int *perm, int n);
 
 /* ── Breakpoints ─────────────────────────────────────────────────── */
 
-int count_breakpoints_unsigned_rev (int *perm, int n);
-int count_breakpoints_transposition(int *perm, int n);
+int		cnt_bp_rev(int *perm, int n);
+int		cnt_bp_tpos(int *perm, int n);
 
 /* ── Lambda-permutation ──────────────────────────────────────────── */
 
-int is_lambda_perm           (int *perm, int n, int lambda);
-int find_smallest_out_of_place(int *perm, int n);
+int		is_lam_perm(int *perm, int n, int lambda);
+int		find_soop(int *perm, int n);
 
 /* ── Strips ──────────────────────────────────────────────────────── */
 
 typedef struct
 {
-    int start;
-    int end;
-    int is_increasing;
-} Strip;
+	int	start;
+	int	end;
+	int	is_increasing;
+}		Strip;
 
-Strip *find_strips(int *perm, int n, int is_signed, int *strip_count);
+Strip	*find_strips(int *perm, int n, int is_signed, int *strip_count);
 
 #endif

@@ -14,13 +14,19 @@
  * mode: 1=reversals, 2=transpositions, 3=both
  */
 
-# define LW_ENT_MODE_REV   1
-# define LW_ENT_MODE_TRANS 2
-# define LW_ENT_MODE_BOTH  3
+# define LW_ENT_MODE_REV 1
+# define LW_ENT_MODE_TPOS 2
+# define LW_ENT_MODE_BOTH 3
 
-typedef struct { int type; int i; int j; int k; } LWEntOp;
+typedef struct
+{
+	int	type;
+	int	i;
+	int	j;
+	int	k;
+}		LWEntOp;
 
-LWEntOp *lw_entropy_greedy(int *perm, int n, int lambda, double alpha,
-                             int mode, int *op_count);
+LWEntOp	*lw_ent_greedy(int *perm, int n, int lambda, double alpha, int mode,
+			int *op_count);
 
 #endif

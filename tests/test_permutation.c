@@ -25,18 +25,25 @@ void	run_tests_permutation(void)
 	int	np[3] = {0, 1, 2};
 	int	last[3] = {2, 1, 0};
 	int	ret;
+	int	ra[5] = {0, 1, 2, 3, 4};
+	int	rb[5] = {0, 1, 2, 3, 4};
+	int	rc[3] = {7, 8, 9};
+	int	counter[3] = {0, 1, 2};
+	int	steps;
 
 	TEST_GROUP("identity_permutation / copy_permutation / is_identity_permutation");
 	{
 		identity_permutation(perm, 5, 0);
 		ASSERT(perm[0] == 0 && perm[1] == 1 && perm[2] == 2 && perm[3] == 3
-			&& perm[4] == 4, "identity_permutation(n=5, is_natural=0): perm[i]=i");
-		ASSERT(is_identity_permutation(perm, 5, 0) == 1,
-			"is_identity_permutation: 0-indexed identity -> 1");
+			&& perm[4] == 4,
+			"identity_permutation(n=5): perm[i] = i");
+				ASSERT(is_identity_permutation(perm, 5, 0) == 1,
+					"is_identity_permutation: 0-indexed identity -> 1");
 		copy_permutation(perm, cp, 5);
 		ASSERT(cp[0] == 0 && cp[4] == 4, "copy_permutation: values match");
 		cp[2] = 99;
-		ASSERT(perm[2] == 2, "copy_permutation: deep copy (modifying cp leaves perm intact)");
+		ASSERT(perm[2] == 2,
+			"copy_permutation: deep copy (modifying cp leaves perm intact)");
 		ASSERT(is_identity_permutation(non_id, 5, 0) == 0,
 			"is_identity_permutation: non-identity -> 0");
 		/* Natural (1-indexed) identity: perm[i] = i+1 */
@@ -68,7 +75,7 @@ void	run_tests_permutation(void)
 	TEST_GROUP("compose_permutation");
 	{
 		/* p3={1,2,0}, q3={2,0,1}: res[i]=p3[q3[i]]
-		 * res[0]=p3[2]=0, res[1]=p3[0]=1, res[2]=p3[1]=2 -> identity */
+			* res[0]=p3[2]=0, res[1]=p3[0]=1, res[2]=p3[1]=2 -> identity */
 		compose_permutation(p3, q3, res3, 3);
 		ASSERT(is_identity_permutation(res3, 3, 0) == 1,
 			"compose_permutation: p3 o q3 = identity (mutual inverses)");
@@ -125,17 +132,15 @@ void	run_tests_permutation(void)
 	TEST_GROUP("rev_array_int");
 	{
 		/* Reverse entire array in place: arr={0,1,2,3,4} -> {4,3,2,1,0} */
-		int ra[5] = {0, 1, 2, 3, 4};
 		rev_array_int(ra, ra + 4);
-		ASSERT(ra[0] == 4 && ra[1] == 3 && ra[2] == 2 && ra[3] == 1 && ra[4] == 0,
+		ASSERT(ra[0] == 4 && ra[1] == 3 && ra[2] == 2 && ra[3] == 1
+			&& ra[4] == 0,
 			"rev_array_int: full reversal {0,1,2,3,4} -> {4,3,2,1,0}");
 		/* Reverse suffix [1..3]: {0,1,2,3,4} -> {0,3,2,1,4} */
-		int rb[5] = {0, 1, 2, 3, 4};
 		rev_array_int(rb + 1, rb + 3);
-		ASSERT(rb[0] == 0 && rb[1] == 3 && rb[2] == 2 && rb[3] == 1 && rb[4] == 4,
-			"rev_array_int: suffix [1..3] -> {0,3,2,1,4}");
+		ASSERT(rb[0] == 0 && rb[1] == 3 && rb[2] == 2 && rb[3] == 1
+			&& rb[4] == 4, "rev_array_int: suffix [1..3] -> {0,3,2,1,4}");
 		/* Single element: no change */
-		int rc[3] = {7, 8, 9};
 		rev_array_int(rc + 1, rc + 1);
 		ASSERT(rc[0] == 7 && rc[1] == 8 && rc[2] == 9,
 			"rev_array_int: single element -> unchanged");
@@ -156,8 +161,7 @@ void	run_tests_permutation(void)
 		ret = next_permutation(last, 3);
 		ASSERT(ret == 0, "next_permutation({2,1,0}): returns 0 (last perm)");
 		/* Exhaust all 3! = 6 permutations of {0,1,2}: count = 5 transitions */
-		int counter[3] = {0, 1, 2};
-		int steps = 0;
+		steps = 0;
 		while (next_permutation(counter, 3))
 			steps++;
 		ASSERT(steps == 5,

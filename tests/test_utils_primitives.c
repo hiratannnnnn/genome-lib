@@ -27,14 +27,14 @@ static int	is_valid_perm(int *arr, int n)
 
 void	run_tests_utils_primitives(void)
 {
-		int arr5[] = {1, 2, 3, 4, 5};
-		int arr0[] = {0, 0, 0};
-		int arr_neg[] = {-1, 2, -3};
+	int		arr5[] = {1, 2, 3, 4, 5};
+	int		arr0[] = {0, 0, 0};
+	int		arr_neg[] = {-1, 2, -3};
 	int		**m;
 	int		**mz;
-		int arr[] = {3, 1, 4, 1, 5, 9, 2, 6};
-		int single[] = {42};
-		int neg[] = {-5, -1, -3, -2};
+	int		arr[] = {3, 1, 4, 1, 5, 9, 2, 6};
+	int		single[] = {42};
+	int		neg[] = {-5, -1, -3, -2};
 	int		*p5;
 	int		*p1;
 	int		*p10;
@@ -89,9 +89,9 @@ void	run_tests_utils_primitives(void)
 		ASSERT(min_of_array_index(single, 1) == 0,
 			"min_of_array_index(single): index 0");
 		ASSERT(min_of_array(neg, 4) == -5,
-			"min_of_array: negatives, min is -5");
+			"min_of_array: negatives - min is -5");
 		ASSERT(max_of_array(neg, 4) == -1,
-			"max_of_array: negatives, max is -1");
+			"max_of_array: negatives - max is -1");
 	}
 	TEST_GROUP("rand_perm");
 	{

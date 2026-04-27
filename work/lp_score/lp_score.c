@@ -1,6 +1,6 @@
-#include "lp_score.h"
-#include "../foundations/foundations.h"
 #include "../../includes/memory.h"
+#include "../foundations/foundations.h"
+#include "lp_score.h"
 
 /*
  * [2021] Theorem 3
@@ -9,10 +9,13 @@
  *
  * TODO: implement
  */
-LPScoreOp *lp_score_greedy(int *perm, int n, int lambda, int mode,
-                             int *op_count)
+LPScoreOp	*lp_score_greedy(int *perm, int n, int lambda, int mode,
+		int *op_count)
 {
-    (void)perm; (void)n; (void)lambda; (void)mode;
-    *op_count = 0;
-    return NULL;
+	(void)perm;
+	(void)n;
+	(void)lambda;
+	(void)mode;
+	*op_count = 0;
+	return (NULL);
 }

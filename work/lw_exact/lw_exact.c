@@ -1,6 +1,6 @@
-#include "lw_exact.h"
-#include "../foundations/foundations.h"
 #include "../../includes/memory.h"
+#include "../foundations/foundations.h"
+#include "lw_exact.h"
 #include <math.h>
 
 /*
@@ -11,9 +11,12 @@
  *   - Signed reversal exact (Theorem 12): inversion removal + sign fix
  *   - Signed both exact (Theorem 13): use Lemma 26 to preserve codd
  */
-LWExactOp *lw_exact(int *perm, int n, double alpha, int mode, int *op_count)
+LWExactOp	*lw_exact(int *perm, int n, double alpha, int mode, int *op_count)
 {
-    (void)perm; (void)n; (void)alpha; (void)mode;
-    *op_count = 0;
-    return NULL;
+	(void)perm;
+	(void)n;
+	(void)alpha;
+	(void)mode;
+	*op_count = 0;
+	return (NULL);
 }

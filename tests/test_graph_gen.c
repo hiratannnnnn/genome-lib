@@ -8,13 +8,15 @@ static int	is_connected(int **matrix, int n)
 {
 	int	*visited;
 	int	*queue;
-	int	front = 0, back;
+	int	front;
+	int	back;
 	int	u;
 	int	result;
 
 	visited = (int *)calloc(n, sizeof(int));
 	queue = (int *)calloc(n, sizeof(int));
-	front = 0, back = 0;
+	front = 0;
+	back = 0;
 	visited[0] = 1;
 	queue[back++] = 0;
 	while (front < back)

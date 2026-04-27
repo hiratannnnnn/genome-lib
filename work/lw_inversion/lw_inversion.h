@@ -19,13 +19,19 @@
  * mode: 1=reversals only (SbR), 2=transpositions only (SbT), 3=both (SbRT)
  */
 
-# define LW_MODE_REV   1
-# define LW_MODE_TRANS 2
-# define LW_MODE_BOTH  3
+# define LW_MODE_REV 1
+# define LW_MODE_TPOS 2
+# define LW_MODE_BOTH 3
 
-typedef struct { int type; int i; int j; int k; } LWOp;
+typedef struct
+{
+	int	type;
+	int	i;
+	int	j;
+	int	k;
+}		LWOp;
 
-LWOp *lw_inversion_greedy(int *perm, int n, int lambda, double alpha,
-                            int mode, int *op_count);
+LWOp	*lw_inv_greedy(int *perm, int n, int lambda, double alpha, int mode,
+			int *op_count);
 
 #endif

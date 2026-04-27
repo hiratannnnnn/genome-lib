@@ -24,13 +24,17 @@ void	run_tests_permutation(void);
 int	main(void)
 {
 	double	elapsed;
+	clock_t	proc_start;
+	clock_t	proc_end;
 
-	srand(42); /* deterministic seed for reproducibility */
+	srand(42);
 	proc_start = clock();
-	printf(CLR_BOLD "============================================================\n");
+	printf(CLR_BOLD
+		"============================================================\n");
 	printf("  graph-lib test suite\n");
-	printf("============================================================" CLR_RESET "\n");
-	run_tests_memory(); /* first: ensures xmalloc works */
+	printf("============================================================"
+		CLR_RESET "\n");
+	run_tests_memory();
 	run_tests_matrix();
 	run_tests_utils_primitives();
 	run_tests_strings();
@@ -43,16 +47,17 @@ int	main(void)
 	run_tests_permutation();
 	proc_end = clock();
 	elapsed = (double)(proc_end - proc_start) / CLOCKS_PER_SEC;
-	printf("\n" CLR_BOLD "============================================================\n");
+	printf("\n" CLR_BOLD
+		"============================================================\n");
 	if (g_failed == 0)
 		printf("  Results:  " CLR_PASS "%d passed" CLR_RESET CLR_BOLD
-			"  |  %d failed  |  " CLR_DIM "%.3f s\n" CLR_RESET,
-			g_passed, g_failed, elapsed);
+			"  |  0 failed  |  " CLR_DIM "%.3f s\n" CLR_RESET, g_passed,
+			elapsed);
 	else
 		printf("  Results:  " CLR_PASS "%d passed" CLR_RESET CLR_BOLD
-			"  |  " CLR_FAIL "%d failed" CLR_RESET CLR_BOLD
-			"  |  " CLR_DIM "%.3f s\n" CLR_RESET,
-			g_passed, g_failed, elapsed);
-	printf(CLR_BOLD "============================================================" CLR_RESET "\n");
+			"  |  " CLR_FAIL "%d failed" CLR_RESET CLR_BOLD "  |  "
+			CLR_DIM "%.3f s\n" CLR_RESET, g_passed, g_failed, elapsed);
+	printf(CLR_BOLD "============================================================"
+		CLR_RESET "\n");
 	return ((g_failed > 0) ? 1 : 0);
 }

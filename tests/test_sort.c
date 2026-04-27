@@ -57,7 +57,7 @@ void	run_tests_sort(void)
 	Edge	*e3;
 	Vertex	**vs;
 	Node	*head;
-		int degree[] = {1, 3, 2};
+	int		degree[] = {1, 3, 2};
 	Edge	*e;
 	int		ok;
 

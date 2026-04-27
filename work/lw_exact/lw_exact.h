@@ -29,8 +29,14 @@
  * mode: 1=SbR, 2=SbT, 3=SbRT, 4=SbRbar, 5=SbRbarT
  */
 
-typedef struct { int type; int i; int j; int k; } LWExactOp;
+typedef struct
+{
+	int		type;
+	int		i;
+	int		j;
+	int		k;
+}			LWExactOp;
 
-LWExactOp *lw_exact(int *perm, int n, double alpha, int mode, int *op_count);
+LWExactOp	*lw_exact(int *perm, int n, double alpha, int mode, int *op_count);
 
 #endif
