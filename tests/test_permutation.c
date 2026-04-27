@@ -3,162 +3,164 @@
 
 void	run_tests_permutation(void)
 {
-		int perm[5];
-		int cp[5];
-		int non_id[5] = {0, 2, 1, 3, 4};
-		int perm[4] = {1, 3, 0, 2};
-		int inv[4];
-		int res[4];
-		int p[3] = {1, 2, 0};
-		int q[3] = {2, 0, 1};
-		int res[3];
-		int id[3] = {0, 1, 2};
-		int res2[3];
-		int id[5] = {0, 1, 2, 3, 4};
-		int rev[5] = {4, 3, 2, 1, 0};
-		int t[5] = {0, 1, 3, 2, 4};
-		int single[1] = {0};
-		int arr[6] = {0, 1, 2, 3, 4, 5};
-		int arr2[4] = {0, 1, 2, 3};
-		int arr3[4] = {0, 1, 2, 3};
-		int arr4[3] = {0, 1, 2};
-		int arr[5] = {0, 1, 2, 3, 4};
-		int arr2[4] = {0, 1, 2, 3};
-		int arr3[5] = {3, 1, 2, 0, 4};
-		int save[5];
-		int perm[4] = {1, 0, 2, 3};
-	int	bp_before;
-	int	bp_after;
+	int	perm[5];
+	int	cp[5];
+	int	non_id[5] = {0, 2, 1, 3, 4};
+	int	q4[4] = {1, 3, 0, 2};
+	int	inv[4];
+	int	res[4];
+	int	p3[3] = {1, 2, 0};
+	int	q3[3] = {2, 0, 1};
+	int	res3[3];
+	int	id3[3] = {0, 1, 2};
+	int	res3b[3];
+	int	id5[5] = {0, 1, 2, 3, 4};
+	int	rev5[5] = {4, 3, 2, 1, 0};
+	int	bp3[5] = {0, 1, 3, 2, 4};
+	int	single[1] = {0};
+	int	arr[5] = {0, 1, 2, 3, 4};
+	int	nat5[5];
+	int	found;
+	int	pos;
+	int	np[3] = {0, 1, 2};
+	int	last[3] = {2, 1, 0};
+	int	ret;
 
-	TEST_GROUP("identity_permutation / copy_permutation
-		/ is_identity_permutation");
+	TEST_GROUP("identity_permutation / copy_permutation / is_identity_permutation");
 	{
-		identity_permutation(perm, 5);
+		identity_permutation(perm, 5, 0);
 		ASSERT(perm[0] == 0 && perm[1] == 1 && perm[2] == 2 && perm[3] == 3
-			&& perm[4] == 4, "identity_permutation: perm[i] = i");
-		ASSERT(is_identity_permutation(perm, 5, 1) == 1,
-			"is_identity_permutation: identity -> 1");
+			&& perm[4] == 4, "identity_permutation(n=5, is_natural=0): perm[i]=i");
+		ASSERT(is_identity_permutation(perm, 5, 0) == 1,
+			"is_identity_permutation: 0-indexed identity -> 1");
 		copy_permutation(perm, cp, 5);
 		ASSERT(cp[0] == 0 && cp[4] == 4, "copy_permutation: values match");
-		ASSERT(is_identity_permutation(non_id, 5, 1) == 0,
+		cp[2] = 99;
+		ASSERT(perm[2] == 2, "copy_permutation: deep copy (modifying cp leaves perm intact)");
+		ASSERT(is_identity_permutation(non_id, 5, 0) == 0,
 			"is_identity_permutation: non-identity -> 0");
+		/* Natural (1-indexed) identity: perm[i] = i+1 */
+		identity_permutation(nat5, 5, 1);
+		ASSERT(nat5[0] == 1 && nat5[4] == 5,
+			"identity_permutation(is_natural=1): perm[i]=i+1");
+		ASSERT(is_identity_permutation(nat5, 5, 1) == 1,
+			"is_identity_permutation(is_natural=1): natural identity -> 1");
+		ASSERT(is_identity_permutation(nat5, 5, 0) == 0,
+			"is_identity_permutation: natural perm is not 0-indexed identity");
 	}
 	TEST_GROUP("inverse_permutation");
 	{
-		/* perm = [1, 3, 0, 2]  →  inv = [2, 0, 3, 1] */
-		inverse_permutation(perm, inv, 4);
-		/* inv[perm[i]] = i : inv[1]=0, inv[3]=1, inv[0]=2, inv[2]=3 */
+		/* q4 = {1, 3, 0, 2}: inv[q4[i]]=i -> inv={2,0,3,1} */
+		inverse_permutation(q4, inv, 4);
 		ASSERT(inv[0] == 2, "inverse_permutation: inv[0] = 2");
 		ASSERT(inv[1] == 0, "inverse_permutation: inv[1] = 0");
 		ASSERT(inv[2] == 3, "inverse_permutation: inv[2] = 3");
 		ASSERT(inv[3] == 1, "inverse_permutation: inv[3] = 1");
-		/* perm ∘ inv = identity */
-		compose_permutation(perm, inv, res, 4);
-		ASSERT(is_identity_permutation(res, 4) == 1,
-			"inverse_permutation: perm ∘ inv = identity");
+		/* q4 composed with inv should give identity */
+		compose_permutation(q4, inv, res, 4);
+		ASSERT(is_identity_permutation(res, 4, 0) == 1,
+			"inverse_permutation: q4 o inv = identity");
+		/* Inverse of identity is identity */
+		compose_permutation(inv, q4, res, 4);
+		ASSERT(is_identity_permutation(res, 4, 0) == 1,
+			"inverse_permutation: inv o q4 = identity");
 	}
 	TEST_GROUP("compose_permutation");
 	{
-		/* p = [1,2,0],  q = [2,0,1]
-			* res[i] = p[q[i]]:
-			*   res[0] = p[2] = 0
-			*   res[1] = p[0] = 1
-			*   res[2] = p[1] = 2   → identity */
-		compose_permutation(p, q, res, 3);
-		ASSERT(is_identity_permutation(res, 3) == 1,
-			"compose_permutation: p∘q = identity (p and q are mutual inverses)");
-		/* identity ∘ q = q */
-		compose_permutation(id, q, res2, 3);
-		ASSERT(res2[0] == q[0] && res2[1] == q[1] && res2[2] == q[2],
-			"compose_permutation: id∘q = q");
+		/* p3={1,2,0}, q3={2,0,1}: res[i]=p3[q3[i]]
+		 * res[0]=p3[2]=0, res[1]=p3[0]=1, res[2]=p3[1]=2 -> identity */
+		compose_permutation(p3, q3, res3, 3);
+		ASSERT(is_identity_permutation(res3, 3, 0) == 1,
+			"compose_permutation: p3 o q3 = identity (mutual inverses)");
+		/* id3 o q3 = q3 */
+		compose_permutation(id3, q3, res3b, 3);
+		ASSERT(res3b[0] == q3[0] && res3b[1] == q3[1] && res3b[2] == q3[2],
+			"compose_permutation: id o q3 = q3");
+		/* q3 o id3 = q3 */
+		compose_permutation(q3, id3, res3b, 3);
+		ASSERT(res3b[0] == q3[0] && res3b[1] == q3[1] && res3b[2] == q3[2],
+			"compose_permutation: q3 o id = q3");
 	}
 	TEST_GROUP("count_breakpoints");
 	{
-		/* Identity: 0 breakpoints */
-		ASSERT(count_breakpoints(id, 5) == 0, "count_breakpoints: identity
-			-> 0");
-		/* Completely reversed [4,3,2,1,0]: maximum breakpoints.
-			* Left boundary: 4 != 0          -> 1
-			* (4,3): 3 != 4+1=5              -> 1
-			* (3,2): 2 != 3+1=4              -> 1
-			* (2,1): 1 != 2+1=3              -> 1
-			* (1,0): 0 != 1+1=2              -> 1
-			* Right boundary: 0 != 4         -> 1
-			* Total: 6 */
-		ASSERT(count_breakpoints(rev, 5) == 6,
+		/* Identity {0,1,2,3,4}: 0 breakpoints */
+		ASSERT(count_breakpoints(id5, 5) == 0,
+			"count_breakpoints: identity -> 0");
+		/* Fully reversed {4,3,2,1,0}: 6 breakpoints (all positions) */
+		ASSERT(count_breakpoints(rev5, 5) == 6,
 			"count_breakpoints: fully reversed -> 6");
-		/* [0,1,3,2,4]: one transposition of adjacent elements.
-			* (1,3): 3 != 1+1=2 -> breakpoint
-			* (3,2): 2 != 3+1=4 -> breakpoint
-			* (2,4): 4 != 2+1=3 -> breakpoint
-			* Total: 3 */
-		ASSERT(count_breakpoints(t, 5) == 3,
-			"count_breakpoints: one adjacent transposition -> 3");
-		/* single element identity */
+		/* {0,1,3,2,4}: breakpoints at (1,3),(3,2),(2,4) -> 3 */
+		ASSERT(count_breakpoints(bp3, 5) == 3,
+			"count_breakpoints: one adjacent swap -> 3");
+		/* Single element identity */
 		ASSERT(count_breakpoints(single, 1) == 0,
 			"count_breakpoints: n=1 identity -> 0");
 	}
-	TEST_GROUP("block_interchange");
+	TEST_GROUP("find_value");
 	{
-		/* arr = [0,1,2,3,4,5]
-			* block_interchange(i=1, j=2, k=4, l=5):
-			*   block1 = [1,2], middle = [3], block2 = [4,5]
-			*   result = [0, 4,5, 3, 1,2] */
-		block_interchange(arr, 6, 1, 2, 4, 5);
-		ASSERT(arr[0] == 0 && arr[1] == 4 && arr[2] == 5 && arr[3] == 3
-			&& arr[4] == 1 && arr[5] == 2,
-			"block_interchange(1,2,4,5): [0,1,2,3,4,5] -> [0,4,5,3,1,2]");
-		/* Swap entire array in two halves: i=0, j=1, k=2, l=3 → no middle */
-		block_interchange(arr2, 4, 0, 1, 2, 3);
-		ASSERT(arr2[0] == 2 && arr2[1] == 3 && arr2[2] == 0 && arr2[3] == 1,
-			"block_interchange(0,1,2,3): [0,1,2,3] -> [2,3,0,1]");
-		/* Identity operation: swap adjacent single elements (i=j, k=l) */
-		block_interchange(arr3, 4, 1, 1, 2, 2);
-		ASSERT(arr3[0] == 0 && arr3[1] == 2 && arr3[2] == 1 && arr3[3] == 3,
-			"block_interchange(1,1,2,2): adjacent single-element swap");
-		/* Invalid input: no crash */
-		block_interchange(arr4, 3, 2, 1, 0, 0); /* i > j: invalid */
-		ASSERT(arr4[0] == 0 && arr4[1] == 1 && arr4[2] == 2,
-			"block_interchange: invalid params -> no change");
+		/* arr = {0,1,2,3,4} */
+		found = find_value(arr, 5, 3);
+		ASSERT(found == 3, "find_value: value 3 is at index 3");
+		found = find_value(arr, 5, 0);
+		ASSERT(found == 0, "find_value: value 0 is at index 0");
+		found = find_value(arr, 5, 4);
+		ASSERT(found == 4, "find_value: value 4 is at index 4");
+		found = find_value(arr, 5, 99);
+		ASSERT(found == -1, "find_value: missing value returns -1");
 	}
-	TEST_GROUP("prefix_block_interchange");
+	TEST_GROUP("first_breakpoint_position");
 	{
-		/* arr = [0,1,2,3,4]
-			* prefix_block_interchange(j=1, k=3, l=4):
-			*   i=0, block1=[0,1], middle=[2], block2=[3,4]
-			*   result = [3,4, 2, 0,1] */
-		prefix_block_interchange(arr, 5, 1, 3, 4);
-		ASSERT(arr[0] == 3 && arr[1] == 4 && arr[2] == 2 && arr[3] == 0
-			&& arr[4] == 1, "prefix_block_interchange(j=1,k=3,l=4): [0,1,2,3,4]
-			-> [3,4,2,0,1]");
-		/* Prefix of length 1 (single element) */
-		prefix_block_interchange(arr2, 4, 0, 2, 3);
-		/* i=0,j=0,k=2,l=3: block1=[0], middle=[1], block2=[2,3]
-			* result = [2,3,1,0] */
-		ASSERT(arr2[0] == 2 && arr2[1] == 3 && arr2[2] == 1 && arr2[3] == 0,
-			"prefix_block_interchange(j=0,k=2,l=3): [0,1,2,3] -> [2,3,1,0]");
-		/* Applying a PBI twice can return to original (not always,
-			but test round-trip) */
-		copy_permutation(arr3, save, 5);
-		prefix_block_interchange(arr3, 5, 0, 3, 3);
-		/* i=0,j=0,k=3,l=3: block1=[3], middle=[1,2], block2=[0]
-			* result = [0,1,2,3,4] */
-		ASSERT(is_identity_permutation(arr3, 4) || arr3[4] == 4,
-			"prefix_block_interchange: sanity check on [3,1,2,0,4]");
-		(void)save;
+		/* Identity: no breakpoint -> -1 */
+		pos = first_breakpoint_position(id5, 5);
+		ASSERT(pos == -1, "first_breakpoint_position: identity -> -1");
+		/* {0,1,3,2,4}: first breakpoint between index 1 and 2 */
+		pos = first_breakpoint_position(bp3, 5);
+		ASSERT(pos == 1,
+			"first_breakpoint_position: {0,1,3,2,4} -> breakpoint at index 1");
+		/* {4,3,2,1,0}: first breakpoint at index 0 */
+		pos = first_breakpoint_position(rev5, 5);
+		ASSERT(pos == 0,
+			"first_breakpoint_position: reversed -> breakpoint at index 0");
 	}
-	TEST_GROUP("block_interchange + count_breakpoints interaction");
+	TEST_GROUP("rev_array_int");
 	{
-		/* After sorting [1,0,2,3] with one block_interchange,
-			check breakpoints decrease */
-		bp_before = count_breakpoints(perm, 4);
-		/* block_interchange(0,0,1,1): swap perm[0] and perm[1] */
-		block_interchange(perm, 4, 0, 0, 1, 1);
-		bp_after = count_breakpoints(perm, 4);
-		ASSERT(is_identity_permutation(perm, 4) == 1,
-			"block_interchange sorts [1,0,2,3] -> [0,1,2,3]");
-		ASSERT(bp_after < bp_before,
-			"block_interchange: breakpoints decrease after sort step");
-		ASSERT(bp_after == 0, "block_interchange: 0 breakpoints after sorting");
+		/* Reverse entire array in place: arr={0,1,2,3,4} -> {4,3,2,1,0} */
+		int ra[5] = {0, 1, 2, 3, 4};
+		rev_array_int(ra, ra + 4);
+		ASSERT(ra[0] == 4 && ra[1] == 3 && ra[2] == 2 && ra[3] == 1 && ra[4] == 0,
+			"rev_array_int: full reversal {0,1,2,3,4} -> {4,3,2,1,0}");
+		/* Reverse suffix [1..3]: {0,1,2,3,4} -> {0,3,2,1,4} */
+		int rb[5] = {0, 1, 2, 3, 4};
+		rev_array_int(rb + 1, rb + 3);
+		ASSERT(rb[0] == 0 && rb[1] == 3 && rb[2] == 2 && rb[3] == 1 && rb[4] == 4,
+			"rev_array_int: suffix [1..3] -> {0,3,2,1,4}");
+		/* Single element: no change */
+		int rc[3] = {7, 8, 9};
+		rev_array_int(rc + 1, rc + 1);
+		ASSERT(rc[0] == 7 && rc[1] == 8 && rc[2] == 9,
+			"rev_array_int: single element -> unchanged");
+	}
+	TEST_GROUP("next_permutation");
+	{
+		/* {0,1,2} -> next = {0,2,1} */
+		ret = next_permutation(np, 3);
+		ASSERT(ret == 1, "next_permutation({0,1,2}): returns 1");
+		ASSERT(np[0] == 0 && np[1] == 2 && np[2] == 1,
+			"next_permutation({0,1,2}) = {0,2,1}");
+		/* {0,2,1} -> next = {1,0,2} */
+		ret = next_permutation(np, 3);
+		ASSERT(ret == 1, "next_permutation({0,2,1}): returns 1");
+		ASSERT(np[0] == 1 && np[1] == 0 && np[2] == 2,
+			"next_permutation({0,2,1}) = {1,0,2}");
+		/* {2,1,0} is the last permutation: returns 0 */
+		ret = next_permutation(last, 3);
+		ASSERT(ret == 0, "next_permutation({2,1,0}): returns 0 (last perm)");
+		/* Exhaust all 3! = 6 permutations of {0,1,2}: count = 5 transitions */
+		int counter[3] = {0, 1, 2};
+		int steps = 0;
+		while (next_permutation(counter, 3))
+			steps++;
+		ASSERT(steps == 5,
+			"next_permutation: exactly 5 transitions through all 3! permutations");
 	}
 }

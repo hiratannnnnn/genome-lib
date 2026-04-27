@@ -5,26 +5,18 @@ void	run_tests_graph_conversion(void)
 {
 	int		**m;
 	Vertex	**vs;
-	int		**m;
-	Vertex	**vs;
-	Vertex	**vs;
-	int		**m;
 	int		**orig;
-	Vertex	**vs;
 	int		**recovered;
 	int		ok;
 	int		**empty;
 	int		**comp_empty;
 	int		**k3;
 	int		**comp_k3;
-	int		**m;
 	Vertex	**comp;
 	double	**cm;
-	Vertex	**vs;
 	Edge	*e01;
 	int		**cost;
 	int		**adj;
-	Vertex	**vs;
 	Node	*el;
 	Vertex	**vs2;
 	Node	*el2;
@@ -101,8 +93,7 @@ void	run_tests_graph_conversion(void)
 			for (int j = 0; j < 4; j++)
 				if (orig[i][j] != recovered[i][j])
 					ok = 0;
-		ASSERT(ok, "roundtrip adj_matrix -> vertices
-			-> adj_matrix: matrix identical");
+		ASSERT(ok, "roundtrip adj_matrix -> vertices -> adj_matrix: matrix identical");
 		free_matrix_int(orig, 4, 4);
 		free_matrix_int(recovered, 4, 4);
 		free_vertex_array(vs, 4);

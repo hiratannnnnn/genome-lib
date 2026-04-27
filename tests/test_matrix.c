@@ -154,8 +154,8 @@ void	run_tests_matrix(void)
 		A[2][2] = 1;
 		identity_matrix(B, 3);
 		matrix_multiply(A, B, C, 3);
-		ASSERT(C[0][0] == 1 && C[0][1] == 2 && C[1][1] == 1, "matrix_multiply: A
-			* I = A");
+		ASSERT(C[0][0] == 1 && C[0][1] == 2 && C[1][1] == 1,
+			"matrix_multiply: A * I = A");
 		/* [[1,1],[1,1]]
 			* [[1,1],[1,1]] = [[2,2],[2,2]] (2x2 via 3x3 top-left) */
 		for (int i = 0; i < 3; i++)

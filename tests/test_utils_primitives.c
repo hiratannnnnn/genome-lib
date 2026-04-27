@@ -27,7 +27,7 @@ static int	is_valid_perm(int *arr, int n)
 
 void	run_tests_utils_primitives(void)
 {
-		int arr[] = {1, 2, 3, 4, 5};
+		int arr5[] = {1, 2, 3, 4, 5};
 		int arr0[] = {0, 0, 0};
 		int arr_neg[] = {-1, 2, -3};
 	int		**m;
@@ -42,7 +42,7 @@ void	run_tests_utils_primitives(void)
 
 	TEST_GROUP("sum_array / sum_matrix");
 	{
-		ASSERT(sum_array(arr, 5) == 15, "sum_array: {1,2,3,4,5} = 15");
+		ASSERT(sum_array(arr5, 5) == 15, "sum_array: {1,2,3,4,5} = 15");
 		ASSERT(sum_array(arr0, 3) == 0, "sum_array: all zeros = 0");
 		ASSERT(sum_array(arr_neg, 3) == -2, "sum_array: with negatives");
 		m = gen_matrix_int(2, 3);
@@ -88,28 +88,28 @@ void	run_tests_utils_primitives(void)
 		ASSERT(min_of_array(single, 1) == 42, "min_of_array(single): 42");
 		ASSERT(min_of_array_index(single, 1) == 0,
 			"min_of_array_index(single): index 0");
-		ASSERT(min_of_array(neg, 4) == -5, "min_of_array: negatives, min is
-			-5");
-		ASSERT(max_of_array(neg, 4) == -1, "max_of_array: negatives, max is
-			-1");
+		ASSERT(min_of_array(neg, 4) == -5,
+			"min_of_array: negatives, min is -5");
+		ASSERT(max_of_array(neg, 4) == -1,
+			"max_of_array: negatives, max is -1");
 	}
 	TEST_GROUP("rand_perm");
 	{
-		p5 = rand_perm(5, 1);
-		ASSERT(p5 != NULL, "rand_perm(5, 1): returns non-NULL");
-		ASSERT(is_valid_perm(p5, 5), "rand_perm(5,
-			1): valid permutation of [0..4]");
+		p5 = rand_perm(5, 0);
+		ASSERT(p5 != NULL, "rand_perm(5, 0): returns non-NULL");
+		ASSERT(is_valid_perm(p5, 5),
+			"rand_perm(5,0): valid permutation of [0..4]");
 		free(p5);
-		p1 = rand_perm(1, 1);
-		ASSERT(p1 != NULL, "rand_perm(1, 1): returns non-NULL");
-		ASSERT(p1[0] == 0, "rand_perm(1, 1): single element is 0");
+		p1 = rand_perm(1, 0);
+		ASSERT(p1 != NULL, "rand_perm(1, 0): returns non-NULL");
+		ASSERT(p1[0] == 0, "rand_perm(1, 0): single element is 0");
 		free(p1);
 		/* Multiple calls should (eventually) differ — not strictly testable,
 			but we at least verify structural validity each time */
-		p10 = rand_perm(10, 1);
-		ASSERT(p10 != NULL, "rand_perm(10, 1): returns non-NULL");
-		ASSERT(is_valid_perm(p10, 10), "rand_perm(10,
-			1): valid permutation of [0..9]");
+		p10 = rand_perm(10, 0);
+		ASSERT(p10 != NULL, "rand_perm(10, 0): returns non-NULL");
+		ASSERT(is_valid_perm(p10, 10),
+			"rand_perm(10,0): valid permutation of [0..9]");
 		free(p10);
 	}
 	TEST_GROUP("count_digit");

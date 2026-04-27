@@ -65,30 +65,15 @@ void	run_tests_graph_gen(void)
 	int		sum;
 	int		**m1;
 	int		all_edges;
-	int		**m;
 	int		**m2;
-	int		**m;
-	int		binary;
-	int		**m0;
-	int		sum;
-	int		**m;
 	int		no_mutual;
-	int		**m;
 	int		edges;
 	int		**m3;
 	int		n;
-	int		**m;
-	int		binary;
-	int		**m0;
-	int		sum;
-	int		**m;
 	int		valid;
-	int		**m;
-	int		valid;
-	double	**m;
+	double	**dm;
 	int		sym;
 	int		*prufer;
-	int		valid;
 
 	TEST_GROUP("gen_rand_undigraph");
 	{
@@ -272,16 +257,16 @@ void	run_tests_graph_gen(void)
 	}
 	TEST_GROUP("gen_rand_undigraph_dbcost");
 	{
-		m = gen_rand_undigraph_dbcost(4, 0.5, 5.0, 0.6);
-		ASSERT(m != NULL, "gen_rand_undigraph_dbcost: non-NULL");
+		dm = gen_rand_undigraph_dbcost(4, 0.5, 5.0, 0.6);
+		ASSERT(dm != NULL, "gen_rand_undigraph_dbcost: non-NULL");
 		/* Symmetric: cost[i][j] == cost[j][i] */
 		sym = 1;
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				if (m[i][j] != m[j][i])
+				if (dm[i][j] != dm[j][i])
 					sym = 0;
 		ASSERT(sym, "gen_rand_undigraph_dbcost: symmetric");
-		free_matrix_double(m, 4, 4);
+		free_matrix_double(dm, 4, 4);
 	}
 	TEST_GROUP("gen_rand_prufer / gen_rand_tree via Prufer");
 	{

@@ -11,10 +11,8 @@ void	run_tests_graph_analysis(void)
 	int		**tree;
 	int		**disc;
 	int		**single;
-		int deg_path[] = {1, 2, 1};
 		int odd_list[3] = {0, 0, 0};
 	int		cnt;
-		int deg_k3[] = {2, 2, 2};
 		int odd_k3[3] = {-1, -1, -1};
 	int		cnt2;
 		int deg_star[] = {4, 1, 1, 1, 1};
@@ -23,7 +21,6 @@ void	run_tests_graph_analysis(void)
 	int		**sym;
 	int		**zero;
 	Vertex	**vs;
-		int degree[3] = {0, 0, 0};
 		int deg_need[] = {3, 2, 2, 1};
 		int deg_noneed[] = {2, 2, 2, 2};
 		int deg_odd[] = {2, 2, 2};
@@ -133,6 +130,7 @@ void	run_tests_graph_analysis(void)
 		vs = create_vertex_array(3);
 		add_undirected_edge(vs, 0, 1, 0, 1.0);
 		add_undirected_edge(vs, 1, 2, 1, 1.0);
+		degree[0] = 0; degree[1] = 0; degree[2] = 0;
 		compute_degrees_from_list(vs, 3, degree);
 		ASSERT(degree[0] == 1,
 			"compute_degrees_from_list: vertex 0 degree = 1");
@@ -150,13 +148,13 @@ void	run_tests_graph_analysis(void)
 			* Returns 0 otherwise.
 			*/
 		/* n=4 (even), vertex 0 has degree 3 (=n-1=3) -> need double edge */
-		ASSERT(need_double_edge(deg_need, 4) == 1, "need_double_edge: even n,
-			vertex with degree n-1 -> 1");
+		ASSERT(need_double_edge(deg_need, 4) == 1,
+			"need_double_edge: even n, vertex with degree n-1 -> 1");
 		/* n=4 (even), no vertex has degree 3 -> no double edge needed */
-		ASSERT(need_double_edge(deg_noneed, 4) == 0, "need_double_edge: even n,
-			no vertex with degree n-1 -> 0");
+		ASSERT(need_double_edge(deg_noneed, 4) == 0,
+			"need_double_edge: even n, no vertex with degree n-1 -> 0");
 		/* n=3 (odd) -> always 0 */
-		ASSERT(need_double_edge(deg_odd, 3) == 0, "need_double_edge: odd n
-			-> always 0");
+		ASSERT(need_double_edge(deg_odd, 3) == 0,
+			"need_double_edge: odd n -> always 0");
 	}
 }

@@ -28,16 +28,10 @@ void	run_tests_io(void)
 	int		n;
 	int		**loaded;
 	int		eq;
-	double	**orig;
-	int		ret;
-	int		r = 0, c;
-	double	**loaded;
-	int		eq;
-	int		**orig;
-	int		ret;
-	int		n;
-	int		**loaded;
-	int		eq;
+	double	**dorig;
+	int		r;
+	int		c;
+	double	**dloaded;
 	int		fd;
 	char	*line1;
 	char	*line2;
@@ -72,28 +66,29 @@ void	run_tests_io(void)
 	}
 	TEST_GROUP("write_double_matrix / read_double_matrix (roundtrip)");
 	{
-		orig = gen_matrix_double(2, 3);
-		orig[0][0] = 1.5;
-		orig[0][1] = 2.5;
-		orig[0][2] = 0.0;
-		orig[1][0] = 0.0;
-		orig[1][1] = 3.5;
-		orig[1][2] = 4.5;
-		ret = write_double_matrix(orig, 2, 3, TMP_DBL_MATRIX);
+		dorig = gen_matrix_double(2, 3);
+		dorig[0][0] = 1.5;
+		dorig[0][1] = 2.5;
+		dorig[0][2] = 0.0;
+		dorig[1][0] = 0.0;
+		dorig[1][1] = 3.5;
+		dorig[1][2] = 4.5;
+		ret = write_double_matrix(dorig, 2, 3, TMP_DBL_MATRIX);
 		ASSERT(ret == 0, "write_double_matrix: returns 0 on success");
-		r = 0, c = 0;
-		loaded = read_double_matrix(&r, &c, TMP_DBL_MATRIX);
-		ASSERT(loaded != NULL, "read_double_matrix: non-NULL after write");
+		r = 0;
+		c = 0;
+		dloaded = read_double_matrix(&r, &c, TMP_DBL_MATRIX);
+		ASSERT(dloaded != NULL, "read_double_matrix: non-NULL after write");
 		ASSERT(r == 2 && c == 3,
 			"read_double_matrix: dimensions correct (2x3)");
 		eq = 1;
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 3; j++)
-				if (fabs(orig[i][j] - loaded[i][j]) > 1e-6)
+				if (fabs(dorig[i][j] - dloaded[i][j]) > 1e-6)
 					eq = 0;
 		ASSERT(eq, "read_double_matrix: values match written data");
-		free_matrix_double(orig, 2, 3);
-		free_matrix_double(loaded, r, c);
+		free_matrix_double(dorig, 2, 3);
+		free_matrix_double(dloaded, r, c);
 	}
 	TEST_GROUP("write_adjacent_list / read_list (roundtrip)");
 	{

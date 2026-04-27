@@ -2,6 +2,7 @@
 # define MEMORY_H
 
 # include <stddef.h>
+# include <time.h>
 
 /* ========= Global State ========= */
 

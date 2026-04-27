@@ -8,10 +8,9 @@ void	run_tests_memory(void)
 	size_t	before2;
 	int		*arr;
 	int		all_zero;
-	size_t	before;
-	int		*p;
-	int		*p2;
-	int		*p3;
+	int		*ip;
+	int		*ip2;
+	int		*ip3;
 	void	*p4;
 	size_t	peak_before;
 	size_t	mem_before;
@@ -44,27 +43,27 @@ void	run_tests_memory(void)
 	TEST_GROUP("xrealloc");
 	{
 		before = mem;
-		p = (int *)xmalloc(sizeof(int) * 4);
-		p[0] = 1;
-		p[1] = 2;
-		p[2] = 3;
-		p[3] = 4;
+		ip = (int *)xmalloc(sizeof(int) * 4);
+		ip[0] = 1;
+		ip[1] = 2;
+		ip[2] = 3;
+		ip[3] = 4;
 		/* Grow */
-		p2 = (int *)xrealloc(p, sizeof(int) * 4, sizeof(int) * 8);
-		ASSERT(p2 != NULL, "xrealloc(grow): non-NULL");
+		ip2 = (int *)xrealloc(ip, sizeof(int) * 4, sizeof(int) * 8);
+		ASSERT(ip2 != NULL, "xrealloc(grow): non-NULL");
 		ASSERT(mem == before + sizeof(int) * 8,
 			"xrealloc(grow): mem updated correctly");
-		ASSERT(p2[0] == 1 && p2[3] == 4,
+		ASSERT(ip2[0] == 1 && ip2[3] == 4,
 			"xrealloc(grow): original data preserved");
 		/* Shrink */
-		p3 = (int *)xrealloc(p2, sizeof(int) * 8, sizeof(int) * 2);
-		ASSERT(p3 != NULL, "xrealloc(shrink): non-NULL");
+		ip3 = (int *)xrealloc(ip2, sizeof(int) * 8, sizeof(int) * 2);
+		ASSERT(ip3 != NULL, "xrealloc(shrink): non-NULL");
 		ASSERT(mem == before + sizeof(int) * 2,
 			"xrealloc(shrink): mem updated correctly");
-		ASSERT(p3[0] == 1 && p3[1] == 2,
+		ASSERT(ip3[0] == 1 && ip3[1] == 2,
 			"xrealloc(shrink): data preserved within new size");
 		/* new_size = 0 -> frees and returns NULL */
-		p4 = xrealloc(p3, sizeof(int) * 2, 0);
+		p4 = xrealloc(ip3, sizeof(int) * 2, 0);
 		ASSERT(p4 == NULL, "xrealloc(0): returns NULL");
 		ASSERT(mem == before, "xrealloc(0): mem fully restored");
 	}

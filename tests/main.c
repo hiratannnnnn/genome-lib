@@ -27,9 +27,9 @@ int	main(void)
 
 	srand(42); /* deterministic seed for reproducibility */
 	proc_start = clock();
-	printf("============================================================\n");
+	printf(CLR_BOLD "============================================================\n");
 	printf("  graph-lib test suite\n");
-	printf("============================================================\n");
+	printf("============================================================" CLR_RESET "\n");
 	run_tests_memory(); /* first: ensures xmalloc works */
 	run_tests_matrix();
 	run_tests_utils_primitives();
@@ -43,9 +43,16 @@ int	main(void)
 	run_tests_permutation();
 	proc_end = clock();
 	elapsed = (double)(proc_end - proc_start) / CLOCKS_PER_SEC;
-	printf("\n============================================================\n");
-	printf("  Results:  %d passed  |  %d failed  |  %.3f s\n", g_passed,
-		g_failed, elapsed);
-	printf("============================================================\n");
+	printf("\n" CLR_BOLD "============================================================\n");
+	if (g_failed == 0)
+		printf("  Results:  " CLR_PASS "%d passed" CLR_RESET CLR_BOLD
+			"  |  %d failed  |  " CLR_DIM "%.3f s\n" CLR_RESET,
+			g_passed, g_failed, elapsed);
+	else
+		printf("  Results:  " CLR_PASS "%d passed" CLR_RESET CLR_BOLD
+			"  |  " CLR_FAIL "%d failed" CLR_RESET CLR_BOLD
+			"  |  " CLR_DIM "%.3f s\n" CLR_RESET,
+			g_passed, g_failed, elapsed);
+	printf(CLR_BOLD "============================================================" CLR_RESET "\n");
 	return ((g_failed > 0) ? 1 : 0);
 }

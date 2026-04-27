@@ -64,7 +64,6 @@ static void	test_vertices(void)
 {
 	Vertex	*v;
 	Vertex	**vs;
-	Vertex	**vs;
 	Node	*n0;
 	Node	*n1;
 	Node	*n2;
@@ -136,8 +135,7 @@ static void	test_nodes(void)
 	Node	*n4;
 	Node	*head2;
 
-	TEST_GROUP("Node: create / append / count / pop_first / enqueue / dequeue
-		/ type access");
+	TEST_GROUP("Node: create / append / count / pop_first / enqueue / dequeue / type access");
 	{
 		e = create_edge(0, 0, 1, 1.0);
 		v = create_vertex(7);
