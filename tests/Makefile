@@ -1,8 +1,9 @@
 CC       = gcc
 CFLAGS   = -Wall -Wextra -Werror -g -I../includes -lm
 SRCS_DIR = ../srcs
+OBJS_DIR = objs
 
-LIB_SRCS = $(wildcard $(SRCS_DIR)/*.c)
+LIB_SRCS  = $(wildcard $(SRCS_DIR)/*/*.c)
 TEST_SRCS = main.c \
             test_matrix.c \
             test_utils_primitives.c \
@@ -16,8 +17,8 @@ TEST_SRCS = main.c \
             test_io.c \
             test_permutation.c
 
-LIB_OBJS  = $(LIB_SRCS:.c=.o)
-TEST_OBJS = $(TEST_SRCS:.c=.o)
+LIB_OBJS  = $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/lib/%.o, $(LIB_SRCS))
+TEST_OBJS = $(patsubst %.c, $(OBJS_DIR)/%.o, $(TEST_SRCS))
 TARGET    = test_runner
 
 all: $(TARGET)
@@ -26,17 +27,19 @@ $(TARGET): $(LIB_OBJS) $(TEST_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 	@echo "Build OK: $(TARGET)"
 
-$(SRCS_DIR)/%.o: $(SRCS_DIR)/%.c
+$(OBJS_DIR)/lib/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.o: %.c
+$(OBJS_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run: $(TARGET)
 	./$(TARGET)
 
 clean:
-	rm -f $(TEST_OBJS) $(LIB_OBJS)
+	rm -rf $(OBJS_DIR)
 
 fclean: clean
 	rm -f $(TARGET)

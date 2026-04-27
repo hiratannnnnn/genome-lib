@@ -5,10 +5,11 @@ ARFLAGS = rcs
 
 TARGET   = libgenome
 SRCS_DIR = srcs
+OBJS_DIR = objs
 DISTDIR  = dist
 
-SRCS = $(wildcard $(SRCS_DIR)/*.c)
-OBJS = $(SRCS:.c=.o)
+SRCS = $(wildcard $(SRCS_DIR)/*/*.c)
+OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJS_DIR)/%.o, $(SRCS))
 LIB  = $(DISTDIR)/$(TARGET).a
 
 all: $(LIB)
@@ -18,11 +19,12 @@ $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 	@echo "Archive created: $@"
 
-$(SRCS_DIR)/%.o: $(SRCS_DIR)/%.c
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJS_DIR)
 
 fclean: clean
 	rm -f $(LIB)
