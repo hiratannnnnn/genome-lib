@@ -1,0 +1,1557 @@
+Journal of Combinatorial Optimization (2021) 41:579–602
+https://doi.org/10.1007/s10878-020-00673-2
+
+Length-weighted -rearrangement distance
+Alexsandro Oliveira Alexandrino1 ·
+Guilherme Henrique Santos Miranda1
+Zanoni Dias1
+
+· Carla Negri Lintzmayer2
+
+·
+
+Accepted: 6 November 2020 / Published online: 18 November 2020
+© Springer Science+Business Media, LLC, part of Springer Nature 2020, corrected publication 2021
+
+Abstract
+Comparative genomics is a field of biology that aims at comparing genomes of different species. One major question of this field is to find the evolutionary distance between
+two given genomes. One way to estimate such distance is to use the rearrangement
+distance, which consists in finding a minimum cost sequence of rearrangements that
+transforms one genome into another. We use permutations to model the genomes being
+compared and, in this way, we can treat this problem as the problem of sorting a permutation with a minimum cost sequence of rearrangements. In the early works with
+rearrangement distance, it was considered that all rearrangements are equally likely to
+occur and, consequently, they use a unitary cost for all rearrangements. Some variations of the problem were motivated by the observation that rearrangements involving
+large segments of a genome rarely occur. One of these variants also uses a unitary
+cost, however it adds a constraint in the length of the operations allowed to estimate the distance. Another variant uses a cost function based on the rearrangement’s
+length. In this work, we study problems that combine both variants, that is, problems
+with a constraint in the rearrangement’s length and with a cost function based on the
+rearrangement’s length. We present approximation algorithms for five such problems
+involving reversals and/or transpositions for sorting signed and unsigned permutations. We also analyze the problems for specific parameters of the length restriction
+and for when the cost function is equal to α , where  is the rearrangement’s length
+and α ≥ 1 is a real value parameter.
+Keywords Genome rearrangements · Approximation algorithms · Sorting
+permutations
+
+A preliminary version of this paper previously appeared in the Proceedings of the “X Latin and American
+Algorithms, Graphs and Optimization Symposium (LAGOS’2019)” (Alexandrino et al. 2019).
+Data sharing not applicable to this article as no datasets were generated or analysed during the current
+study.
+Extended author information available on the last page of the article
+
+123
+
+580
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+1 Introduction
+One of the main challenges in Computational Biology is to estimate the evolutionary
+distance among species, considering that new organisms arise from mutations that
+occurred on the genetic material of other organisms. One way to estimate such distance
+is to consider the rearrangement distance between the organisms’ genomes we are
+comparing. Such distance consists in the cost of the sequence of rearrangements that
+occurred in the transformation of one genome into the other.
+A genome rearrangement is a large scale mutation which alters stretches of a
+genome. Two of the most studied genome rearrangements are reversals and transpositions. A reversal reverses the order of the genes in a segment of the genome,
+while a transposition exchanges two adjacent segments. We define the length of a
+rearrangement as the number of elements affected by it.
+A genome can be represented as an ordered set of genes. A synteny block is a region
+with high similarity between two distinct genomes, and it can be a single gene or a
+sequence of genes. When we want to compare two genomes, we represent a genome as
+a sequence of synteny blocks (Dias 2012). Assuming that there are no repeated genes,
+this representation is modeled as a permutation of integers. Furthermore, genes and
+blocks have orientations and, when this orientation is known, the genome is modeled as
+a signed permutation, where the sign of an element indicates the orientation of the gene
+or block. When the orientation is unknown, we simply use an unsigned permutation
+to represent a genome.
+When using permutations, the genome rearrangement problems consist in finding a minimum cost sequence of rearrangements which transforms one permutation
+into another. We can always represent one of the genomes as the identity permutation (sorted permutation) and, in this way, these problems are equivalent to sorting a
+permutation with a minimum cost sequence of rearrangements.
+The problems of Sorting Permutations by Reversals and Sorting Permutations by
+Transpositions are NP-hard (Caprara 1999; Bulteau et al. 2012). The best result for
+both problems is a 1.375-approximation algorithm (Berman et al. 2002; Elias and
+Hartman 2006). When considering only signed permutations, the problem of Sorting
+Permutations by Reversals becomes solvable in polynomial time (Hannenhalli and
+Pevzner 1999). The problem of Sorting Permutations by (Signed or Unsigned) Reversals and Transpositions is also NP-hard (Oliveira et al. 2019). For this problem, the best
+results are a 2-approximation algorithm (Walter et al. 1998) for signed permutations
+and a 2k-approximation algorithm (Rahman et al. 2008) for unsigned permutations,
+where k is the approximation factor for cycle decomposition of breakpoints graphs.
+Using the best-known value of k (Chen 2013), this approximation factor becomes
+equal to 2.8334 + , for  > 0.
+All the problems mentioned above consider the traditional approach of sorting
+permutations by rearrangements problems. In this approach, all rearrangements are
+considered to have the same probability to happen and, consequently, the rearrangement distance is equal to the minimum number of rearrangements that sort a
+permutation. However, studies show that some rearrangements are more likely to
+occur than others (Bader and Ohlebusch 2007; Blanchette et al. 1996) and, therefore,
+a weighted approach is more appropriate to estimate the evolutionary distance. In the
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+581
+
+literature, there are cost functions based on the rearrangement’s length (Pinter and
+Skiena 2002; Nguyen et al. 2005; Lintzmayer et al. 2015) and on the rearrangement’s
+type (Alexandrino et al. 2018, 2020; Bader and Ohlebusch 2007; Blanchette et al.
+1996; Eriksen 2002).
+The problem of Sorting Permutations by Length-Weighted Rearrangements was
+motivated by the observation that, in some species, the rearrangements that occurred
+in the evolutionary process do not act on very large regions (Blanchette et al. 1996;
+Lefebvre et al. 2003). In this variation, the cost of a rearrangement β is defined by the
+function f (β) = |β|α , where |β| is the length of β and α > 0 is a real value parameter.
+For α = 1, the Sorting by Length-Weighted (Signed or Unsigned) Reversals has a
+O(lg n)-approximation algorithm (Bender et al. 2008). Considering transpositions and
+the combination of (signed or unsigned) reversals and transpositions, the best known
+results are O(lg2 n)-approximation algorithms (Lintzmayer et al. 2015). For α ≥ 2,
+there are algorithms with constant approximation factor for all variations (Bender
+et al. 2008; Lintzmayer et al. 2015). Furthermore, for α ≥ 3, the problems involving
+unsigned permutations become solvable in polynomial time (Bender et al. 2008).
+Another variant of the genome rearrangement problems, where there exists a constraint in the length of the allowed rearrangements, arose from the same motivation
+of the length-weighted variation. Given an integer λ > 1, only rearrangements of
+length less than or equal to λ are allowed to modify a permutation in the problems of
+Sorting Permutations by λ-Rearrangements. For any value of λ and any combination
+of rearrangements (reversals and/or transpositions) for signed and unsigned permutations, there are O(λ2 )-approximation algorithms (Miranda et al. 2019). For λ = 3,
+there exist algorithms with constant approximation factor (Galvão et al. 2015; Vergara
+1998). For λ = 2, these problems are solvable in polynomial time (Jerrum 1985;
+Galvão et al. 2015).
+Nguyen et al. (2005) considered the problem of Sorting Length-Weighted Signed
+λ-Reversals, which combines the length constraint with the cost function based on the
+length of the rearrangements. They presented a O(lg n)-approximation, for λ = Ω(n)
+and α = 1, and a (2 lg2 n + lg n)-approximation, for λ = o(n) and α = 1.
+In this work, we study the problems of Sorting Permutations by Length-Weighted
+λ-Rearrangements, which are named as: Sorting Permutations by Length-Weighted λReversals (SbR); Sorting Permutations by Length-Weighted λ-Transpositions (SbT);
+Sorting Permutations by Length-Weighted λ-Reversals and λ-Transpositions (SbRT);
+Sorting Permutations by Length-Weighted Signed λ-Reversals (SbR̄); and Sorting
+Permutations by Length-Weighted Signed λ-Reversals and λ-Transpositions (SbR̄T).
+We start by considering α = 1 and any value of λ. After this, yet considering
+α = 1, we present results (i) for large values of λ and (ii) for λ = 3. A rearrangement
+of length at most 3 is also known as a short rearrangement (Heath and Vergara 2003;
+Galvão et al. 2015). At last, we consider that α > 1 and analyze how this affects the
+rearrangement distance.
+The rest of this work is organized as follows. Section 2 presents definitions related
+to the problems. Sections 3 and 4 describe algorithms for unsigned permutations
+and Sect. 5 describes algorithms for signed permutations. Section 6 presents new
+approximation factors for large values of λ. Section 7 considers the problem of Sorting Permutations by Length-Weighted Short Rearrangements. Section 8 analyses the
+
+123
+
+582
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+problems when using α > 1. At last, Sect. 9 presents final considerations and future
+work.
+
+2 Deﬁnitions
+A signed permutation of length n is represented as π = (π1 π2 . . . πn ), such that
+πi ∈ {−n, . . . , −2, −1, +1, +2, . . . , +n} and |πi | = |π j | if and only if i = j,
+for all i and j. An unsigned permutation of length n is represented similarly, but
+πi ∈ {1, 2, . . . , n} and πi = π j if and only if i = j, for all i and j. The identity
+permutation, ι = (1 2 . . . n), is the goal of the sorting problems we will study. For
+signed permutations, all elements of ι have positive sign.
+A signed reversal ρ̄(i, j), with 1 ≤ i ≤ j ≤ n, reverts the segment πi , πi+1 , . . . ,
+π j and flips the sign of each affected element. An unsigned reversal ρ(i, j),
+with 1 ≤ i < j ≤ n, only reverts the segment πi , πi+1 , . . . , π j . So, when π
+is a signed permutation, we have that (π1 . . . πi−1 πi . . . π j π j+1 . . . πn ) ·
+ρ̄(i, j) = (π1 . . . πi−1 −π j . . . −πi π j+1 . . . πn ) and, when π is an unsigned
+permutation, we have that (π1 . . . πi−1 πi . . . π j π j+1 . . . πn ) · ρ(i, j) =
+(π1 . . . πi−1 π j . . . πi π j+1 . . . πn ). The length of a signed reversal ρ̄(i, j) or
+an unsigned reversal ρ(i, j) is equal to |ρ̄(i, j)| = |ρ(i, j)| = j − i + 1.
+A transposition τ (i, j, k), with 1 ≤ i < j < k ≤ n + 1, exchanges the
+two adjacent segments πi , πi+1 , . . . , π j−1 and π j , π j+1 , . . . , πk−1 without changing signs of their elements. Therefore, we have that (π1 . . . πi−1 πi . . . π j−1
+π j . . . πk−1 πk . . . πn ) · τ (i, j, k) = (π1 . . . πi−1 π j . . . πk−1 πi . . . π j−1
+πk . . . πn ). A transposition τ (i, j, k) has length |τ (i, j, k)| = k − i.
+Given an integer λ > 1, we say that a rearrangement is a λ-rearrangement if its
+length is less than or equal to λ. Furthermore, we say that a rearrangement β is super
+short if |β| ≤ 2 and short if |β| ≤ 3.
+Given a real value α ≥ 0, in the length-weighted approach, a rearrangement β has
+cost f (β) = 
+|β|α . For a sequence of rearrangements S = β1 , β2 , . . . , βm , we have
+m
+f (βi ). Note that the unweighted approach is equivalent to setting
+that f (S) = i=1
+α = 0. In this work, we consider that α = 1, unless we explicitly say otherwise
+(Sect. 8), when we analyze other values of α.
+A rearrangement model is the set of allowed rearrangements for a specific sorting
+problem. Given an integer λ, a rearrangement model M with only λ-rearrangements,
+m
+f (βi )
+and a permutation π , the λ-rearrangement distance cλM (π ) is equal to i=1
+,
+β
+,
+.
+.
+.
+,
+β
+is
+in
+M,
+π
+·
+β
+·
+β
+.
+.
+.
+·
+β
+=
+ι,
+and
+such
+that
+every
+rearrangement
+β
+1
+2
+m
+1
+2
+m
+m
+f
+(β
+)
+is
+minimum.
+i
+i=1
+We use r , r̄ , t, r t, r̄ t to denote unsigned λ-reversals, signed λ-reversals, λtranspositions, unsigned λ-reversals and λ-transpositions, and signed λ-reversals and
+λ-transpositions, respectively. For instance, the signed λ-reversals distance of the permutation π is denoted by cr̄λ (π ).
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+Fig. 1 Permutation graph G(π )
+of the signed permutation
+π = (+3 −4 +6 −1 +5 −2). In
+this example,
+c(π ) = codd (π ) = 1 and
+γ (π ) = 6
+
++3
+
+583
+
+−4
+
++6
+
+−1
+
++5
+
+−2
+
+2.1 Inversions
+A pair of elements (πi , π j ) of π is called an inversion if i < j and |πi | > |π j |. We use
+Inv(π ) to denote the number of inversions in a permutation π . For any permutation π ,
+Inv(π ) = 0 if and only if |π1 | < |π2 | < · · · < |πn |. Note that considering unsigned
+permutations, only the identity permutation has Inv(π ) = 0.
+Example 1 The permutation π = (3 4 1 2) has the inversions (π1 = 3, π3 = 1),
+(π1 = 3, π4 = 2), (π2 = 4, π3 = 1), and (π2 = 4, π4 = 2). In this example,
+Inv(π ) = 4.
+Lemma 1 For any permutation π , if Inv(π ) > 0, then there exists an inversion
+(πi , πi+1 ).
+Proof Let π1 , . . . , πi be a maximal subsequence such that |π j | < |π j+1 | for all
+1 ≤ j < i. Since Inv(π ) > 0, we have that i < n. So, |πi | > |πi+1 | and (πi , πi+1 ) is
+an inversion.
+
+Given a permutation π and a rearrangement β, let ΔInv(π, β) = Inv(π )−Inv(π ·β),
+that is, ΔInv(π, β) denotes the change caused by β in the number of inversions in π .
+From Lemma 1, we can conclude that for any permutation π such that Inv(π ) > 0,
+there exists a super short rearrangement β with ΔInv(π, β) = 1.
+The permutation graph or inversion graph of a permutation π is the undirected
+graph G(π ) = (V , E), where V = {π1 , π2 , . . . , πn } and E = {(πi , π j ) : the pair
+(πi , π j ) is an inversion in π }. Figure 1 shows an example of a permutation graph.
+Given a signed permutation π , a connected component C of G(π ) is odd if it
+contains an odd number of negative elements (vertices) and it is even otherwise. We
+use c(π ) and codd (π ) to denote the number of connected components and the number of
+odd connected components of G(π ), respectively. An edge e of G(π ) whose deletion
+increases the number of connected components of G(π ) is called a cut-edge. We use
+γ (π ) to denote the number of non-isolated vertices in G(π ), that is, the number of
+elements in π belonging to at least one inversion.
+2.2 Entropy
+Given a permutation π , the entropy of πi is defined as ent(πi ) = ||πi | − i|, for
+1 ≤ i ≤ n. In other words, the entropy of an element πi is the distance between πi
+and its position in the identity permutation. We define the entropy of a permutation π
+as the sum of the entropy
+its elements. Formally, the entropy of the permutation π
+of
+n
+ent(πi ).
+is denoted as ent(π ) = i=1
+
+123
+
+584
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Algorithm 1: Inversion based greedy algorithms.
+Input: An unsigned permutation π , a value λ > 1, and a model M containing only
+λ-rearrangements.
+Output: A sequence of rearrangements from M that sorts π .
+1 Let S be an empty sequence
+2 while Inv(π ) > 0 do
+3
+Let β be the operation from M such that the ratio ΔInv(π, β)/ f (β) is maximum
+4
+Apply β in π
+5
+Append β to S
+6 return S
+
+For any permutation π , ent(π ) = 0 if and only if |π1 | < |π2 | < · · · < |πn |. Note
+that considering unsigned permutations, only the identity permutation has ent(π ) = 0.
+Given a permutation π and a rearrangement β, let Δent(π, β) = ent(π )−ent(π ·β),
+that is, Δent(π, β) denotes the change caused by β in the entropy of the permutation
+π . We also use Δent(πi , β) to denote the change caused by β in the entropy of the
+element πi , with 1 ≤ i ≤ n.
+−
++
+We define the sets E πeven = {πi : πi < 0 and ent(πi ) is even} and E πodd =
+{πi : πi > 0 and ent(πi ) is odd}. These sets will be used in lower bounds for SbR̄ and
+SbR̄T.
+Example 2 The permutation π = (+5 −4 +3 −1 +2) has ent(+5) = 4, ent(−4) = 2,
+ent(+3) = 0, ent(−1) = 3, ent(+2) = 3, and ent(π ) = 12. Besides that, we have
+−
++
+the sets E πeven = {−4} and E πodd = {+2}.
+Next, we introduce a result presented by Galvão et al. (2015) that will be used in
+the algorithms for signed permutations.
+Lemma 2 (Galvão et al. 2015) For any signed permutation π and signed reversal ρ̄
+−
++
+−
++
+such that |ρ̄| = 2, we have that |E πeven | + |E πodd | = |E πeven | + |E πodd |, where
+π = π · ρ̄.
+
+3 Inversions based algorithms for unsigned permutations
+In this section, we focus on SbR, SbT, and SbRT problems. Algorithm 1 presents the
+general idea of the inversion based greedy algorithms, whose choice is to prioritize
+rearrangements that most reduce the number of inversions with the lowest cost.
+Consider the unsigned permutation π = (4 5 2 3 1), λ = 3, and the model containing
+λ-reversals. The algorithm applies the following sequence of λ-reversals over π , which
+has a cost of 10:
+π 0 = (4 5 2 3 1) = π
+π 1 = π 0 · ρ(2, 3) = (4 2 5 3 1)
+π 2 = π 1 · ρ(3, 5) = (4 2 1 3 5)
+π 3 = π 2 · ρ(1, 3) = (1 2 4 3 5)
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+585
+
+π 4 = π 3 · ρ(3, 4) = ι
+The permutation π has 8 inversions. The λ-reversals ρ(2, 3), ρ(4, 5), ρ(1, 3),
+ρ(2, 4), and ρ(3, 5) decrease the number of inversions by one. The two first λ-reversals
+have a cost of 2 and the remaining ones have a cost of 3 each. So, in the first iteration,
+ρ(2, 3) and ρ(4, 5) are the λ-reversals with maximum ratio. At this point, the algorithm
+can choose either one of them and, in this example, the algorithm arbitrarily chose the
+λ-reversal ρ(2, 3). The algorithm continues, at each iteration, applying the λ-reversal
+with maximum ratio and, eventually, the permutation is equal to the identity.
+To prove the approximation factors, Lemmas 3 and 4 present lower bounds for the
+SbT, SbR, and SbRT problems relating the sorting distance to the number of inversions
+in a permutation, and Lemma 5 presents upper bounds for the cost of the solutions
+constructed by the inversion based algorithms.
+Lemma 3 Given a permutation π and an integer λ, any λ-reversal ρ has ratio
+ΔInv(π, ρ)/|ρ| ≤ (λ − 1)/2 and any λ-transposition τ has ratio ΔInv(π, τ )/|τ | ≤
+λ/4.
+Proof A reversal ρ(i, j) of length k can affect only the inversions in the interval from
+i to j. Since there are at most k(k − 1)/2 inversions in this interval, we have that
+k(k − 1)/2
+k−1
+ΔInv(π, ρ)
+≤
+=
+.
+|ρ|
+k
+2
+Therefore, we conclude that ΔInv(π, ρ)/|ρ| ≤ (λ − 1)/2, since we are considering
+λ-reversals.
+A transposition τ (i, j, k) of length k can affect only the inversions in the interval
+from i to k − 1. Moreover, this transposition does not affect inversions between the
+elements in the intervals from i to j − 1 and from j to k − 1. In this way, an inversion
+(πx , π y ) is removed only if x ∈ [i, j) and y ∈ [ j, k). Therefore,
+( j − i)(k − j)
+(k /2)2
+k
+ΔInv(π, τ )
+≤
+≤
+= ,
+|τ |
+k
+k
+4
+since ( j − i) + (k − j) = k . Considering only λ-transpositions, we conclude that
+ΔInv(π, τ )/|τ | ≤ λ/4.
+
+Lemma 4 For any permutation π and value λ > 1, crλ (π ) ≥ crλt (π ) ≥ 2Inv(π )/(λ−1)
+and ctλ (π ) ≥ 4Inv(π )/λ.
+Proof Since any sorting sequence for the SbR problem is a valid sorting sequence for
+SbRT, we have that crλ (π ) ≥ crλt (π ). By Lemma 3, for any λ-rearrangement β, the
+ratio ΔInv(π, β)/|β| is at most (λ − 1)/2, which means that the minimum cost to
+decrease Inv(π ) by 1 is 2/(λ − 1). Since the identity permutation has Inv(ι) = 0, any
+sorting sequence needs to decrease Inv(π ) inversions in π to sort the permutation,
+resulting in the lower bound 2Inv(π )/(λ − 1).
+Similarly, since any sorting sequence for the SbT problem is a valid sorting sequence
+for SbRT, we have that ctλ (π ) ≥ crλt (π ) ≥ 2Inv(π )/(λ − 1). However, we can achieve
+
+123
+
+586
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+a better result using the fact that ΔInv(π, τ )/|τ | ≤ λ/4 for any λ-transposition τ
+(Lemma 3), which means that the minimum cost to decrease Inv(π ) by 1 is 4/λ when
+using λ-transpositions. Since any sorting sequence needs to decrease Inv(π ) inversions
+
+in π to sort the permutation, we have that ctλ (π ) ≥ 4Inv(π )/λ.
+Lemma 5 For any permutation π and value λ > 1, ctλ (π ) ≤ 2 Inv(π ) and crλt (π ) ≤
+crλ (π ) ≤ 2 Inv(π ).
+Proof We need to prove that it is always possible to decrease the number of inversions
+by 1 with a cost less than or equal to 2, considering the three rearrangement models.
+If Inv(π ) = 0, then π is already sorted. If Inv(π ) > 0, then there exists an inversion
+(πi , πi+1 ) in π (Lemma 1). So, the transposition τ (i, i + 1, i + 2) and the reversal
+ρ(i, i +1) both have cost 2 and ΔInv(π, τ (i, i +1, i +2)) = ΔInv(π, ρ(i, i +1)) = 1,
+
+since the inversion (πi , πi+1 ) is removed.
+These algorithms generate sorting sequences, since they can always decrease the
+number of inversions in the permutation (Lemma 5) and Inv(π ) = 0 if, and only if,
+π is equal to the identity, when considering unsigned permutations. From Lemmas 4
+and 5, we obtain the result from Theorem 1.
+Theorem 1 Given an integer λ > 1, the inversion based greedy algorithms are (λ−1)approximations for the SbR and SbRT problems and a (λ/2)-approximation for the
+SbT problem.
+
+4 Entropy based algorithms for unsigned permutations
+We present λ-approximations for the problems SbR, SbT, and SbRT that use the concept of entropy. Before introducing the algorithms, we present how the rearrangements
+affect the entropy of a permutation and how we can always find a sequence of rearrangements that decreases the entropy of a permutation. The next lemmas present
+lower bounds for the sorting distance of π relating it to the value of ent(π ).
+Lemma 6 Given a permutation π and a λ-rearrangement β, we have that Δent(π, β)/
+|β| ≤ λ/2.
+Proof Consider that β is a λ-reversal of length k that affects the segment πi , πi+1 , . . . ,
+π j transforming it into π j , π j−i , . . . , πi . For any element in this segment, the change
+in its entropy is at most the distance between its position in π and π · β. For any
+1 ≤  ≤ k/2 , the element πi+−1 was moved k − (2 − 1) positions. In a similar
+way, for any 1 ≤  ≤ k/2 , the element π j−+1 was moved k − (2 − 1) positions.
+If k is even, then
+Δent(π, β) =
+
+n
+
+=1
+
+123
+
+Δent(π , β) =
+
+j
+
+=i
+
+Δent(π , β),
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+587
+
+since only the entropy of the affected elements changes. So,
+Δent(π, β) =
+
+j
+
+
+Δent(π , β) =
+
+=i
+
+≤2
+
+k/2
+
+
+Δent(πi+−1 , β) +
+
+=1
+
+k/2
+
+
+k/2
+
+
+Δent(π j−+1 , β)
+
+=1
+
+(k − (2 − 1)) = 2 k/2 k/2 .
+
+=1
+
+If k is odd, then
+Δent(π, β) = ent(πi+ k/2 , β) +
+
+k/2
+
+
+Δent(πi+−1 , β) +
+
+=1
+
+k/2
+
+
+Δent(π j−+1 , β).
+
+=1
+
+Since the element at position i + k/2 is not moved by the reversal, we have that
+ent(πi+ k/2 ) = 0. Therefore, the change in the entropy is at most 2 k/2 k/2 ≤
+k 2 /2 and Δent(π, β)/|β| ≤ k/2. Note that this bound is maximum when k = λ,
+resulting in Δent(π, β)/|β| ≤ λ/2.
+Now we consider that β is a λ-transposition τ (i, j, k) with |τ | = k − i = k .
+Consider applying the transposition that exchanges the segments πi , . . . , π j−1 and
+π j , . . . , πk−1 . For the first segment, each element π was moved k − j positions, with
+i ≤  < j. And for the second segment, each element π was moved j − i positions,
+with j ≤  < k. Therefore,
+Δent(π, β) =
+
+j−1
+
+
+Δent(π , β) +
+
+=i
+
+≤
+
+j−1
+
+=i
+
+k−1
+
+
+Δent(π , β)
+
+= j
+k−1
+
+(k − j) +
+( j − i)
+= j
+
+= 2(k − j)( j − i) ≤ 2(k /2)2 , since (k − j) + ( j − i) = k .
+Therefore, Δent(π, β)/|β| ≤ k /2. As before, this bound is maximum when k = λ,
+resulting in Δent(π, β)/|β| ≤ λ/2.
+
+Lemma 7 For any permutation π and integer λ > 1, crλ (π ) ≥ crλt (π ) ≥ 2ent(π )/λ
+and ctλ (π ) ≥ 2ent(π )/λ.
+Proof By Lemma 4, we already have that crλ (π ) ≥ crλt (π ). By Lemma 6, for any
+λ-rearrangement β, the ratio Δent(π, β)/|β| is at most λ/2. So, the minimum cost to
+decrease ent(π ) by 1 is 2/λ. Any sorting sequence must decrease the entropy to 0, as
+ent(ι) = 0, which results in the lower bound 2ent(π )/λ for both crλt (π ) and ctλ (π ). 
+The next lemmas show how to find a sequence of rearrangements that decreases
+the entropy of a permutation and they give bounds for the cost of this sequence.
+
+123
+
+588
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Lemma 8 For any permutation π with ent(π ) > 0, there exists a pair of elements πi
+and π j , with 1 ≤ i < j ≤ n, such that |πi | ≥ j and |π j | ≤ i.
+Proof Since ent(π ) > 0, there exists an element out-of-place (i.e. |πk | = k). We
+claim that there exists an element πi with |πi | > i. Let πi be the element out-of-place
+with maximum absolute value |πi |. Suppose, for the purpose of contradiction, that
+|πi | < i. The element πk , such that |πk | = i, has absolute value greater than |πi | and
+is out-of-place, which contradicts our choice of πi . Therefore, we have that |πi | > i.
+Now, let πi be the rightmost element (i.e. i is maximum) such that |πi | > i. Such
+an element must exist based on our previous claim. The element at position k = |πi |
+is out-of-place and we have that |πk | < k, since |πi | = k > i and because of our
+choice of πi . Now, let π j be the leftmost (i.e. j is minimum) element in the segment
+πi+1 , . . . , πk such that |π j | < j. First, we have that |πi | = k ≥ j and i < j. Therefore,
+we just need to prove that |π j | ≤ i. Suppose, for the purpose of contradiction, that
+|π j | > i. Now, consider the element π with  = |π j |, which is out-of-place. We
+know that i <  = |π j | < j ≤ k and either |π | >  or |π | < . If |π | > , then this
+contradicts our choice of πi . Otherwise, we have that |π | < , which contradicts our
+choice of π j . Since we reach a contradiction in both cases, we conclude that |π j | ≤ i.
+
+Lemma 9 Given an unsigned permutation π with ent(π ) > 0, there exists a sequence
+of super short rearrangements S = β1 , β2 , . . . , βm  with Δent(π, S)/ f (S) ≥ 1/2.
+Proof Let πi and π j be two elements of π , with 1 ≤ i < j ≤ n, such that |πi | ≥ j
+and |π j | ≤ i (Lemma 8). Let π = (π1 . . . πi−1 π j πi+1 . . . π j−1 πi π j+1 . . . πn ).
+We have that ent(π ) = ent(π ) − 2( j − i), since the entropy of the elements πi and
+π j decrease by j − i each and the entropy remains the same for the other elements.
+To exchange these two elements, we can use the sequence ρ(i, i + 1), ρ(i + 1, i +
+2), . . . , ρ( j − 1, j), ρ( j − 2, j − 1), . . . , ρ(i + 1, i), which has a cost less than or
+equal to 4( j − i), as it has length ( j − i) + ( j − i − 1) and uses only super short
+reversals. Therefore,
+2( j − i)
+1
+Δent(π, S)
+≥
+= .
+f (S)
+4( j − i)
+2
+The proof is similar for transpositions.
+
+
+
+Algorithm 2 describes the general idea for the entropy based greedy algorithms,
+whose greedy choice is to apply the operation that most decreases the entropy with
+the lowest cost, but uses Lemma 9 to guarantee that the sorting sequence S has
+Δent(π, S)/ f (S) ≥ 1/2. The algorithm generates a sorting sequence, since it always
+decreases the entropy (Lemma 9) and ent(π ) = 0 if, and only if, π is equal to the
+identity, when considering unsigned permutations.
+Consider the unsigned permutation π = (4 5 2 3 1), λ = 3, and the model containing
+λ-transpositions. We have ent(π1 ) = 3, ent(π2 ) = 3, ent(π3 ) = 1, ent(π4 ) = 1,
+ent(π5 ) = 4, and ent(π ) = 12. The algorithm applies the following sequence of
+λ-transpositions over π , which has a cost of 15:
+π 0 = (4 5 2 3 1) = π
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+589
+
+Algorithm 2: Entropy based greedy algorithms.
+Input: An unsigned permutation π , a value λ > 1, and a model M containing only
+λ-rearrangements.
+Output: A sequence of rearrangements from M that sorts π .
+1 Let S be an empty sequence
+2 while π is not equal to ι do
+3
+Let β be the operation from M such that the ratio Δent(π, β)/ f (β) is maximum
+4
+if Δent(π, β)/ f (β) ≥ 1/2 then
+5
+Apply β in π
+6
+Append β to S
+7
+else
+8
+Find πi and π j , with 1 ≤ i < j ≤ n, such that |πi | ≥ j and |π j | ≤ i
+9
+Let S be the sequence from Lemma 9 that exchanges πi and π j
+10
+Apply S in π
+11
+Append S to S
+12 return S
+
+π 1 = π 0 · τ (2, 3, 5) = (4 2 3 5 1)
+π 2 = π 1 · τ (4, 5, 6) = (4 2 3 1 5)
+π 3 = π 2 · τ (1, 2, 3) · τ (2, 3, 4) · τ (3, 4, 5) · τ (2, 3, 4) · τ (1, 2, 3) = ι
+
+In this example, at the beginning of the last iteration, the permutation is equal to
+π 2 = (4 2 3 1 5) and there are no λ-transpositions that decrease the entropy of the
+permutation. In this case, the algorithm exchanges the elements π12 = 4 and π42 = 1
+with the sequence S = τ (1, 2, 3), τ (2, 3, 4), τ (3, 4, 5), τ (2, 3, 4), τ (1, 2, 3), such
+that Δent(π 2 , S )/ f (S ) = 6/10 ≥ 1/2.
+Theorem 2 Given an integer λ > 1, the entropy based greedy algorithms are λapproximation algorithms for SbR, SbT, and SbRT.
+Proof Consider the problem SbR and let S be the sorting sequence generated by the
+algorithm. By Lemma 9, the sequence S has Δent(π, S)/ f (S) ≥ 1/2, that is, the
+average cost to decrease the entropy of π by 1 is less than or equal to 2. To sort
+the permutation, the sorting sequence S has to decrease ent(π ) units of entropy and,
+therefore, f (S) ≤ 2ent(π ). From Lemma 7, we conclude that this algorithm is a
+λ-approximation.
+The proof is similar for SbT and SbRT.
+
+
+5 Approximation algorithms for signed permutations
+To show how these greedy algorithms work, we define a score function φ based on
+−
++
+Inv(π ) and on the sets E πeven and E πodd .
+
+123
+
+590
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Algorithm 3: Greedy algorithms that use the score function φ.
+Input: A signed permutation π , a value λ > 1, and a model M containing only λ-rearrangements.
+Output: A sequence of rearrangements from M that sorts π .
+1 Let S be an empty sequence
+2 while π is not equal to ι do
+3
+Let β be the operation from M such that φ(π, β) is maximum
+4
+Apply β in π
+5
+Append β to S
+6 return S
+
+Given a permutation π and a rearrangement sequence S, the score function is defined
+as
+−
+
+φ(π, S) =
+
++
+
+−
+
++
+
+odd
+(2 Inv(π ) + |E πeven | + |E πodd |) − (2 Inv(π · S) + |E πeven
+·S | + |E π ·S |)
+.
+f (S)
+−
+
+The identity permutation is the only permutation with Inv(π ) = |E πeven | =
++
+|E πodd | = 0. An optimal sorting sequence is the one with the highest score function. So, the greedy choice is to always apply the λ-rearrangement with the highest
+score function until the permutation is sorted. Algorithm 3 describes the general idea
+of these algorithms, which are used for the problems SbR̄ and SbR̄T.
+Consider the signed permutation π = (+3 +4 −5 −2 −1), λ = 3, and the
+−
+model containing signed λ-reversals. This permutation has 7 inversions, E πeven =
++
+{−5, −2, −1}, and E πodd = ∅. The algorithm applies the following sequence of
+signed λ-reversals over π , which has a cost of 11:
+π 0 = (+3 +4 −5 −2 −1) = π
+π 1 = π 0 · ρ̄(3, 5) = (+3 +4 +1 +2 +5)
+π 2 = π 1 · ρ̄(2, 3) = (+3 −1 −4 +2 +5)
+π 3 = π 2 · ρ̄(1, 2) = (+1 −3 −4 +2 +5)
+π 4 = π 3 · ρ̄(3, 4) = (+1 −3 −2 +4 +5)
+π 5 = π 4 · ρ̄(2, 3) = ι
+The following lemmas present a lower bound for the score function and show that
+it is always possible to find a signed λ-reversal with score function greater than or
+equal to 1.
+Lemma 10 For any signed permutation π and signed λ-reversal ρ̄, we have that
+φ(π, ρ̄) ≤ λ.
+Proof Let π = π · ρ̄ and suppose that |ρ̄| = k ≤ λ. By Lemma 3, we have that
+2 Inv(π ) − 2 Inv (π ) ≤ k(k − 1). Moreover, since k elements are affected by ρ̄ and
+−
++
+−
++
+−
++
+E πeven ∩ E πodd = ∅, we have that (|E πeven | + |E πodd |) − (|E πeven | + |E πodd |) ≤ k.
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+591
+
+Combining these two inequalities results in
+−
+
++
+
+−
+
++
+
+(2 Inv(π ) + |E πeven | + |E πodd |) − (2 Inv(π ) + |E πeven | + |E πodd |) ≤ k 2 ,
+which implies that
+−
+
++
+
+−
+
++
+
+(2 Inv(π ) + |E πeven | + |E πodd |) − (2 Inv(π ) + |E πeven | + |E πodd |)
+k2
+≤
+= k.
+|ρ̄|
+k
+Since 1 ≤ |ρ̄| ≤ λ, we have that φ(π, ρ̄) ≤ λ.
+
+
+
+Lemma 11 For any signed permutation π and λ-transposition τ , we have that
+φ(π, τ ) ≤ λ.
+Proof Similar to the proof of Lemma 10.
+
+
+
+Lemma 12 For any signed permutation π = ι, there exists a super short signed
+reversal ρ̄ with φ(π, ρ̄) ≥ 1.
+Proof Let π = π · ρ̄. If Inv(π ) = 0, then ent(πi ) = 0 for all elements πi of π
++
+−
+and |E πodd | = 0. As π = ι, there exists an element πi < 0 in E πeven and, after
+applying ρ̄(i, i) on π , this element becomes positive in π . Therefore, we have that
+−
+−
+|E πeven | − |E πeven | = 1 and φ(π, ρ̄) = 1.
+If Inv(π ) > 0, then there exists an inversion (πi , πi+1 ) in π according to
+Lemma 1. Thus, the signed reversal ρ̄(i, i + 1) removes this inversion, resulting
+−
++
+−
++
+in 2(ΔInv(π, ρ̄)) = 2 and |E πeven | + |E πodd | = |E πeven | + |E πodd | (Lemma 2).
+Therefore, φ(π, ρ̄) = 1.
+
+From Lemmas 10, 11, and 12, we obtain the result from Theorem 3.
+Theorem 3 Given an integer λ > 1, Algorithm 3 is a λ-approximation for the problems
+SbR̄ and SbR̄T.
+
+6 Algorithms for large values of 
+This section shows algorithms for large values of λ, that is, λ = Θ(n). For this,
+we present the relation between the problems of Sorting by Length-Weighted λRearrangements and the problems of Sorting by Length-Weighted Rearrangements.
+Observe that the problem without the restriction in the rearrangement’s length is equivalent to set λ = n.
+Lemma 13 Given a permutation π , we have that cλM (π ) ≥ cnM (π ) for M ∈
+{r , r̄ , t, r t, r̄ t}.
+Proof Consider the problem with unsigned reversals (for the other models the proof
+is similar). An optimal sorting sequence, with cost cλM (π ), for the problem of Sorting
+by Length-Weighted λ-Reversals is also a valid sorting sequence for the problem of
+
+123
+
+592
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Sorting by Length-Weighted Reversals. Therefore, we conclude that an optimal sorting
+sequence for the Sorting by Length-Weighted Reversals has cost less than or equal to
+
+cλM (π ).
+Lemma 14 Given a permutation π and an integer λ > 1, for any rearrangement
+β, with |β| > λ, there exists a sequence S with only λ-rearrangements such that
+π · β = π · S and f (S) = O(|β|2 /λ).
+Proof Consider that β is a (signed or unsigned) reversal ρ(i, j) with length j −i +1 >
+λ. Miranda et al. (2019) showed that the effect of this reversal can be obtained using
+a sequence S with at most q(q + 1)/2 λ-reversals, where q = ( j − i + 1)/ λ/2 .
+They also showed that S has at most q(q − 1)/2 reversals of length λ and at most q
+reversals of length λ/2 . Therefore,
+f (S) ≤ λ
+
+q2
+j −i +1 2
+q(q − 1)
++ λ/2 q ≤ λ
+≤ λ/2
+ ≤ λ/2
+2
+2
+λ/2
+
+|β| 2
+ ,
+λ/2
+
+which is O(|β|2 /λ).
+Now, consider that β is a transposition τ (i, j, k) with length k − i > λ. Miranda
+et al. (2019) also showed that the effect of this transposition can be obtained using
+a sequence S with at most ( j − i)/ λ/2  (k − j)/ λ/2  λ-transpositions. Since
+k − j < k − i and j − i < k − i, we have that
+f (S) ≤ λ
+
+j −i k − j
+
+≤λ
+λ/2
+λ/2
+
+|β| 2
+ ,
+λ/2
+
+which is also O(|β|2 /λ).
+
+
+
+Using Lemma 14, we can adapt approximation algorithms from the Sorting by
+Length-Weighted Rearrangements by adding the restriction that all rearrangements in
+the sorting sequence are λ-rearrangements. Next lemmas shows how this procedure
+changes the approximation factor of these algorithms.
+Theorem 4 An x-approximation algorithm for the Sorting by Length-Weighted (Signed
+or Unsigned) Reversals can be adapted to an O(x n/λ)-approximation algorithm for
+the Sorting by Length-Weighted λ-Reversals.
+Proof Given an unsigned permutation π , the x-approximation algorithm returns a
+sorting sequence S with cost f (S) ≤ xcrn (π ). Applying Lemma 14, we construct a
+valid sorting sequence S containing only λ-reversals, such that
+f (S ) ≤
+
+ c|ρ|2
+ρ∈S
+
+≤
+
+λ
+
+ cn|ρ|
+ρ∈S
+
+λ
+
+, for some constant c
+=
+
+cn 
+|ρ|
+λ
+ρ∈S
+
+cn
+cn n
+=
+f (S) ≤
+xc (π ).
+λ
+λ r
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+593
+
+By Lemma 13, this adapted algorithm is an O(x n/λ)-approximation algorithm for
+the Sorting by Length-Weighted λ-Reversals. The same is valid for signed reversals.
+
+We can obtain Theorems 5 and 6 with a proof similar to the one used for Theorem 4.
+Theorem 5 An x-approximation algorithm for the Sorting by Length-Weighted Transpositions can be adapted to an O(x n/λ)-approximation algorithm for the Sorting by
+Length-Weighted λ-Transpositions.
+Theorem 6 An x-approximation algorithm for the Sorting by Length-Weighted (Signed
+or Unsigned) Reversals and Transpositions can be adapted to an O(x n/λ)approximation algorithm for the Sorting by Length-Weighted λ-Reversals and
+λ-Transpositions.
+From Theorem 4, we have O(n lg n/λ)-approximation algorithms for SbR and
+SbR̄, adapting algorithms presented by Bender et al. (2008) and Swidan et al. (2004),
+respectively. Also, from Theorems 5 and 6, we have O(n lg2 n/λ)-approximation algorithms for SbT, SbRT, and SbR̄T, adapting algorithms from Lintzmayer et al. (2018).
+For λ = Θ(n), these algorithms present better approximation factors since n/λ is
+bounded by some constant and, therefore, these adapted algorithms have approximation factors of O(lg n) or O(lg2 n). In contrast, the algorithms presented in the
+previous sections have an approximation factor of O(n) for large values of λ.
+
+7 Length-weighted short rearrangement distance
+One well studied variant of the rearrangement problems is the one considering
+only short rearrangements. The problems of Sorting by Super Short Rearrangements
+(Reversals or Transpositions) are polynomial (Jerrum 1985; Galvão et al. 2015). The
+problems of Sorting Signed and Unsigned Permutations by Short Reversals have
+approximation algorithms with factors 5 (Galvão et al. 2015) and 2 (Heath and Vergara
+2003), respectively. The best-known algorithm for the problem of Sorting (Unsigned)
+Permutations by Short Transpositions has approximation factor of 5/4 (Jiang et al.
+2014). For this problem, there also exists a (1 + n/Inv(π ))-approximation (Jiang et al.
+2012), where n is the number of elements in the permutation. For the problems of
+Sorting Signed and Unsigned Permutations by Short Reversals and Short Transpositions, there exist algorithms with approximation factors of 3 (Galvão et al. 2015) and
+2 (Vergara 1998), respectively.
+In this section, we analyze the approximation algorithms presented in Sects. 3–5
+when considering only short rearrangements, that is, when λ = 3. For the problems
+SbR and SbRT, the inversions based greedy algorithms are 2-approximations when
+λ = 3. For the problem SbT, the approximation factor becomes 1.5, however we show
+that this algorithm is in fact a 4/3-approximation in the next lemma.
+Lemma 15 The inversions based greedy algorithm is a 4/3-approximation for the
+problem of Sorting Permutations by Length-Weighted Short Rearrangements.
+
+123
+
+594
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Proof Using a similar argument to the one used in Lemma 3, for a short transposition
+τ (i, j, k) with length k we have
+( j − i)(k − j)
+ΔInv(π, τ )
+2
+≤
+≤ , since ( j − i) + (k − j) = k ≤ 3.
+|τ |
+k
+3
+Therefore, ct3 (π ) ≥ 3Inv(π )/2, for any permutation π . Since the algorithm uses a
+sorting sequence with cost less than or equal to 2Inv(π ), we conclude that its approximation factor is 2Inv(π )/(3/2Inv(π )) = 4/3.
+
+Considering signed permutations, the algorithms presented in Sect. 5 are 3approximations for SbR̄ and SbR̄T when λ = 3. Now, we present a 7/3-approximation
+algorithm using a new score function based on the inversion graph of a permutation
+π.
+Given a permutation π and a rearrangement sequence S, the score function ψ is
+defined as
+ψ(π, S) =
+
+(2 Inv(π ) + codd (π )) − (2 Inv(π · S) + codd (π · S))
+.
+f (S)
+
+The identity permutation is the only one with Inv(π ) + codd (π ) = 0. The greedy
+choice of the algorithm is to always apply the short rearrangement with the highest
+value of ψ until the permutation is equal to the identity. Next lemmas present bounds
+on the values of the score function.
+Lemma 16 (Alexandrino et al. 2019) For any signed permutation π and short rearrangement β, we have that ψ(π, β) ≤ 7/3.
+Lemma 17 (Alexandrino et al. 2019) For any signed permutation π = ι, there exists
+a short rearrangement β with ψ(π, β) ≥ 1.
+Theorem 7 (Alexandrino et al. 2019) The algorithm based on the score function ψ is
+a 7/3-approximation algorithm for SbR̄T when λ = 3.
+
+8 Approximation factors for ˛ > 1
+In the previous sections, we considered that α = 1, that is, f (β) = |β|α = |β|
+for any rearrangement β. In this section, we analyze how the approximation factors
+of the algorithms presented change as the value of α increases. The main idea is to
+show that, as the value of α increases, the cost-benefit of super short rearrangements
+becomes better, which improves the approximation factor of our algorithms presented
+in Sects. 3 and 5. We begin by analyzing the problems involving unsigned permutations
+and presenting new lower bounds and upper bounds for these problems.
+Lemma 18 Given an unsigned permutation π , an integer λ > 1, and a real value
+α > 1, any λ-rearrangement β has ratio
+
+
+(k − 1)
+ΔInv(π, β)
+.
+≤
+max
+2≤k≤λ
+|β|α
+2k α−1
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+595
+
+Proof Similar to the proof of Lemma 3.
+
+
+
+Lemma 19 For any permutation π , integer λ > 1, and real value α > 1, we have
+that crλ(π ) ≥ Inv(π )/t, crλt (π ) ≥ Inv(π )/t, and ctλ (π ) ≥ Inv(π )/t, where t =
+max
+
+2≤k≤λ
+
+(k−1)
+2k α−1
+
+.
+
+Proof Similar to the proof of Lemma 4, using Lemma 18.
+
+
+
+Lemma 20 Given a real value α > 1, the inversions based greedy algorithms presented in Sect. 3 sort an unsigned permutation π with cost less than or equal to
+2α Inv(π ).
+Proof Similar to the proof of Lemma 5.
+
+
+
+Theorem 8 For α ≥ 2 and an integer λ > 1, there exists a 2-approximation algorithm
+for the problems SbR, SbT, and SbRT.
+Proof For α ≥ 2, we have that
+
+
+
+
+(k − 1)
+1
+1
+max
+< max
+≤ α−1 .
+α−1
+α−2
+2≤k≤λ
+2≤k≤λ 2k
+2k
+2
+Note that, since α ≥ 2, the expression above reaches its maximum value when
+k = 2.
+Considering the problem SbR, crλ (π ) ≥ 2α−1 Inv(π ) according to Lemma 19. By
+Lemma 20, the algorithm uses a sorting sequence of cost less than or equal to 2α Inv(π ).
+Therefore, the approximation factor of this algorithm is
+2α Inv(π )
+= 2.
+2α−1 Inv(π )
+The proof is similar considering SbT and SbRT.
+
+
+
+Theorem 9 For α ≥ 3, the problems SbR, SbT, and SbRT can be solved in polynomial
+time.
+Proof Consider the problem SbR. For any k ≥ 4 and α ≥ 3, we have that
+(k − 1)
+1
+1
+≤ α−2 ≤ α , since k ≥ 4.
+2k α−1
+2k
+2
+Moreover, (k − 1)/(2k α−1 ) = 1/(9k α−3 ) ≤ 1/2α for k = 3, and (k − 1)/(2k α−1 )
+= 1/2α for k = 2. Therefore, max2≤k≤λ (k − 1)/(2k α−1 ) = 1/2α and crλ (π ) ≥
+2α Inv(π ), using Lemma 19.
+By Lemma 20, the algorithm uses a sorting sequence of cost less than or equal
+to 2α Inv(π ) and, therefore, this sorting sequence is optimal. The proof is similar
+considering SbT and SbRT.
+
+In the following lemmas, we present bounds on the value of the score function φ.
+
+123
+
+596
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Lemma 21 Given a signed permutation π , an integer λ > 1, and a real value α > 1,
+any λ-rearrangement β has φ(π, β) ≤ max1≤k≤λ {k 2 /k α }.
+Proof Similar to the proofs of Lemmas 10 and 11.
+
+
+
+Corollary 1 Given a signed permutation π , an integer λ > 1, and a real value α ≥ 2,
+any λ-rearrangement β has φ(π, β) ≤ 1.
+Lemma 22 Given a value α > 1, the algorithms presented in Sect. 5 sort a signed
+permutation π with a sequence S such that φ(π, S) ≥ 1/2α .
+Proof Similar to the proof of Lemma 12.
+
+
+
+From Corollary 1 and Lemma 22, we obtain the result from Theorem 10.
+Theorem 10 For α ≥ 2, there exists a 2α -approximation algorithm for the problems
+SbR̄ and SbR̄T.
+In the following lemmas, we show how to obtain an approximation factor of 3 for
+the problems involving signed permutations using new lower bounds.
+Theorem 11 For α ≥ 2, there exists 3-approximation algorithms for the problems
+SbR̄ and SbR̄T.
+Proof Recall that the identity permutation is the only signed permutation with
+−
++
+Inv(π ) = |E πeven | = |E πodd | = 0. Since a reversal of length 1 does not change
+the number of inversions in a permutation and using an argument similar to the one of
+Lemma 8, we have that cr̄λ (π ) ≥ cr̄λt (π ) ≥ 2α−1 Inv(π ).
+−
++
+A rearrangement of length k can reduce the size of E πeven ∪ E πodd by at most k,
+−
++
+since exactly k elements are affected and E πeven ∩ E πodd = ∅. As we are considering
+−
++
+α ≥ 2 and any sorting sequence makes E πeven ∪ E πodd empty, we have cr̄λ (π ) ≥
+−
++
+cr̄λt (π ) ≥ |E πeven | + |E πodd |.
+Consider only the problem SbR̄. Given a permutation π , we can sort this permutation with the following algorithm: (i) while Inv(π ) > 0, apply a signed reversal of
+length 2 that removes an inversion of π (Lemma 1); (ii) when Inv(π ) = 0, we have
++
+that ent(πi ) = 0 for all elements πi of π and |E πodd | = 0, so we apply a signed
+−
+reversal of length 1 in each element of E πeven to make this set empty. Note that the
+−
++
+size of set E πeven ∪ E πodd remains the same after the first step as we only use signed
+reversals of length 2 (Lemma 2). Moreover, in the last step, we do not increase the size
++
+of E πodd , which is already empty. So, this procedure generates a sorting sequence as
+−
++
+it makes Inv(π ) = |E πeven | = |E πodd | = 0.
+The first step uses a sequence with cost 2α Inv(π ) and the second step uses a sequence
+−
++
+with cost |E πeven | + |E πodd |. So, the sorting sequence has cost
+−
+
++
+
+2α Inv(π ) + |E πeven | + |E πodd | ≤ 2cr̄λ (π ) + cr̄λ (π ) = 3cr̄λ (π ).
+We conclude that this algorithm is a 3-approximation for SbR̄. The proof is analogous for SbR̄T.
+
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+597
+
+Lemma 23 For α ≥ 3 and any signed λ-reversal ρ̄, there exists a sequence S such
+that π · ρ̄ = π · S and f (S) ≤ |ρ̄|α , for any signed permutation π .
+Proof Let ρ̄ = ρ̄(i, j) and π = π · ρ̄(i, j). We construct a sequence that moves each
+element of π to its correct position in π using only super short signed reversals going
+from i to j. After the elements are in the correct positions, we use another sequence
+of reversals of length 1 to fix the signs of the elements, if necessary. Next, we show
+an example of such sequence when |ρ̄| = 3:
+= (π1 . . . πi−1 πi πi+1 πi+2 πi+3 . . . πn )
+π0 = π
+= (π1 . . . πi−1 −πi+1 −πi πi+2 πi+3 . . . πn )
+π 1 = π 0 · ρ̄(i, i+1)
+π 2 = π 1 · ρ̄(i+1, i+2) = (π1 . . . πi−1 −πi+1 −πi+2 πi πi+3 . . . πn )
+π 3 = π 2 · ρ̄(i, i+1)
+= (π1 . . . πi−1 πi+2 πi+1 πi πi+3 . . . πn )
+= (π1 . . . πi−1 −πi+2 πi+1 πi πi+3 . . . πn )
+π 4 = π 3 · ρ̄(i, i)
+π 5 = π 4 · ρ̄(i+1, i+1) = (π1 . . . πi−1 −πi+2 −πi+1 πi πi+3 . . . πn )
+π 6 = π 5 · ρ̄(i+2, i+2) = (π1 . . . πi−1 −πi+2 −πi+1 −πi πi+3 . . . πn )
+Let k = |ρ̄|. We need to use k −  reversals of length 2 to move the -th element
+in the subsequence πi , . . . , π j to its correct position in π . After moving all elements,
+they may have an incorrect sign and, in order to fix this, we use at most k reversals of
+length 1. Therefore, the sequence has cost at most
+2α
+
+k
+
+k(k − 1)
++ k = 2α−1 k(k − 1) + k.
+(k − ) + k = 2α
+2
+=1
+
+For k = 3,
+2α−1 k(k − 1) + k = 2α 3 + 3 ≤ 3α = |ρ̄|α , since α ≥ 3.
+For k ≥ 4,
+2α−1 k(k − 1) + k ≤ 2α−1 k 2 ≤ k (α−1)/2 k 2 ≤ k α = |ρ̄|α , since α ≥ 3.
+Therefore, the sequence has cost less than or equal to |ρ̄|α .
+
+
+
+Theorem 12 For α ≥ 3, the problem SbR̄ can be solved in polynomial time for any
+integer λ > 1.
+Proof By Lemma 23, considering α ≥ 3, there exists an optimal sorting sequence for π
+using only super short signed reversals. Let S be such an optimal sorting sequence. This
+−
++
+sorting sequence removes Inv(π ) inversions and decreases the size of E πeven
+E πodd
+−
++
+by |E πeven | + |E πodd | units.
+−
++
+Since a signed reversal of length 2 does not change the size of E πeven
+E πodd
+(Lemma 2) and a signed reversal of length 1 decreases the size of this set by at most
+−
++
+1 unit, we have that S has at least |E πeven | + |E πodd | signed reversals of length 1.
+
+123
+
+598
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Besides that, a signed reversal of length 1 does not change the inversions of a
+permutation and a signed reversal of length 2 decreases the number of inversions of
+π by at most 1 unit. In this way, S has at least Inv(π ) signed reversals of length 2.
+−
++
+Therefore, f (S) ≥ 2α Inv(π ) + |E πeven | + |E πodd |.
+Using an argument similar to the one used in Lemma 12, we can find a sorting
+−
++
+sequence S with cost equal to 2α Inv(π ) + |E πeven | + |E πodd |. From the lower bound
+presented above, we conclude that this sorting sequence is optimal.
+
+Lemma 24 For α ≥ 3 and any λ-transposition τ , there exists a sequence S such that
+π · τ = π · S and f (S) ≤ |τ |α , for any signed permutation π .
+Proof Similar to the proof of Lemma 23.
+
+
+
+Lemma 25 For any signed permutation π , if a signed reversal or transposition β with
+length 2 removes an inversion of π , then codd (π ) ≤ codd (π · β), that is, the number of
+odd components of the inversion graph does not decrease.
+Proof Consider that β is a signed reversal. Let πi and πi+1 be the elements affected
+by this reversal. Since only these two elements are affected, the inversion removed
+by β is (πi , πi+1 ). Let e = (πi , πi+1 ) be the removed edge of G(π ) and C be the
+component containing e. We divide our analysis into two cases:
+1. e is a cut-edge: let C1 and C2 be the components of C − e in G(π ). Since e is a
+cut-edge, the elements πi and πi+1 are in distinct components of C − e. If C is odd,
+then either C1 or C2 is odd. Suppose, without loss of generality, that C1 is odd and
+C2 is even. After applying the signed reversal, the component C1 becomes even
+and the component C2 becomes odd. In this way, the number of odd components
+remains the same. If C is even, then both C1 and C2 have the same parity. After
+applying the signed reversal, the number of odd components can only increase. In
+both cases, we have codd (π ) ≤ codd (π · β).
+2. e is not a cut-edge: in this case, the component C has the same set of vertices and
+its parity remains the same. Therefore, codd (π ) = codd (π · β).
+The proof is analogous for a transposition of length 2.
+
+
+
+Lemma 26 For any signed permutation π , if Inv(π ) > 0, then there exists a rearrangement β of length 2 such that Inv(π · β) = Inv(π ) − 1 and codd (π ) = codd (π · β).
+Proof Since Inv(π ) > 0, there exists an edge e = (πi , πi+1 ) in G(π ). Let C be
+the component that contains e. Suppose that e is not a cut-edge. A transposition
+β = τ (i, i + 1, i + 2) removes the inversion (πi , πi+1 ) and, since e is not a cut-edge,
+the component C has the same set of vertices and its parity remains the same, as a
+transposition does not change signs of elements. So, we have Inv(π · β) = Inv(π ) − 1
+and codd (π ) = codd (π · β).
+Now, suppose that e is a cut-edge. Let C1 and C2 be the components of C − e. We
+further divide this analysis into the following cases:
+1. C1 and C2 are both even. After applying β = τ (i, i + 1, i + 2) on π , we have that
+Inv(π · β) = Inv(π ) − 1 and codd (π ) = codd (π · β). Note that C is also even and
+the parity of the components C1 and C2 remains the same.
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+599
+
+2. C1 and C2 are both odd. After applying β = ρ̄(i, i + 1) on π , we have that
+Inv(π · β) = Inv(π ) − 1 and codd (π ) = codd (π · β). Note that C is even and the
+components C1 and C2 become even after applying the signed reversal in π .
+3. C1 and C2 have distinct parities. After applying β = τ (i, i + 1, i + 2) on π , we
+have that Inv(π · β) = Inv(π ) − 1 and codd (π ) = codd (π · β). Note that C is odd
+and the parity of the components C1 and C2 remains the same.
+In all cases, we have that Inv(π · β) = Inv(π ) − 1 and codd (π ) = codd (π · β). 
+Lemma 27 For any signed permutation π and real value α ≥ 1, we have cr̄2t (π ) ≤
+codd (π ) + 2α Inv(π ).
+Proof To sort π , we use the following algorithm:
+1. While Inv(π ) > 0, find a transposition of length 2 which removes an inversion and
+that does not increase the number of odd components (Lemma 26).
+2. For each odd component of G(π ), apply a signed reversal of length 1 to decrease
+the number of odd components by one. Note that if Inv(π ) = 0, then there is no
+edge in G(π ) and each component of G(π ) is a single vertex. Each odd component
+C = {πi } becomes even after applying β = ρ̄(i, i) in π .
+Since the identity permutation is the only one with Inv(π ) + codd (π ) = 0, this
+algorithm sorts π . At the first step, the algorithm uses Inv(π ) transpositions of length
+2 and, at the second step, the algorithm uses codd (π ) signed reversals of length 1.
+
+Therefore, the sorting sequence has cost codd (π ) + 2α Inv(π ).
+Theorem 13 For α ≥ 3, the problem SbR̄T can be solved in polynomial time for any
+integer λ > 1.
+Proof By Lemmas 23 and 24, considering α ≥ 3, there exists an optimal sorting
+sequence for π using only super short signed reversals and/or super short transpositions. Let S be such an optimal sorting sequence. This sequence removes Inv(π )
+inversions and decreases the number of odd components of G(π ) by codd (π ) units.
+A signed reversal of length 1 does not change the inversions of a permutation. Also,
+a rearrangement of length 2 can remove at most one inversion. Therefore, S has at least
+Inv(π ) rearrangements of length 2. Let Sinv be this subset of rearrangements which
+remove inversions.
+As shown by Lemma 25, the rearrangements of Sinv do not decrease the number
+of odd components of the inversion graph. Let S be the subset of rearrangements
+S \ Sinv . The rearrangements of S must remove at least codd (π ) odd components of the
+inversion graph. A rearrangement of length 1 removes at most one odd component and a
+rearrangement of length 2 removes at most two odd components. In this way, the cost to
+remove one odd component is greater than or equal to 1, considering α ≥ 2. Therefore,
+the cost of S is greater than or equal to codd (π ) and f (S) ≥ 2α Inv(π ) + codd (π ).
+Lemma 27 shows how to find a sorting sequence with cost 2α Inv(π ) + codd (π ).
+Using our previous lower bound, we conclude that this sorting sequence is optimal. 
+
+123
+
+600
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Table 1 Summary of the results obtained for the Sorting by Length-Weighted λ-Rearrangements problems
+Parameters
+
+Best approximation factor
+SbR
+
+SbT
+
+SbRT
+
+SbR̄
+
+SbR̄T
+
+λ > 1 and α = 1
+
+λ−1
+
+λ/2
+
+λ−1
+
+λ
+
+λ
+
+λ = Θ(n) and α = 1
+
+O(lg n)
+
+O(lg2 n)
+
+O(lg2 n)
+
+O(lg n)
+
+O(lg2 n)
+
+λ = 3 and α = 1
+
+2
+
+4/3
+
+2
+
+3
+
+7/3
+
+λ > 1 and α ≥ 2
+
+2
+
+2
+
+2
+
+3
+
+3
+
+λ > 1 and α ≥ 3
+
+Exact
+
+Exact
+
+Exact
+
+Exact
+
+Exact
+
+9 Conclusion
+In this work, we presented O(λ)-approximation algorithms for the problems of Sorting
+by Length-Weighted λ-Rearrangements with α = 1. These algorithms were based on
+the concepts of inversions and/or entropy. For large values of λ (i.e. λ = Θ(n)),
+we were able to improve the approximation factor to O(lg n), for reversals, and
+O(lg2 n), for transpositions and the combination of reversals and transpositions. Also,
+we presented algorithms with constant approximation factor for length-weighted short
+rearrangements, still considering α = 1.
+For α ≥ 2, we gave a 2-approximation algorithm for sorting unsigned permutations
+and a 3-approximation algorithm for sorting signed permutations. When α ≥ 3, we
+proved that, for each of the five rearrangements models studied in this work, the problem becomes solvable in polynomial time. The best approximation factors obtained
+for each problem are shown in Table 1.
+For future work, we aim at improving the approximation factor when considering
+α = 1 and any value of λ. Besides that, there are other variations of these problems to
+be considered which allow rearrangements such as insertions and deletions of genes.
+In this case, the genomes may not have the same set of genes.
+Acknowledgements This work was supported by the National Counsel of Technological and Scientific
+Development, CNPq (Grants 400487/2016-0, 425340/2016-3, 131182/2017-0, and 304380/2018-0), São
+Paulo Research Foundation, FAPESP (Grants 2015/11937-9, 2017/12646-3, and 2017/16246-0), and by the
+Brazilian Federal Agency for the Support and Evaluation of Graduate Education, CAPES (Finance Code
+001).
+
+References
+Alexandrino AO, Lintzmayer CN, Dias Z (2018) Approximation algorithms for sorting permutations by
+fragmentation-weighted operations. In: Jansson J, Martín-Vide C, Vega-Rodríguez M (eds) Algorithms
+for computational biology, vol 10849. Springer, Heidelberg, pp 53–64
+Alexandrino AO, Miranda GHS, Lintzmayer CN, Dias Z (2019) Approximation algorithms for sorting
+permutations by length-weighted short rearrangements. Electron Notes Theor Comput Sci 346:29–40
+Alexandrino AO, Lintzmayer CN, Dias Z (2020) Sorting permutations by fragmentation-weighted operations. J Bioinform Comput Biol 18(2):2050006.1–2050006.31
+
+123
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+601
+
+Bader M, Ohlebusch E (2007) Sorting by weighted reversals, transpositions, and inverted transpositions. J
+Comput Biol 14(5):615–636
+Bender MA, Ge D, He S, Hu H, Pinter RY, Skiena SS, Swidan F (2008) Improved bounds on sorting by
+length-weighted reversals. J Comput Syst Sci 74(5):744–774
+Berman P, Hannenhalli S, Karpinski M (2002) 1.375-Approximation algorithm for sorting by reversals.
+In Möhring R, Raman R (ed) Proceedings of the 10th annual European symposium on algorithms
+(ESA’2002), volume 2461 of lecture notes in computer science. Springer, Heidelberg, pp 200–210
+Blanchette M, Kunisawa T, Sankoff D (1996) Parametric genome rearrangement. Gene 172(1):GC11–GC17
+Bulteau L, Fertin G, Rusu I (2012) Sorting by transpositions is difficult. SIAM J Discrete Math 26(3):1148–
+1180
+Caprara A (1999) Sorting permutations by reversals and Eulerian cycle decompositions. SIAM J Discrete
+Math 12(1):91–110
+Chen X (2013) On sorting unsigned permutations by double-cut-and-joins. J Combin Optim 25(3):339–351
+Dias UM (2012) Problemas de Comparação de Genomas. PhD thesis, Institute of Computing, University
+of Campinas. (In Portuguese)
+Elias I, Hartman T (2006) A 1.375-approximation algorithm for sorting by transpositions. IEEE/ACM Trans
+Comput Biol Bioinform 3(4):369–379
+Eriksen N (2002) (1+)-approximation of sorting by reversals and transpositions. Theor Comput Sci
+289(1):517–529
+Galvão GR, Lee O, Dias Z (2015) Sorting signed permutations by short operations. Algorithms Mol Biol
+10(1):1–17
+Hannenhalli S, Pevzner PA (1999) Transforming cabbage into turnip: polynomial algorithm for sorting
+signed permutations by reversals. J ACM 46(1):1–27
+Heath LS, Vergara JPC (2003) Sorting by short swaps. J Comput Biol 10(5):775–789
+Jerrum MR (1985) The complexity of finding minimum-length generator sequences. Theor Comput Sci
+36(2–3):265–289
+Jiang H, Zhu D, Zhu B (2012) A (1+)-approximation algorithm for sorting by short block-moves. Theor
+Comput Sci 437:1–8
+Jiang H, Feng H, Zhu D (2014) An 5/4-approximation algorithm for sorting permutations by short block
+moves. In Ahn H, Shin C (ed) Proceedings of the 25th international symposium on algorithms and
+computation (ISAAC’2014), volume 8889 of lecture notes in computer science. Springer, Heidelberg,
+pp 491–503
+Lefebvre J-F, El-Mabrouk N, Tillier ERM, Sankoff D (2003) Detection and validation of single gene
+inversions. Bioinformatics 19(1):i190–i196
+Lintzmayer CN, Fertin G, Dias Z (2015) Approximation algorithms for sorting by length-weighted prefix
+and suffix operations. Theor Comput Sci 593:26–41
+Lintzmayer CN, Fertin G, Dias Z (2018) Sorting permutations and binary strings by length-weighted
+rearrangements. Theor Comput Sci 715:35–59
+Miranda GHS, Lintzmayer CN, Dias Z (2019) Sorting permutations by λ-operations. J Univ Comput Sci
+25(2):98–121
+Nguyen TC, Ngo HT, Nguyen NB (2005) Sorting by restricted-length-weighted reversals. Genomics Proteomics Bioinform 3(2):120–127
+Oliveira AR, Brito KL, Dias U, Dias Z (2019) On the complexity of sorting by reversals and transpositions
+problems. J Comput Biol 26(11):1223–1229
+Pinter RY, Skiena S (2002) Genomic sorting with length-weighted reversals. Genome Inform 13:103–111
+Rahman A, Shatabda S, Hasan M (2008) An approximation algorithm for sorting by reversals and transpositions. J Discrete Algorithms 6(3):449–457
+Swidan F, Bender MA, Ge D, He S, Hu H, Pinter RY (2004) Sorting by length-weighted reversals: dealing
+with signs and circularity. In: Sahinalp S, Muthukrishnan S, Dogrusoz U (eds) Combinatorial pattern
+matching, vol 3109. Lecture notes in computer science. Springer, Heidelberg, pp 32–46
+Vergara JPC (1998) Sorting by bounded permutations. PhD thesis, Virginia Polytechnic Institute and State
+University
+Walter MEMT, Dias Z, Meidanis J (1998) Reversal and transposition distance of linear chromosomes.
+In Proceedings of the 5th international symposium on string processing and information retrieval
+(SPIRE’1998), Los Alamitos, CA. IEEE Computer Society, pp 96–102
+
+123
+
+602
+
+Journal of Combinatorial Optimization (2021) 41:579–602
+
+Publisher’s Note Springer Nature remains neutral with regard to jurisdictional claims in published maps
+and institutional affiliations.
+
+Aﬃliations
+Alexsandro Oliveira Alexandrino1 ·
+Guilherme Henrique Santos Miranda1
+Zanoni Dias1
+
+· Carla Negri Lintzmayer2
+
+·
+
+B Alexsandro Oliveira Alexandrino
+alexsandro@ic.unicamp.br
+
+Guilherme Henrique Santos Miranda
+guilherme.miranda@students.ic.unicamp.br
+Carla Negri Lintzmayer
+carla.negri@ufabc.edu.br
+Zanoni Dias
+zanoni@ic.unicamp.br
+1
+
+Institute of Computing, University of Campinas, Campinas, SP, Brazil
+
+2
+
+Center for Mathematics, Computation and Cognition, Federal University of ABC, Santo André,
+SP, Brazil
+
+123
+
+
